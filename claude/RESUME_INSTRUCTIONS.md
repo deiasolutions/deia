@@ -1,7 +1,36 @@
 # DEIA Session Resume Instructions
 
-**Created:** 2025-10-05 (Updated after MUDA/meta-ROTG discussion)
-**Status:** VS Code glitching, safe restart point
+**Created:** 2025-10-05
+**Last Updated:** 2025-10-05 (Constitution v2 DRAFT - Ostrom alignment)
+**Status:** Constitution v2 DRAFT awaiting Dave's biometric approval
+
+---
+
+## 🔴 IMMEDIATE ACTION REQUIRED (When Dave Has Time)
+
+### Constitution v2.0 DRAFT Pending Approval
+
+**What happened:** Integrated Elinor Ostrom's proven commons governance principles (Nobel Prize 2009) into Constitution.
+
+**Status:** DRAFT created, NOT active yet (requires Dave's biometric verification per Constitutional Protection Protocol)
+
+**What Dave needs to do:**
+1. Read `DAVE_REVIEW_SUMMARY.md` (10-15 minutes)
+2. Review changes in `CONSTITUTION_V2_DRAFT.md` (skim Sections 4.0, 4.2, 4.6)
+3. Provide biometric approval when ready (photo/voice/video saying "I approve Constitution v2")
+
+**What changes:**
+- **Principle 1 (Boundaries):** Clear contributor roles, endorsement system (spam prevention)
+- **Principle 3 (Participatory):** All Established Contributors can vote, maintainer recall
+- **Principle 8 (Nested):** 5-level governance (contributor → domain → cross-domain → board → external)
+
+**Documents for Dave's review:**
+- `DAVE_REVIEW_SUMMARY.md` - **START HERE** (what changed, why, what to do)
+- `CONSTITUTION_V2_DRAFT.md` - Full draft Constitution with changes integrated
+- `OSTROM_ALIGNMENT.md` - Deep dive on all 8 principles (1,881 lines, for reference)
+- `DEFERRED_AMENDMENTS.md` - What we're NOT doing yet (Principles 2,4,5,6,7)
+
+**No rush. When Dave has 15 minutes and mental bandwidth.**
 
 ---
 
