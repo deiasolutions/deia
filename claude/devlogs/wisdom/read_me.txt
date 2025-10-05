@@ -1,0 +1,1 @@
+here we extract meta findings: what we did, what shortcomings we discovered in human abilities and ai abilities, so we can share this with humans so they can make better decisions. this stuff should be published as whitepapers so we can learn and the knowledge can benefit others

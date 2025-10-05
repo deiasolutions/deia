@@ -1,0 +1,125 @@
+# DEIA .gitignore - Privacy & Security First
+
+# ==============================================
+# IP PROTECTION - DO NOT COMMIT ANYTHING WITH IP
+# ==============================================
+
+# Specific IP-related patterns (more targeted to avoid false positives)
+*_ip_*
+*-ip-*
+*_ip.*
+*-ip.*
+ip_*
+ip-*
+/ip/
+*/ip/*
+
+# Personal/proprietary information folders
+personal/
+private/
+proprietary/
+confidential/
+
+# Local development files
+local/
+*.local.*
+.local/
+
+# ==============================================
+# PERSONAL INFORMATION PROTECTION
+# ==============================================
+
+# Prevent any file with personal names
+# (Add specific patterns as needed)
+*davee*
+*dave_e*
+
+# Environment and secrets
+.env
+.env.*
+*.key
+*.pem
+*.p12
+secrets/
+credentials/
+
+# API keys and tokens
+*api_key*
+*api-key*
+*token*
+*secret*
+
+# ==============================================
+# STANDARD GIT IGNORES
+# ==============================================
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Build outputs
+dist/
+build/
+*.pyc
+__pycache__/
+
+# Node modules (if we add any tooling)
+node_modules/
+
+# Python virtual environments
+venv/
+env/
+.venv/
+
+# ==============================================
+# DEIA-SPECIFIC IGNORES
+# ==============================================
+
+# Local sanitization workspace
+sanitization-workspace/
+pre-publish/
+unsanitized/
+
+# Draft documents not ready for sharing
+drafts/
+wip/
+
+# Client-specific work (never commit)
+clients/
+client-work/
+
+# Personal notes
+notes.md
+personal-notes/
+scratch/
+
+# Large files or datasets
+*.csv
+*.xlsx
+*.db
+*.sqlite
+
+# ==============================================
+# ALWAYS REVIEW BEFORE COMMIT
+# ==============================================
+
+# Session logs should be sanitized before committing
+# Review intake/ files carefully before pushing
