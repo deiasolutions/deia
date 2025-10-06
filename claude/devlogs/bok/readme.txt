@@ -1,1 +1,0 @@
-here we place bits of knowledge to be used later by claude
