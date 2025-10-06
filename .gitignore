@@ -1,6 +1,15 @@
 # Dave's local DEIA instance (private workspace)
 .deia/
 
+# DEIA Admin workspace (private deliberations)
+admin/
+
+# Project resume (Dave's local context)
+project_resume.md
+
+# Prep directories (temporary)
+_prep-for-github/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -41,3 +50,5 @@ Thumbs.db
 
 # Logs
 *.log
+# Claude settings (local only)
+.claude/settings.local.json

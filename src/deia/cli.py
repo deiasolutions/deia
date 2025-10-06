@@ -13,6 +13,7 @@ import sys
 from .core import init_project, create_session_log, sanitize_file, validate_file
 from .bok import search_bok, sync_bok
 from .config import load_config, save_config
+from .logger import ConversationLogger
 
 console = Console()
 
@@ -98,6 +99,72 @@ def log_create(topic, type):
         if Confirm.ask("Open in your default editor?", default=True):
             import subprocess
             subprocess.run([get_editor(), str(log_path)])
+
+    except Exception as e:
+        console.print(f"[red]Error:[/red] {e}")
+        sys.exit(1)
+
+
+@log.command('conversation')
+@click.option('--context', help='Brief description of what you worked on')
+@click.option('--transcript', type=click.Path(exists=True), help='Path to conversation transcript file')
+def log_conversation(context, transcript):
+    """
+    Log a Claude Code conversation (insurance against crashes)
+
+    This saves your conversation to .deia/sessions/ so you never lose context.
+    """
+
+    logger = ConversationLogger()
+
+    # Prompt for context if not provided
+    if not context:
+        context = Prompt.ask("What were you working on?")
+
+    # Get transcript
+    transcript_text = ""
+    if transcript:
+        transcript_path = Path(transcript)
+        transcript_text = transcript_path.read_text(encoding='utf-8')
+    else:
+        console.print("[yellow]Note: No transcript provided. Paste it in the log file manually.[/yellow]")
+        transcript_text = "(Transcript to be added manually - see log file)"
+
+    # Prompt for key info
+    console.print("\n[cyan]Optional details (press Enter to skip):[/cyan]")
+
+    decisions_input = Prompt.ask("Key decisions (comma-separated)", default="")
+    decisions = [d.strip() for d in decisions_input.split(",")] if decisions_input else []
+
+    action_items_input = Prompt.ask("Action items (comma-separated)", default="")
+    action_items = [a.strip() for a in action_items_input.split(",")] if action_items_input else []
+
+    files_input = Prompt.ask("Files modified (comma-separated)", default="")
+    files_modified = [f.strip() for f in files_input.split(",")] if files_input else []
+
+    next_steps = Prompt.ask("Next steps", default="Continue from this conversation")
+
+    # Create log
+    try:
+        log_file = logger.create_session_log(
+            context=context,
+            transcript=transcript_text,
+            decisions=decisions,
+            action_items=action_items,
+            files_modified=files_modified,
+            next_steps=next_steps,
+            status="Completed"
+        )
+
+        console.print(Panel.fit(
+            f"[bold green]✓ Conversation logged successfully[/bold green]\n\n"
+            f"[cyan]Location:[/cyan] {log_file}\n"
+            f"[cyan]Session ID:[/cyan] {log_file.stem}\n\n"
+            f"[dim]Your conversation is safe. View the index:[/dim]\n"
+            f"[dim]{logger.index_file}[/dim]",
+            border_style="green",
+            title="Success"
+        ))
 
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
