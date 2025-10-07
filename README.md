@@ -59,17 +59,20 @@ Can't share raw logs (PII, IP, secrets).
 # Clone and install
 git clone https://github.com/deiasolutions/deia.git
 cd deia
-pip install -r requirements.txt
+pip install -e .
 
-# Log your first session
-python -m deia.logger
+# Install globally (one-time setup)
+deia install
 
-# Browse community patterns
-ls bok/patterns/
-ls bok/platforms/
+# Initialize in your project
+cd /path/to/your/project
+deia init
+
+# Follow the instructions to set up Claude Code memory
+# Then start using DEIA - it will auto-log your sessions!
 ```
 
-**Full guide:** [Conversation Logging](docs/conversation-logging.md)
+**Full guide:** [Conversation Logging Quickstart](CONVERSATION_LOGGING_QUICKSTART.md)
 
 ---
 
@@ -157,19 +160,26 @@ Community-contributed patterns from real AI-assisted work.
 
 ## Current Status
 
-**What works now:**
-- ✅ Real-time conversation logging
-- ✅ Privacy-first architecture
-- ✅ BOK structure and initial patterns
-- ✅ Ostrom-based governance
-- ✅ Multi-domain design
+### ✅ What Works Now
 
-**Coming soon:**
-- Pattern extraction automation
-- VS Code extension (works with ALL AI tools)
-- pip install deia
-- Academic partnerships (DOI registration)
-- Multi-domain expansion
+- Conversation logging code (`ConversationLogger` class)
+- BOK structure with initial community patterns
+- Privacy-first architecture (local storage)
+- Governance framework (Constitution, Principles)
+
+### 🚧 In Active Development
+
+- `pip install -e .` setup (pyproject.toml ready, needs testing)
+- `deia init` command (code exists, needs validation)
+- Claude Code integration (slash commands drafted)
+
+### 📋 Roadmap
+
+See [ROADMAP.md](ROADMAP.md) for phased vision:
+- **Phase 1:** Get basic install working
+- **Phase 2:** Automated pattern extraction
+- **Phase 3:** VS Code extension
+- **Phase 4:** Multi-domain expansion
 
 ---
 

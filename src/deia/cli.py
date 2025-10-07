@@ -14,6 +14,7 @@ from .core import init_project, create_session_log, sanitize_file, validate_file
 from .bok import search_bok, sync_bok
 from .config import load_config, save_config
 from .logger import ConversationLogger
+from .installer import install_global, init_project as installer_init_project
 
 console = Console()
 
@@ -30,25 +31,64 @@ def main():
 
 
 @main.command()
-@click.option('--platform',
-              type=click.Choice(['claude-code', 'cursor', 'copilot', 'windsurf', 'other']),
-              prompt='Which AI coding platform do you use',
-              help='Your primary AI coding assistant')
+@click.option('--username', help='Your username (defaults to system username)')
+@click.option('--auto-log/--no-auto-log', default=True,
+              help='Enable auto-logging by default (default: enabled)')
+def install(username, auto_log):
+    """Install DEIA globally (run once per user)"""
+
+    console.print(Panel.fit(
+        "[bold cyan]Installing DEIA[/bold cyan]\n"
+        "Setting up global DEIA infrastructure...",
+        border_style="cyan"
+    ))
+
+    try:
+        success = install_global(username, auto_log)
+        if success:
+            console.print("\n[bold green]Installation complete![/bold green]")
+            console.print("\n[bold]Next:[/bold] Run [cyan]deia init[/cyan] in your project directory")
+        else:
+            console.print("\n[red]Installation failed.[/red]")
+            sys.exit(1)
+    except Exception as e:
+        console.print(f"[red]Error:[/red] {e}")
+        sys.exit(1)
+
+
+@main.command()
+@click.option('--project-name', help='Project name (defaults to directory name)')
+@click.option('--auto-log/--no-auto-log', default=None,
+              help='Enable auto-logging for this project (defaults to global setting)')
 @click.option('--path',
               type=click.Path(),
               default='.',
-              help='Where to create the DEIA pipeline (default: current directory)')
-def init(platform, path):
-    """Initialize DEIA pipeline in your project"""
+              help='Project directory (default: current directory)')
+def init(project_name, auto_log, path):
+    """Initialize DEIA for a project"""
 
     console.print(Panel.fit(
-        "[bold cyan]Welcome to DEIA[/bold cyan]\n"
-        "Development Evidence & Insights Automation\n\n"
-        "Let's set up your knowledge pipeline...",
+        "[bold cyan]Initializing DEIA[/bold cyan]\n"
+        "Setting up project-level DEIA...",
         border_style="cyan"
     ))
 
     target_path = Path(path).resolve()
+
+    # Check if global DEIA exists
+    global_deia = Path.home() / ".deia-global"
+    if not global_deia.exists():
+        console.print("[yellow]⚠ Global DEIA not found.[/yellow]")
+        console.print("Run [cyan]deia install[/cyan] first to set up global DEIA.")
+        if Confirm.ask("Install global DEIA now?", default=True):
+            try:
+                install_global()
+            except Exception as e:
+                console.print(f"[red]Error installing global DEIA:[/red] {e}")
+                sys.exit(1)
+        else:
+            console.print("[dim]Cancelled.[/dim]")
+            sys.exit(0)
 
     # Check if already initialized
     if (target_path / '.deia').exists():
@@ -59,14 +99,10 @@ def init(platform, path):
 
     # Run initialization
     try:
-        init_project(target_path, platform)
-
-        console.print("\n[green]✓[/green] DEIA pipeline initialized!")
-        console.print("\n[bold]Next steps:[/bold]")
-        console.print("  1. [cyan]deia log create[/cyan] - Create your first session log")
-        console.print("  2. [cyan]deia sanitize[/cyan] - Sanitize before sharing")
-        console.print("  3. [cyan]deia submit[/cyan] - Share with the community")
-        console.print("\n[dim]Read START_HERE.md for full documentation[/dim]")
+        success = installer_init_project(target_path, project_name, auto_log)
+        if not success:
+            console.print("\n[red]Initialization failed.[/red]")
+            sys.exit(1)
 
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
@@ -327,6 +363,23 @@ def bok_sync():
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
         sys.exit(1)
+
+
+@main.command()
+@click.option('--repair', is_flag=True, help='Attempt automatic repair of issues')
+def doctor(repair):
+    """Diagnose and repair DEIA installation"""
+    from .doctor import DEIADoctor
+
+    doctor = DEIADoctor()
+
+    if repair:
+        doctor.repair()
+    else:
+        doctor.check_all()
+
+        if doctor.issues:
+            console.print("\n[bold]TIP:[/bold] Run [cyan]deia doctor --repair[/cyan] to attempt automatic fixes")
 
 
 def get_editor():
