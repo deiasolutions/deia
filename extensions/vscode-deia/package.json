@@ -1,0 +1,112 @@
+{
+  "name": "deia",
+  "displayName": "DEIA - AI Conversation Logger",
+  "description": "Never lose context. Log AI conversations, recover from crashes, contribute to the knowledge commons.",
+  "version": "0.1.0",
+  "publisher": "deiasolutions",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deiasolutions/deia.git"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "AI",
+    "Other"
+  ],
+  "keywords": [
+    "ai",
+    "chat",
+    "logging",
+    "copilot",
+    "claude",
+    "cursor",
+    "conversation"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "deia.logChat",
+        "title": "DEIA: Log Current Chat",
+        "icon": "$(save)"
+      },
+      {
+        "command": "deia.viewLogs",
+        "title": "DEIA: View Session Logs",
+        "icon": "$(list-tree)"
+      },
+      {
+        "command": "deia.viewResume",
+        "title": "DEIA: Read Project Resume",
+        "icon": "$(book)"
+      },
+      {
+        "command": "deia.checkStatus",
+        "title": "DEIA: Check Status",
+        "icon": "$(info)"
+      },
+      {
+        "command": "deia.submitPattern",
+        "title": "DEIA: Submit Pattern to Community",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "deia.toggleAutoLog",
+        "title": "DEIA: Toggle Auto-Logging",
+        "icon": "$(record)"
+      },
+      {
+        "command": "deia.createSpecFromLog",
+        "title": "DEIA: Create SpecKit Spec from Conversation",
+        "icon": "$(file-code)"
+      },
+      {
+        "command": "deia.updateConstitution",
+        "title": "DEIA: Add Decisions to SpecKit Constitution",
+        "icon": "$(law)"
+      }
+    ],
+    "configuration": {
+      "title": "DEIA",
+      "properties": {
+        "deia.deiaCliPath": {
+          "type": "string",
+          "default": "deia",
+          "description": "Path to the DEIA CLI executable"
+        },
+        "deia.autoDetect": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically detect DEIA-enabled projects"
+        },
+        "deia.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show DEIA status in status bar"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.x",
+    "@typescript-eslint/parser": "^6.x",
+    "eslint": "^8.x",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {}
+}
