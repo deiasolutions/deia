@@ -162,10 +162,20 @@ Community-contributed patterns from real AI-assisted work.
 
 ### ✅ What Works Now
 
-- Conversation logging code (`ConversationLogger` class)
-- BOK structure with initial community patterns
+- Conversation logging **infrastructure** (`ConversationLogger` class with file I/O)
+- CLI commands: `deia init`, `deia doctor`, `deia status`, `deia config`, `deia admin`
+- BOK structure with initial community patterns (separate repo: deia-bok)
 - Privacy-first architecture (local storage)
 - Governance framework (Constitution, Principles)
+- VSCode extension (basic implementation, not published)
+
+### ⚠️ What's Infrastructure-Only (Not Production Ready)
+
+- **Conversation capture**: Logger can *write* files but can't *capture* live conversations yet
+  - Manual API calls work: `ConversationLogger().create_session_log(...)`
+  - `python -m deia.logger` creates test data only
+  - Missing: Real-time capture from Claude Code/Cursor/other AI tools
+- **Auto-logging**: Config flag exists but no mechanism to auto-capture conversations
 
 ### 🚧 In Active Development
 
