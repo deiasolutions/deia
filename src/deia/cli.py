@@ -566,6 +566,134 @@ def admin_list_flagged():
         console.print()
 
 
+@main.command()
+def status():
+    """Show current DEIA status and configuration"""
+    from datetime import datetime
+    import json
+
+    # Check if .deia exists
+    deia_dir = Path('.deia')
+    if not deia_dir.exists():
+        console.print("[yellow]DEIA not initialized in this directory[/yellow]")
+        console.print("Run [cyan]deia init[/cyan] to get started")
+        return
+
+    # Load config
+    config_file = deia_dir / 'config.json'
+    if not config_file.exists():
+        console.print("[red]Error:[/red] .deia/config.json not found")
+        return
+
+    with open(config_file, 'r') as f:
+        config = json.load(f)
+
+    # Count sessions
+    sessions_dir = deia_dir / 'sessions'
+    session_count = len(list(sessions_dir.glob('*.md'))) if sessions_dir.exists() else 0
+
+    # Get last session time
+    last_session = "Never"
+    if sessions_dir.exists() and session_count > 0:
+        sessions = sorted(sessions_dir.glob('*.md'), key=lambda p: p.stat().st_mtime, reverse=True)
+        if sessions:
+            last_modified = datetime.fromtimestamp(sessions[0].stat().st_mtime)
+            last_session = last_modified.strftime('%Y-%m-%d %H:%M')
+
+    # Display status
+    console.print("\n[bold cyan]DEIA Status[/bold cyan]\n")
+    console.print(f"[bold]Project:[/bold] {config.get('project', 'unknown')}")
+    console.print(f"[bold]User:[/bold] {config.get('user', 'unknown')}")
+
+    auto_log = config.get('auto_log', False)
+    auto_log_status = "[green]enabled[/green]" if auto_log else "[yellow]disabled[/yellow]"
+    console.print(f"[bold]Auto-log:[/bold] {auto_log_status}")
+
+    console.print(f"[bold]Version:[/bold] {config.get('version', 'unknown')}")
+    console.print(f"[bold]Last session:[/bold] {last_session}")
+    console.print(f"[bold]Sessions logged:[/bold] {session_count}")
+    console.print()
+
+
+@main.group()
+def config():
+    """Manage DEIA configuration"""
+    pass
+
+
+@config.command('list')
+def config_list():
+    """Show all configuration settings"""
+    import json
+
+    config_file = Path('.deia/config.json')
+    if not config_file.exists():
+        console.print("[yellow]DEIA not initialized in this directory[/yellow]")
+        console.print("Run [cyan]deia init[/cyan] to get started")
+        return
+
+    with open(config_file, 'r') as f:
+        config_data = json.load(f)
+
+    console.print("\n[bold cyan]DEIA Configuration[/bold cyan]\n")
+    for key, value in config_data.items():
+        console.print(f"[bold]{key}:[/bold] {value}")
+    console.print()
+
+
+@config.command('get')
+@click.argument('key')
+def config_get(key):
+    """Get a specific configuration value"""
+    import json
+
+    config_file = Path('.deia/config.json')
+    if not config_file.exists():
+        console.print("[red]Error:[/red] .deia/config.json not found")
+        sys.exit(1)
+
+    with open(config_file, 'r') as f:
+        config_data = json.load(f)
+
+    if key in config_data:
+        console.print(config_data[key])
+    else:
+        console.print(f"[red]Error:[/red] Key '{key}' not found in config")
+        sys.exit(1)
+
+
+@config.command('set')
+@click.argument('key')
+@click.argument('value')
+def config_set(key, value):
+    """Set a configuration value"""
+    import json
+
+    config_file = Path('.deia/config.json')
+    if not config_file.exists():
+        console.print("[red]Error:[/red] .deia/config.json not found")
+        console.print("Run [cyan]deia init[/cyan] first")
+        sys.exit(1)
+
+    with open(config_file, 'r') as f:
+        config_data = json.load(f)
+
+    # Convert boolean strings
+    if value.lower() in ['true', 'false']:
+        value = value.lower() == 'true'
+
+    # Convert numeric strings
+    elif value.isdigit():
+        value = int(value)
+
+    config_data[key] = value
+
+    with open(config_file, 'w') as f:
+        json.dump(config_data, f, indent=2)
+
+    console.print(f"[green]✓[/green] Set [bold]{key}[/bold] = {value}")
+
+
 def get_editor():
     """Get system default editor"""
     import os
