@@ -279,8 +279,35 @@ def quick_log(context: str, transcript: str, **kwargs) -> Path:
     )
 
 
+def check_auto_log_enabled() -> bool:
+    """
+    Check if auto_log is enabled in .deia/config.json
+
+    Returns:
+        True if auto_log is enabled, False otherwise
+    """
+    config_path = Path.cwd() / ".deia" / "config.json"
+
+    if not config_path.exists():
+        # No config = default to disabled
+        return False
+
+    try:
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+        return config.get("auto_log", False)
+    except (json.JSONDecodeError, IOError):
+        # Invalid config = default to disabled
+        return False
+
+
 if __name__ == "__main__":
-    # Example usage
+    # Check if auto_log is enabled
+    if not check_auto_log_enabled():
+        # Hook ran but auto_log is disabled - exit silently
+        exit(0)
+
+    # Auto-log is enabled - create log
     logger = ConversationLogger()
     log_file = logger.create_session_log(
         context="Building automated conversation logging system",

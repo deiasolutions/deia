@@ -5,10 +5,26 @@ Community-contributed patterns, anti-patterns, and platform-specific solutions f
 ## Organization
 
 ### `platforms/`
-Platform-specific workarounds and solutions for vendor issues:
-- **railway/** - Railway deployment patterns
-- **vercel/** - Vercel preview and production deployments
+
+Platform-specific workarounds, solutions, and best practices.
+
+#### AI Models (`platforms/ai-models/`)
+Best practices for different AI models - what makes each one shine:
+- **[claude/](platforms/ai-models/claude/)** - Iterative refinement, Constitutional AI, nuanced reasoning
+- **[gpt/](platforms/ai-models/gpt/)** - Function calling, speed, o1 reasoning
+- **[gemini/](platforms/ai-models/gemini/)** - Massive context (1M tokens), multimodal, code execution
+- **[copilot/](platforms/ai-models/copilot/)** - Inline completion, IDE integration, test generation
+
+#### Deployment Platforms (`platforms/deployment/`)
+Deployment platform workarounds and patterns:
+- **[railway/](platforms/deployment/railway/)** - Railway deployment patterns, HTTPS redirects
+- **[vercel/](platforms/deployment/vercel/)** - Vercel preview and production deployments
 - Future: AWS, Azure, GCP, etc.
+
+#### Tools (`platforms/tools/`)
+AI-assisted development tools:
+- **[claude-code/](platforms/tools/claude-code/)** - Slash commands, hooks, logging integration
+- Future: Cursor, VS Code extensions, etc.
 
 ### `patterns/`
 General patterns that work across platforms:
