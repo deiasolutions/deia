@@ -382,6 +382,190 @@ def doctor(repair):
             console.print("\n[bold]TIP:[/bold] Run [cyan]deia doctor --repair[/cyan] to attempt automatic fixes")
 
 
+@main.group()
+def admin():
+    """Admin tools for BOK quality control (maintainers only)"""
+    pass
+
+
+@admin.command('scan')
+@click.argument('file_path', type=click.Path(exists=True))
+def admin_scan(file_path):
+    """Security scan a file for secrets and malicious code"""
+    from .admin import SecurityScanner
+
+    scanner = SecurityScanner()
+    result = scanner.scan_file(file_path)
+
+    console.print(f"\n[bold]Security Scan: {file_path}[/bold]\n")
+
+    if result.get('error'):
+        console.print(f"[red]Error:[/red] {result['error']}")
+        sys.exit(1)
+
+    # Show secrets found
+    secrets = result['secrets_found']
+    if secrets:
+        console.print(f"[red]🔒 Secrets found: {len(secrets)}[/red]")
+        for secret in secrets:
+            console.print(f"  Line {secret['line']}: {secret['type']} - {secret['match']}")
+        console.print()
+
+    # Show malicious patterns
+    malicious = result['malicious_patterns']
+    if malicious:
+        console.print(f"[red]⚠️  Malicious patterns: {len(malicious)}[/red]")
+        for pattern in malicious:
+            console.print(f"  Line {pattern['line']}: {pattern['type']} - {pattern['context']}")
+        console.print()
+
+    # Show risk score and recommendation
+    risk_score = result['risk_score']
+    recommendation = result['recommendation']
+
+    if risk_score >= 80:
+        color = 'red'
+    elif risk_score >= 50:
+        color = 'yellow'
+    else:
+        color = 'green'
+
+    console.print(f"[{color}]Risk Score: {risk_score}/100[/{color}]")
+    console.print(f"Recommendation: [{color}]{recommendation}[/{color}]")
+
+
+@admin.command('quality')
+@click.argument('file_path', type=click.Path(exists=True))
+def admin_quality(file_path):
+    """Quality check a file"""
+    from .admin import QualityChecker
+
+    checker = QualityChecker()
+    result = checker.check_file(file_path)
+
+    console.print(f"\n[bold]Quality Check: {file_path}[/bold]\n")
+
+    if result.get('error'):
+        console.print(f"[red]Error:[/red] {result['error']}")
+        sys.exit(1)
+
+    issues = result['issues']
+    if issues:
+        console.print("[yellow]Issues found:[/yellow]")
+        for issue in issues:
+            console.print(f"  • {issue}")
+        console.print()
+
+    quality_score = result['quality_score']
+    recommendation = result['recommendation']
+
+    color = 'green' if quality_score >= 70 else 'yellow'
+    console.print(f"[{color}]Quality Score: {quality_score}/100[/{color}]")
+    console.print(f"Recommendation: [{color}]{recommendation}[/{color}]")
+
+
+@admin.command('review')
+@click.argument('file_path', type=click.Path(exists=True))
+def admin_review(file_path):
+    """Full review (security + quality)"""
+    from .admin import AIReviewer
+
+    reviewer = AIReviewer()
+    result = reviewer.review_file(file_path)
+
+    console.print(f"\n[bold]Full Review: {file_path}[/bold]\n")
+
+    console.print(result['summary'])
+    console.print()
+
+    risk_score = result['risk_score']
+    recommendation = result['recommendation']
+
+    if risk_score >= 80:
+        color = 'red'
+    elif risk_score >= 50:
+        color = 'yellow'
+    else:
+        color = 'green'
+
+    console.print(f"[{color}]Overall Risk: {risk_score}/100[/{color}]")
+    console.print(f"[{color}]Recommendation: {recommendation}[/{color}]")
+
+
+@admin.command('ban-user')
+@click.argument('username')
+@click.option('--reason', default='No reason provided', help='Ban reason')
+@click.option('--duration', default='permanent', help='Ban duration')
+def admin_ban_user(username, reason, duration):
+    """Ban a user from BOK submissions"""
+    from .admin import UserManager
+
+    manager = UserManager()
+    manager.ban_user(username, reason, duration)
+
+
+@admin.command('unban-user')
+@click.argument('username')
+def admin_unban_user(username):
+    """Unban a user"""
+    from .admin import UserManager
+
+    manager = UserManager()
+    manager.unban_user(username)
+
+
+@admin.command('flag-user')
+@click.argument('username')
+@click.option('--reason', default='No reason provided', help='Flag reason')
+def admin_flag_user(username, reason):
+    """Flag a user for review"""
+    from .admin import UserManager
+
+    manager = UserManager()
+    manager.flag_user(username, reason)
+
+
+@admin.command('list-banned')
+def admin_list_banned():
+    """List all banned users"""
+    from .admin import UserManager
+
+    manager = UserManager()
+    banned = manager.list_banned()
+
+    if not banned:
+        console.print("No banned users")
+        return
+
+    console.print("\n[bold]Banned Users:[/bold]\n")
+    for username, data in banned.items():
+        console.print(f"[red]{username}[/red]")
+        console.print(f"  Reason: {data['reason']}")
+        console.print(f"  Duration: {data['duration']}")
+        console.print(f"  Banned at: {data['banned_at']}")
+        console.print()
+
+
+@admin.command('list-flagged')
+def admin_list_flagged():
+    """List all flagged users"""
+    from .admin import UserManager
+
+    manager = UserManager()
+    flagged = manager.list_flagged()
+
+    if not flagged:
+        console.print("No flagged users")
+        return
+
+    console.print("\n[bold]Flagged Users:[/bold]\n")
+    for username, flags in flagged.items():
+        console.print(f"[yellow]{username}[/yellow] ({len(flags)} flag(s))")
+        for flag in flags:
+            console.print(f"  • {flag['reason']} ({flag['flagged_at']})")
+        console.print()
+
+
 def get_editor():
     """Get system default editor"""
     import os
