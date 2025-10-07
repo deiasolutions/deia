@@ -36,7 +36,7 @@ Computer crashes. AI forgets. You start over.
 Same problems solved repeatedly. Knowledge stays siloed.
 
 **DEIA shares patterns privacy-safely:**
-- Community Book of Knowledge (BOK)
+- Community Book of Knowledge → **[deia-bok](https://github.com/deiasolutions/deia-bok)**
 - Platform-specific solutions (Railway, Vercel, AWS)
 - Human-AI collaboration patterns
 - Anti-patterns (what NOT to do)
