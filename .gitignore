@@ -1,6 +1,10 @@
 # Dave's local DEIA instance (private workspace)
 .deia/
 
+# Private directories (never commit)
+.private/
+.deia/private/
+
 # DEIA Admin workspace (private deliberations)
 admin/
 
