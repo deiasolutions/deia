@@ -317,7 +317,7 @@ Better to say "infrastructure ready, capture mechanism coming soon" than to clai
 ## Sign-off
 
 **Root Cause Owner:** Claude (AI assistant)
-**Human Reviewer:** Dave Eichler
+**Human Reviewer:** Dave (@dave-atx)
 **Date:** 2025-10-07
 **Status:** Analysis complete, corrective actions in progress
 

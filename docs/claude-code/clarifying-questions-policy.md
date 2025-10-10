@@ -183,7 +183,7 @@ Assistant: "I'll assume you meant A since it's more common..."
 ## Attribution
 
 - **Pattern discovered:** 2025-10-07
-- **Reported by:** Dave Eichler (DEIA project)
+- **Reported by:** Dave (@dave-atx) (DEIA project)
 - **Context:** Claude Code conversation logging implementation
 - **Quote:** "sometimes the safety of the entire universe is on the line"
 

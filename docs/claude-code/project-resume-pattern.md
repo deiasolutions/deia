@@ -403,7 +403,7 @@ If AI doesn't know these things, either:
 ## Attribution
 
 - **Pattern formalized:** 2025-10-07
-- **Created by:** Dave Eichler (DEIA project)
+- **Created by:** Dave (@dave-atx) (DEIA project)
 - **Context:** Solving context loss between Claude Code sessions
 - **Quote:** "hey claude, check memory to see if there's anything you need to know, and if there aren't any memory settings, since you don't retain everything we want you to, here's your reminder that this is a deia project and you need to be on your toes"
 

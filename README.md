@@ -281,7 +281,7 @@ A: She studied 800+ commons worldwide and found 8 design principles that prevent
 
 ## Credits
 
-**Created by:** [Dave Eichler](https://github.com/deiasolutions)
+**Created by:** [Dave (@dave-atx)](https://github.com/deiasolutions)
 
 **Built on:** Nobel Prize research (Elinor Ostrom, 2009)
 
