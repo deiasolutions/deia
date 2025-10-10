@@ -147,8 +147,7 @@ class DEIADoctor:
             self.warnings.append(
                 "WARNING: Claude Code preferences not set up\n"
                 "  File missing: .claude/preferences/deia.md\n"
-                "  This file is created by 'deia init'. If it's missing, you may need\n"
-                "  to manually copy it from the DEIA repo or reinitialize."
+                "  Fix: Run 'deia init' or manually copy from DEIA repo"
             )
         else:
             self.passed.append("Claude Code preferences exist")
