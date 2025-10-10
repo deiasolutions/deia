@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run lint)",
+      "Bash(npm run compile:*)",
+      "WebSearch",
+      "WebFetch(domain:code.visualstudio.com)",
+      "Bash(deia log:*)",
+      "Read(//c/Users/davee/deia-test/**)",
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/src/deia/**)",
+      "Bash(test:*)",
+      "Bash(cat:*)",
+      "Bash(npx @vscode/vsce package:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
