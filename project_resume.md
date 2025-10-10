@@ -10,11 +10,12 @@
 
 Execute these reads **before doing anything else:**
 
-1. **`.claude/STARTUP_CHECKLIST.md`** - Follow every step in the checklist
-2. **`.claude/REPO_INDEX.md`** - Navigation guide (where to find things)
-3. **`.claude/INSTRUCTIONS.md`** - Auto-logging behavior and breakpoints
-4. **`~/.deia/dave/preferences.md`** - Dave's preferences (TDD, communication, etc.)
-5. **`ROADMAP.md`** - What actually works vs what's infrastructure-only
+1. **`.claude/STARTUP.md`** - **EXECUTE STARTUP ACTIONS** (auto-log status notification)
+2. **`.claude/STARTUP_CHECKLIST.md`** - Follow every step in the checklist
+3. **`.claude/REPO_INDEX.md`** - Navigation guide (where to find things)
+4. **`.claude/INSTRUCTIONS.md`** - Auto-logging behavior and breakpoints
+5. **`~/.deia/dave/preferences.md`** - Dave's preferences (TDD, communication, etc.)
+6. **`ROADMAP.md`** - What actually works vs what's infrastructure-only
 
 **These are NOT optional. Read them completely. Don't skim.**
 
@@ -34,82 +35,19 @@ cat .deia/config.json
 
 ## Step 3: Review Latest Session
 
-**Last Updated:** 2025-10-09T21:33:00.162293
-
-### [2025-10-09 21:33] 20251009-213300-conversation
-**Context:** Crash recovery, PII audit, privacy infrastructure setup, auto-log investigation
+**Last Updated:** 2025-10-10T10:30:17.036720
+### [2025-10-10 10:30] 20251010-103017-conversation
+**Context:** Building automated conversation logging system
 
 **Key decisions:**
-- Privacy architecture: Separate repo-level (.private/) from project-level (.deia/private/)
-- Public identity: Only 'Dave' and '@dave-atx' in public docs
-- Business model: Free forever, community-funded
-- Auto-log should ALWAYS be enabled in DEIA projects
+- Create real-time logging
+- Use Python + slash command approach
 
 **Files modified:**
-- README.md
-- docs/decisions/0001-extension-python-installation-strategy.md
-- docs/postmortems/logger-claims-vs-reality-rca.md
-- docs/claude-code/project-resume-pattern.md
-- docs/claude-code/clarifying-questions-policy.md
-- .gitignore (added .private/ and .deia/private/)
-- Multiple new private files created
+- src/deia/logger.py
+- .claude/commands/log-conversation.md
 
-**Full log:** `.deia/sessions/20251009-213300-conversation.md`
+**Full log:** `.deia/sessions/20251010-103017-conversation.md`
 
 ---
 
-## Step 4: Confirm You Read Everything
-
-**Before proceeding with user request, you should have:**
-
-- ✅ Read all 5 required files above
-- ✅ Checked auto-log config
-- ✅ Read latest session summary
-- ✅ Know Dave's preferences (TDD, communication patterns, etc.)
-- ✅ Know what's working vs infrastructure-only (from ROADMAP)
-
-**If you didn't read them all, GO BACK AND DO IT NOW.**
-
----
-
-## Why This Matters
-
-Dave has told you his preferences **20+ times** and you keep forgetting.
-
-**This is unacceptable.**
-
-The files above contain EVERYTHING you need to avoid repeating this failure:
-- What Dave expects (preferences.md)
-- How to operate (INSTRUCTIONS.md, STARTUP_CHECKLIST.md)
-- What works and what doesn't (ROADMAP.md)
-- Where to find things (REPO_INDEX.md)
-
-**If you skip reading them, you will fail Dave again.**
-
----
-
-## Context Window Management
-
-**Every 30-50 messages, refresh critical info:**
-
-1. Re-read `~/.deia/dave/preferences.md` (refresh Dave's preferences)
-2. Re-check `.deia/config.json` (confirm auto-log still enabled)
-3. Review latest session log (stay grounded in recent work)
-
-**Why:** You lose context over long conversations. Refresh prevents drift.
-
----
-
-## At End of Session
-
-**When user says "done", "that's it", "thanks", or similar:**
-
-1. Create session log with ConversationLogger (full transcript)
-2. Update this file with latest session summary
-3. Confirm: "✓ Session logged"
-
-**Don't wait to be told. If auto_log is true, you should be logging proactively.**
-
----
-
-**⚠️ REMINDER: Read ALL required files BEFORE proceeding. Don't skim. Your context depends on it.**
