@@ -12,6 +12,7 @@ import shutil
 
 from .config_schema import DEIAConfig, get_end_user_config, get_dave_config
 from .logger import ConversationLogger
+from .cli_utils import safe_print
 
 console = Console()
 
@@ -83,28 +84,28 @@ def init_deia_workspace(
 
     for directory in directories:
         directory.mkdir(parents=True, exist_ok=True)
-        console.print(f"  ✓ {directory.relative_to(project_path)}/")
+        safe_print(console, f"  ✓ {directory.relative_to(project_path)}/")
 
     # Copy logger
     console.print("\n[cyan]Installing conversation logger...[/cyan]")
     logger_source = Path(__file__).parent / 'logger.py'
     logger_dest = deia_dir / 'logger.py'
     shutil.copy(logger_source, logger_dest)
-    console.print(f"  ✓ logger.py")
+    safe_print(console, f"  ✓ logger.py")
 
     # Create configuration
     console.print("\n[cyan]Creating configuration...[/cyan]")
 
     if trusted_submitter:
         config = get_dave_config(project_name)
-        console.print("  ✓ Trusted submitter mode (CFRL enabled)")
+        safe_print(console, "  ✓ Trusted submitter mode (CFRL enabled)")
     else:
         config = get_end_user_config(project_name, github_username)
-        console.print("  ✓ Standard end-user mode (manual review)")
+        safe_print(console, "  ✓ Standard end-user mode (manual review)")
 
     config_path = deia_dir / 'config.json'
     config.save(config_path)
-    console.print(f"  ✓ config.json")
+    safe_print(console, f"  ✓ config.json")
 
     # Create .claude/START_HERE.md template
     console.print("\n[cyan]Creating Claude Code integration...[/cyan]")
@@ -114,25 +115,25 @@ def init_deia_workspace(
     start_here = claude_dir / 'START_HERE.md'
     if not start_here.exists() or Confirm.ask("Overwrite existing START_HERE.md?", default=False):
         create_start_here_template(start_here, project_name)
-        console.print(f"  ✓ .claude/START_HERE.md")
+        safe_print(console, f"  ✓ .claude/START_HERE.md")
 
     # Update .gitignore
     console.print("\n[cyan]Updating .gitignore...[/cyan]")
     gitignore = project_path / '.gitignore'
     add_to_gitignore(gitignore)
-    console.print(f"  ✓ .gitignore")
+    safe_print(console, f"  ✓ .gitignore")
 
     # Create initial session index
     console.print("\n[cyan]Initializing session index...[/cyan]")
     logger = ConversationLogger(project_path)
     # Index file created automatically
-    console.print(f"  ✓ sessions/INDEX.md")
+    safe_print(console, f"  ✓ sessions/INDEX.md")
 
     # Create README in .deia
     create_deia_readme(deia_dir, project_name, config)
 
     # Success message
-    console.print(Panel.fit(
+    success_message = (
         f"[bold green]✓ DEIA initialized successfully![/bold green]\n\n"
         f"[cyan]Project:[/cyan] {project_name}\n"
         f"[cyan]Config:[/cyan] .deia/config.json\n"
@@ -140,10 +141,18 @@ def init_deia_workspace(
         f"[bold]Next steps:[/bold]\n"
         f"1. Review .claude/START_HERE.md and customize\n"
         f"2. Start logging: [cyan]deia log conversation[/cyan]\n"
-        f"3. Extract patterns: [cyan]deia extract[/cyan]",
-        border_style="green",
-        title="Success"
-    ))
+        f"3. Extract patterns: [cyan]deia extract[/cyan]"
+    )
+
+    try:
+        console.print(Panel.fit(success_message, border_style="green", title="Success"))
+    except UnicodeEncodeError:
+        # Fallback: Replace Unicode and try again
+        from .cli_utils import UNICODE_FALLBACKS
+        fallback_message = success_message
+        for unicode_char, ascii_replacement in UNICODE_FALLBACKS.items():
+            fallback_message = fallback_message.replace(unicode_char, ascii_replacement)
+        console.print(Panel.fit(fallback_message, border_style="green", title="Success"))
 
     return deia_dir
 
