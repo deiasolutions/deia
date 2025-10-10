@@ -29,6 +29,14 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "chatParticipants": [
+      {
+        "id": "deia",
+        "name": "deia",
+        "description": "Log AI conversations to DEIA for crash recovery and knowledge sharing",
+        "isSticky": true
+      }
+    ],
     "commands": [
       {
         "command": "deia.logChat",
@@ -69,6 +77,16 @@
         "command": "deia.updateConstitution",
         "title": "DEIA: Add Decisions to SpecKit Constitution",
         "icon": "$(law)"
+      },
+      {
+        "command": "deia.saveBuffer",
+        "title": "DEIA: Save Conversation Buffer Now",
+        "icon": "$(save-all)"
+      },
+      {
+        "command": "deia.monitorStatus",
+        "title": "DEIA: Show Monitor Status",
+        "icon": "$(pulse)"
       }
     ],
     "configuration": {

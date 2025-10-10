@@ -150,14 +150,16 @@ extensions/vscode-deia/
 ## Current Limitations
 
 ### Known Issues
-1. **Auto-logging not implemented** - Toggle command updates config only, doesn't monitor yet
-2. **No automated tests** - Manual testing required
+1. ~~**Auto-logging not implemented**~~ ✅ **COMPLETE (v0.1.0)** - Full monitoring implementation
+2. **Automated tests (partial)** - Basic compilation and integration tests passing
 3. **No pattern extraction UI** - Planned for Phase 3
 4. **No BOK search** - Planned for Phase 4
 5. **Limited error handling** - Basic try/catch in place
+6. **Only @deia conversations captured** - Other AI assistants not monitored yet (VS Code API limitation)
 
 ### Workarounds
-- Use manual logging (`@deia log`) instead of auto-log
+- ~~Use manual logging (`@deia log`) instead of auto-log~~ - Auto-logging now works!
+- Use `@deia` participant for captured conversations (other assistants via file watchers only)
 - Test commands individually (see TESTING.md)
 - Error messages shown in VSCode notifications
 

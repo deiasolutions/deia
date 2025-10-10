@@ -5,6 +5,7 @@ import { DeiaDetector } from './deiaDetector';
 import { DeiaStatusBar } from './statusBar';
 import { DeiaLogger, ChatMessage } from './deiaLogger';
 import { SpecKitIntegration } from './speckitIntegration';
+import { ConversationMonitor } from './conversationMonitor';
 
 /**
  * Register all DEIA commands
@@ -12,7 +13,8 @@ import { SpecKitIntegration } from './speckitIntegration';
 export function registerCommands(
     context: vscode.ExtensionContext,
     detector: DeiaDetector,
-    statusBar?: DeiaStatusBar
+    statusBar?: DeiaStatusBar,
+    monitor?: ConversationMonitor
 ): void {
     const logger = new DeiaLogger();
 
@@ -54,7 +56,7 @@ export function registerCommands(
     // Command: Toggle Auto-Log
     context.subscriptions.push(
         vscode.commands.registerCommand('deia.toggleAutoLog', async () => {
-            await toggleAutoLog(detector, statusBar);
+            await toggleAutoLog(detector, statusBar, monitor);
         })
     );
 
@@ -69,6 +71,20 @@ export function registerCommands(
     context.subscriptions.push(
         vscode.commands.registerCommand('deia.updateConstitution', async () => {
             await updateConstitution(detector);
+        })
+    );
+
+    // Command: Save conversation buffer now
+    context.subscriptions.push(
+        vscode.commands.registerCommand('deia.saveBuffer', async () => {
+            await saveBufferNow(monitor);
+        })
+    );
+
+    // Command: Show monitor status
+    context.subscriptions.push(
+        vscode.commands.registerCommand('deia.monitorStatus', async () => {
+            await showMonitorStatus(monitor);
         })
     );
 }
@@ -95,35 +111,51 @@ async function logCurrentChat(detector: DeiaDetector, logger: DeiaLogger): Promi
         return;
     }
 
-    // TODO: Extract chat messages from current chat window
-    // For now, show a message that this requires chat API access
-    vscode.window.showInformationMessage(
-        'Chat extraction coming soon! For now, use the @deia chat participant or manual logging.'
+    // VSCode doesn't provide API to access chat history from commands
+    // Users must use @deia participant instead
+    const choice = await vscode.window.showInformationMessage(
+        'To log AI conversations, use the @deia chat participant.\n\nType "@deia log" in your chat window to save the conversation.',
+        'Got it',
+        'Show Help'
     );
 
-    // Placeholder: Manual interactive logging
-    const messages: ChatMessage[] = [
-        { role: 'user', content: 'Placeholder conversation' },
-        { role: 'assistant', content: 'This is a placeholder. Chat extraction will be implemented with Chat API.' }
-    ];
+    if (choice === 'Show Help') {
+        // Show help in a new markdown preview
+        const helpContent = `# How to Log Conversations with DEIA
 
-    try {
-        const logPath = await logger.logInteractive(workspaceRoot, messages);
+## Using the @deia Chat Participant
 
-        if (logPath) {
-            vscode.window.showInformationMessage(
-                `Conversation logged to: ${logPath}`,
-                'Open Log'
-            ).then(selection => {
-                if (selection === 'Open Log') {
-                    vscode.workspace.openTextDocument(logPath).then(doc => {
-                        vscode.window.showTextDocument(doc);
-                    });
-                }
-            });
-        }
-    } catch (error) {
-        vscode.window.showErrorMessage(`Failed to log conversation: ${error}`);
+1. Open your AI chat (Copilot, Continue, Cody, etc.)
+2. Have your conversation with the AI
+3. Type: \`@deia log\`
+4. DEIA will extract and save the entire conversation
+
+## Available @deia Commands
+
+- \`@deia log\` - Save the current conversation to DEIA
+- \`@deia status\` - Check DEIA configuration
+- \`@deia help\` - Show available commands
+
+## What Gets Logged?
+
+- All user messages in the conversation
+- All AI responses
+- Saved to \`.deia/sessions/\` with timestamp
+- Automatically updates project resume and index
+
+## Manual Logging
+
+If you prefer, you can also manually save conversations:
+1. Copy the chat content
+2. Create a file in \`.deia/sessions/\`
+3. Use the SpecKit commands to extract specs/decisions
+`;
+
+        const doc = await vscode.workspace.openTextDocument({
+            content: helpContent,
+            language: 'markdown'
+        });
+        vscode.window.showTextDocument(doc);
     }
 }
 
@@ -237,7 +269,7 @@ async function submitPattern(detector: DeiaDetector): Promise<void> {
 /**
  * Toggle auto-logging
  */
-async function toggleAutoLog(detector: DeiaDetector, statusBar?: DeiaStatusBar): Promise<void> {
+async function toggleAutoLog(detector: DeiaDetector, statusBar?: DeiaStatusBar, monitor?: ConversationMonitor): Promise<void> {
     const config = detector.getDeiaConfig();
     const deiaPath = detector.getDeiaPath();
 
@@ -259,6 +291,17 @@ async function toggleAutoLog(detector: DeiaDetector, statusBar?: DeiaStatusBar):
     // Update status bar
     if (statusBar) {
         statusBar.setAutoLog(newValue);
+    }
+
+    // Start or stop monitoring
+    if (monitor) {
+        if (newValue) {
+            await monitor.startMonitoring();
+            console.log('[DEIA] Auto-logging enabled, monitoring started');
+        } else {
+            monitor.stopMonitoring();
+            console.log('[DEIA] Auto-logging disabled, monitoring stopped');
+        }
     }
 
     vscode.window.showInformationMessage(
@@ -452,4 +495,93 @@ async function updateConstitution(detector: DeiaDetector): Promise<void> {
     } catch (error) {
         vscode.window.showErrorMessage(`Failed to update constitution: ${error}`);
     }
+}
+
+/**
+ * Manually save the conversation buffer
+ */
+async function saveBufferNow(monitor?: ConversationMonitor): Promise<void> {
+    if (!monitor) {
+        vscode.window.showWarningMessage('Conversation monitor not available.');
+        return;
+    }
+
+    const bufferSize = monitor.getBufferSize();
+
+    if (bufferSize === 0) {
+        vscode.window.showInformationMessage('No conversation messages in buffer.');
+        return;
+    }
+
+    // Prompt for context
+    const context = await vscode.window.showInputBox({
+        prompt: 'Describe what you were working on',
+        placeHolder: 'e.g., Implementing auto-logging feature'
+    });
+
+    if (!context) {
+        return; // User cancelled
+    }
+
+    try {
+        const logPath = await monitor.saveNow(context);
+
+        if (logPath) {
+            vscode.window.showInformationMessage(
+                `Saved ${bufferSize} messages to DEIA`,
+                'View Log'
+            ).then(selection => {
+                if (selection === 'View Log') {
+                    vscode.workspace.openTextDocument(logPath).then(doc => {
+                        vscode.window.showTextDocument(doc);
+                    });
+                }
+            });
+        } else {
+            vscode.window.showWarningMessage('Failed to save conversation buffer.');
+        }
+    } catch (error) {
+        vscode.window.showErrorMessage(`Error saving buffer: ${error}`);
+    }
+}
+
+/**
+ * Show monitor status
+ */
+async function showMonitorStatus(monitor?: ConversationMonitor): Promise<void> {
+    if (!monitor) {
+        vscode.window.showWarningMessage('Conversation monitor not available.');
+        return;
+    }
+
+    const isActive = monitor.isActive();
+    const bufferSize = monitor.getBufferSize();
+    const duration = monitor.getSessionDuration();
+
+    const durationMinutes = Math.floor(duration / 60000);
+    const durationSeconds = Math.floor((duration % 60000) / 1000);
+
+    const statusMessage = `
+**Auto-Logging Monitor**
+
+Status: ${isActive ? '🟢 Active' : '⚫ Inactive'}
+Buffer: ${bufferSize} messages
+Session Duration: ${durationMinutes}m ${durationSeconds}s
+
+${isActive ? 'Monitoring AI conversations and file changes.' : 'Enable auto-log to start monitoring.'}
+    `.trim();
+
+    const action = isActive ? 'Save Buffer Now' : 'Enable Auto-Log';
+
+    vscode.window.showInformationMessage(
+        statusMessage,
+        action,
+        'Close'
+    ).then(selection => {
+        if (selection === 'Save Buffer Now' && isActive) {
+            vscode.commands.executeCommand('deia.saveBuffer');
+        } else if (selection === 'Enable Auto-Log' && !isActive) {
+            vscode.commands.executeCommand('deia.toggleAutoLog');
+        }
+    });
 }

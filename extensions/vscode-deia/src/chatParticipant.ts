@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { DeiaDetector } from './deiaDetector';
 import { DeiaLogger, ChatMessage } from './deiaLogger';
+import { ConversationMonitor } from './conversationMonitor';
 
 /**
  * @deia chat participant for logging conversations
@@ -9,10 +10,12 @@ export class DeiaChatParticipant implements vscode.Disposable {
     private participant: vscode.ChatParticipant;
     private detector: DeiaDetector;
     private logger: DeiaLogger;
+    private monitor: ConversationMonitor;
 
-    constructor(detector: DeiaDetector) {
+    constructor(detector: DeiaDetector, monitor: ConversationMonitor) {
         this.detector = detector;
         this.logger = new DeiaLogger();
+        this.monitor = monitor;
 
         // Create chat participant
         this.participant = vscode.chat.createChatParticipant(
@@ -32,6 +35,11 @@ export class DeiaChatParticipant implements vscode.Disposable {
         stream: vscode.ChatResponseStream,
         token: vscode.CancellationToken
     ): Promise<vscode.ChatResult> {
+        // Feed message to monitor if auto-logging is active
+        if (this.monitor.isActive()) {
+            this.monitor.addMessage('user', request.prompt);
+        }
+
         const workspaceRoot = this.detector.getDeiaWorkspaceRoot();
 
         if (!workspaceRoot) {
@@ -104,20 +112,24 @@ export class DeiaChatParticipant implements vscode.Disposable {
             }
 
             // Log interactively
+            console.log('[DEIA] Starting log with', messages.length, 'messages');
             const logPath = await this.logger.logInteractive(workspaceRoot, messages);
+            console.log('[DEIA] Log result:', logPath);
 
             if (logPath) {
-                stream.markdown(`✅ Conversation logged successfully!\n\n`);
-                stream.markdown(`📁 Location: \`${logPath}\``);
+                stream.markdown(`Conversation logged successfully!\n\n`);
+                stream.markdown(`Location: \`${logPath}\``);
 
                 return { metadata: { command: 'log', success: true, logPath } };
             } else {
-                stream.markdown('⚠️ Logging cancelled.');
+                console.log('[DEIA] Log path was undefined - logging cancelled');
+                stream.markdown('Logging cancelled.');
                 return { metadata: { command: 'log', success: false, error: 'cancelled' } };
             }
 
         } catch (error) {
-            stream.markdown(`❌ Failed to log conversation: ${error}`);
+            console.error('[DEIA] Error during logging:', error);
+            stream.markdown(`Failed to log conversation: ${error}`);
             return { metadata: { command: 'log', success: false, error: String(error) } };
         }
     }
