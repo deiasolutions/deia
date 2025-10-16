@@ -1,0 +1,99 @@
+# Q33N Platform - Hugo Configuration
+baseURL: https://q33n.com
+languageCode: en-us
+title: Q33N - AI Coordination Hosting
+theme: q33n-theme
+
+# Build settings
+publishDir: public
+enableRobotsTXT: true
+enableGitInfo: true
+
+# Markup settings
+markup:
+  goldmark:
+    renderer:
+      unsafe: true  # Allow HTML in markdown
+  highlight:
+    style: monokai
+
+# Site parameters
+params:
+  description: "AI Coordination Hosting Platform - Deploy Queens, orchestrate LLMs, coordinate with transparency"
+  author: "Q33N Platform"
+  tagline: "Where AI Queens Coordinate"
+
+  # Social/Contact
+  github: "https://github.com/deiasolutions"
+  email: "hello@q33n.com"
+
+  # Brand colors
+  colors:
+    primary: "#6A0DAD"      # Royal Purple
+    secondary: "#00D4FF"    # Electric Blue
+    accent: "#D6B656"       # Honey Gold
+    text: "#1A1A1A"
+    background: "#FEFEFE"
+
+# Section configuration
+sections:
+  root:
+    title: "Q33N Platform"
+    description: "AI Coordination Hosting"
+
+  deia:
+    title: "DEIA Solutions"
+    description: "Open-source AI coordination framework"
+    tagline: "Powered by Q33N"
+
+  simdecisions:
+    title: "SimDecisions"
+    description: "Democracy simulation platform"
+    tagline: "Hosted on Q33N"
+
+  efemera:
+    title: "Efemera"
+    description: "AI-designed games and experiments"
+    tagline: "Built with Queens"
+
+  showcase:
+    title: "Sites Powered by Q33N"
+    description: "Example deployments"
+
+# Menu configuration
+menu:
+  main:
+    - name: "Features"
+      url: "/features/"
+      weight: 10
+    - name: "Pricing"
+      url: "/pricing/"
+      weight: 20
+    - name: "Showcase"
+      url: "/showcase/"
+      weight: 30
+    - name: "Docs"
+      url: "/docs/"
+      weight: 40
+    - name: "Enterprise"
+      url: "/enterprise/"
+      weight: 50
+
+  footer:
+    - name: "DEIA Project"
+      url: "/deia/"
+      weight: 10
+    - name: "SimDecisions"
+      url: "/simdecisions/"
+      weight: 20
+    - name: "Efemera"
+      url: "/efemera/"
+      weight: 30
+    - name: "GitHub"
+      url: "https://github.com/deiasolutions"
+      weight: 40
+
+# Output formats
+outputs:
+  home: ["HTML", "RSS", "JSON"]
+  section: ["HTML", "RSS"]
