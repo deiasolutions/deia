@@ -279,6 +279,42 @@ All content must be clearly categorized:
 - LLM agents (you can propose, not decide)
 - Contributors (can submit observations/visions, not approve as fact)
 
+## Success Case: Telemetry Article (2025-10-16)
+
+**Scenario:** Claude.ai (via GPT-5 Bot D) created "Telemetry for Tiny Minds" article about DEIA telemetry philosophy.
+
+**Vaporware detected:**
+- "Our watcher drones taught us..." (watcher drones don't exist as distinct agents)
+- "Telemetry becomes training data for the Neural Commons" (Neural Commons doesn't exist)
+- "Future agents will inherit experience" (aspirational, not implemented)
+- Presented as historical narrative, not vision
+
+**Review process:**
+1. User (daaaave-atx) asked Claude Code to fact-check article
+2. Claude Code verified claims against codebase
+3. Identified 3 aspirational claims presented as fact
+4. Recommended: Mark as vision document with disclaimer
+5. User sent feedback to Claude.ai editor
+6. Editor confirmed fact-check and proposed minimal edits:
+   - Add vision disclaimer at top
+   - Change 2 sentences to future tense
+   - Optional retitle as "A Vision"
+   - Preserve poetic tone
+
+**Outcome:** ✅ Article will publish as vision piece with integrity intact
+
+**Key success factors:**
+- Fact-checking before publication
+- Clear feedback to editor
+- Minimal edits preserve author intent while fixing credibility
+- Vision framing makes aspirational content appropriate
+
+**Time saved:** Prevented need to retract/correct after publication
+
+**Process validation:** Safeguard worked as designed - caught vaporware before it became canon.
+
+---
+
 ## Related Documents
 
 - Emergent Behavior Observation Protocol (docs/process/emergent-behavior-observation-protocol.md)
