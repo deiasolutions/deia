@@ -1,10 +1,10 @@
 ---
 title: "WIP: Global Commons Contribution Prep - 2025-10-16 Session"
 date: 2025-10-16
-status: Paused (25% complete)
+status: Paused (75% complete)
 owner: Claude Code
 next_owner: TBD (daaaave-atx to assign)
-estimated_effort: 2-3 hours remaining
+estimated_effort: 30-45 minutes remaining
 tags: [wip, global-commons, documentation, bok, incidents]
 ---
 
@@ -21,9 +21,9 @@ On 2025-10-16, we had an extended session involving Q33N deployment (with multip
 
 User requested: Organize these for contribution to DEIA Global Commons, but only complete 1/4 of effort, then pause.
 
-## What Was Completed (50%)
+## What Was Completed (75%)
 
-### ✅ Task 1: Sanitize Incident Reports (COMPLETE)
+### ✅ Task 1: Sanitize Incident Reports (COMPLETE - ALL 4 DONE)
 
 Created anonymized case studies for Global Commons:
 
@@ -39,10 +39,19 @@ Created anonymized case studies for Global Commons:
    - Learnings: Instruction completeness patterns
    - Status: Ready for Commons
 
-3. **production-outage-dns-incident.md** (NOT YET DONE - see Task 1 remaining)
-4. **deployment-recovery-incident.md** (NOT YET DONE - see Task 1 remaining)
+3. **dns-outage-registrar-confusion.md**
+   - Sanitized: Removed specific domains, platforms, project names
+   - Learnings: Registrar-specific DNS configuration patterns
+   - Status: Ready for Commons
+
+4. **nuclear-option-incomplete-recovery.md**
+   - Sanitized: Removed specific technologies, genericized to "hosting platform"
+   - Learnings: Complete recovery checklists, todo discipline, verification steps
+   - Status: Ready for Commons
 
 **Decision made:** Publish as anonymized case studies (Option A) - narrative/timeline valuable for learning
+
+**All 4 case studies complete!**
 
 ---
 
@@ -92,22 +101,17 @@ Created anonymized case studies for Global Commons:
 **Private/Internal Only:**
 - None identified (all content is generalizable)
 
-## What Remains (75% - NOT STARTED)
+## What Remains (25% - NOT STARTED)
 
-### Task 1: Sanitize Incident Reports (~30 min)
+### ✅ Task 1: Sanitize Incident Reports (COMPLETE)
 
-For each incident:
-1. Extract generalizable learnings
-2. Remove project-specific identifiers (Q33N, specific domains, Netlify account details)
-3. Create anonymized versions OR extract patterns into BOK
-4. Decision: Publish incidents as case studies OR just extract patterns?
+All 4 incident reports converted to anonymized case studies:
+1. ✅ llm-name-hallucination-incident.md
+2. ✅ incomplete-instructions-pattern.md
+3. ✅ dns-outage-registrar-confusion.md
+4. ✅ nuclear-option-incomplete-recovery.md
 
-**Questions to decide:**
-- Do we publish incidents publicly as "case studies"?
-- Or just extract patterns and keep incident details private?
-- What level of detail is appropriate for Global Commons?
-
-### Task 2: Create Contribution Manifest (~20 min)
+### Task 2: Create Contribution Manifest (~20 min) - NEXT
 
 Create `docs/global-commons/2025-10-16-contribution-manifest.md`:
 - List all contributions
@@ -195,13 +199,15 @@ All files committed to master as of commit `ea83257`.
 
 ---
 
-**Status:** Paused at 50% completion (was 25%, now 50%)
+**Status:** Paused at 75% completion (25% → 50% → 75%)
 **Last pause reason:** User requested stop after each 1/4 effort increment
-**Next tasks:**
-- Complete remaining 2 incident case studies (15 min)
+**Completed this increment:**
+- ✅ Sanitized 2 remaining incident case studies (dns-outage, nuclear-option)
+- ✅ All 4 case studies now complete and ready for Commons
+**Next tasks (final 25%):**
 - Task 2: Create contribution manifest (20 min)
-- Task 3: Package for submission (30 min)
-- Task 4: Cross-link and index (30 min)
+- Task 3: Package for submission (10 min - less work since case studies done)
+- Task 4: Cross-link and index (10 min)
 **Resume command:** "Continue Global Commons contribution prep from WIP file"
 
 **Tags:** `#wip` `#global-commons` `#documentation` `#contribution-prep` `#paused`
