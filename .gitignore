@@ -1,20 +1,63 @@
-# Dave's local DEIA instance (private workspace)
-.deia/
+# ============================================================================
+# DEIA .gitignore - Selective Ignoring
+# ============================================================================
+# Strategy: Commit DEIA commons, ignore private/sandbox content
+# ============================================================================
 
-# Private directories (never commit)
-.private/
-.deia/private/
+# DEIA Private Subdirectories (within .deia/)
+.deia/.sandbox/
+.deia/.experiments/
+.deia/.private/
+.deia/.local/
+.deia/.cache/
 
-# DEIA Admin workspace (private deliberations)
-admin/
+# Top-level Sandbox (experiments, games, prototypes)
+.sandbox/
+/sandbox/
 
-# Project resume (Dave's local context)
-project_resume.md
+# Personal Experiments & Games (root level)
+/flappy-bird-ai/
+/games/
+/experiments/
+/quantumdocs/
 
-# Prep directories (temporary)
-_prep-for-github/
+# Private Dropboxes & Embargoed Content
+/.davedrop/
+/.embargo/
 
+# Services (may contain credentials)
+/services/
+
+# LLM Experiments (may contain API keys)
+/llama-chatbot/.env
+/llama-chatbot/config.ini
+/llama-chatbot/credentials/
+/llama-chatbot/secrets/
+
+# Bot & Automation Scripts (may contain tokens)
+/run_bot.ps1
+/run_identity_dev.bat
+/launch_llama.bat
+/checkin.bat
+
+# Project Resume (Dave's local context)
+/project_resume.md
+
+# Draft Documents (not ready for commit)
+/README_DRAFT.md
+/RESUME_HERE.md
+/"Bot Instructions 1.md"/
+/"New folder"/
+
+# Prep Directories (temporary staging)
+/_prep-for-github/
+
+# Admin Workspace (private deliberations)
+/admin/
+
+# ============================================================================
 # Python
+# ============================================================================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -35,24 +78,66 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
-# Virtual environments
+# Virtual Environments
 venv/
 ENV/
 env/
+.venv/
 
-# IDE
+# Test & Coverage
+.coverage
+.pytest_cache/
+.tox/
+htmlcov/
+*.cover
+.hypothesis/
+
+# ============================================================================
+# IDE & Editors
+# ============================================================================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+.project
+.pydevproject
 
-# OS
+# Claude Settings (local only)
+.claude/settings.local.json
+
+# ============================================================================
+# OS Files
+# ============================================================================
 .DS_Store
 Thumbs.db
+Desktop.ini
+ehthumbs.db
 
-# Logs
+# Windows
+nul
+
+# ============================================================================
+# Logs & Temporary Files
+# ============================================================================
 *.log
-# Claude settings (local only)
-.claude/settings.local.json
+*.tmp
+/test_transcript.txt
+
+# Build Artifacts
+/metrics/
+
+# ============================================================================
+# IMPORTANT: What IS committed from .deia/
+# ============================================================================
+# .deia/tools/          - Commons builder tools (COMMITTED)
+# .deia/templates/      - Entity templates (COMMITTED)
+# .deia/eos-packs/      - Project blueprints (COMMITTED after PII review)
+# .deia/.projects/      - Built entities (COMMITTED after review)
+# .deia/telemetry/      - RSE logs (COMMITTED if no PII)
+# .deia/commons/        - Shared docs (COMMITTED)
+# .deia/docs/           - Documentation (COMMITTED)
+# .deia/incidents/      - RCAs (COMMITTED)
+# ============================================================================
