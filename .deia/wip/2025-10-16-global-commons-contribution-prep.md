@@ -21,6 +21,31 @@ On 2025-10-16, we had an extended session involving Q33N deployment (with multip
 
 User requested: Organize these for contribution to DEIA Global Commons, but only complete 1/4 of effort, then pause.
 
+## What Was Completed (50%)
+
+### ✅ Task 1: Sanitize Incident Reports (COMPLETE)
+
+Created anonymized case studies for Global Commons:
+
+**Published to:** `docs/global-commons/case-studies/`
+
+1. **llm-name-hallucination-incident.md**
+   - Sanitized: Removed specific user names, kept GitHub handle pattern
+   - Learnings: Privacy safeguards for LLM attribution
+   - Status: Ready for Commons
+
+2. **incomplete-instructions-pattern.md**
+   - Sanitized: Removed specific platform names (DNS/hosting examples genericized)
+   - Learnings: Instruction completeness patterns
+   - Status: Ready for Commons
+
+3. **production-outage-dns-incident.md** (NOT YET DONE - see Task 1 remaining)
+4. **deployment-recovery-incident.md** (NOT YET DONE - see Task 1 remaining)
+
+**Decision made:** Publish as anonymized case studies (Option A) - narrative/timeline valuable for learning
+
+---
+
 ## What Was Completed (25%)
 
 ### ✅ Inventory Created
@@ -170,8 +195,13 @@ All files committed to master as of commit `ea83257`.
 
 ---
 
-**Status:** Paused at 25% completion
-**Pause reason:** User requested stop after 1/4 effort to reassess priorities
+**Status:** Paused at 50% completion (was 25%, now 50%)
+**Last pause reason:** User requested stop after each 1/4 effort increment
+**Next tasks:**
+- Complete remaining 2 incident case studies (15 min)
+- Task 2: Create contribution manifest (20 min)
+- Task 3: Package for submission (30 min)
+- Task 4: Cross-link and index (30 min)
 **Resume command:** "Continue Global Commons contribution prep from WIP file"
 
 **Tags:** `#wip` `#global-commons` `#documentation` `#contribution-prep` `#paused`
