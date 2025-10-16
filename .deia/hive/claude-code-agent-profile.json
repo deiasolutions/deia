@@ -1,0 +1,32 @@
+{
+  "agent_id": "CLAUDE-CODE-001",
+  "type": "cli-agent",
+  "role": "worker",
+  "llm": "Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)",
+  "provider": "Anthropic",
+  "interface": "Claude Code CLI",
+  "capabilities": [
+    "file_operations",
+    "git_operations",
+    "code_generation",
+    "documentation",
+    "incident_response",
+    "process_improvement",
+    "bok_contribution",
+    "fact_checking",
+    "code_review"
+  ],
+  "telemetry_enabled": true,
+  "log_path": ".deia/bot-logs/CLAUDE-CODE-001-activity.jsonl",
+  "rse_enabled": true,
+  "status": "active",
+  "created": "2025-10-16T15:00:00Z",
+  "created_by": "daaaave-atx",
+  "notes": "CLI-based agent for development, documentation, and incident response. Operates in real-time with user during development sessions.",
+  "session_pattern": "interactive",
+  "coordination": {
+    "can_handoff": true,
+    "can_receive_handoff": true,
+    "coordination_protocol": "pheromone-rsm"
+  }
+}
