@@ -30,6 +30,26 @@ This capability embodies the principle that DEIA systems should be:
 - **Syncable:** Reconcile with Commons when connection restored
 - **Honest:** Report failures transparently
 
+### What "Offline" Means
+
+**"Offline launch" assumes these resources ARE available locally:**
+- ✅ AI/LLM to read Egg instructions (Claude, GPT, local model, or API that still works)
+- ✅ Python runtime environment
+- ✅ Builder tools (`.deia/tools/llh_factory_build.py`, etc.)
+- ✅ Cached templates (`.deia/templates/`)
+- ✅ Local compute and storage
+
+**"Offline" means these resources are NOT available:**
+- ❌ Network access to DEIA Global Commons (GitHub repo)
+- ❌ Remote eOS packs (not cached locally)
+- ❌ Latest Commons tools/templates (working from cache)
+- ❌ Validation against latest schema (deferred)
+- ❌ Real-time sync with other hives
+
+**Key insight:** The system works in **air-gapped or disconnected environments** (classified networks, offline field operations, restricted environments) as long as there is local compute and cached DEIA resources. This enables organizations to bootstrap using DEIA patterns even when isolated, then sync when they reconnect.
+
+This is not "AI-less operation" - it's "Commons-disconnected operation with local AI."
+
 ## Offline Launch Scenarios
 
 ### Scenario 1: Missing eOS Pack
