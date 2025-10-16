@@ -1,0 +1,37 @@
+﻿[
+    {
+        "File":  "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\instructions\\00-STARTUP-INSTRUCTIONS.md",
+        "Tokens":  778,
+        "Chars":  6092,
+        "Threshold":  800,
+        "Status":  "OK"
+    },
+    {
+        "File":  "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\instructions\\BOT-00001-instructions.md",
+        "Tokens":  112,
+        "Chars":  887,
+        "Threshold":  800,
+        "Status":  "OK"
+    },
+    {
+        "File":  "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\instructions\\BOT-00002-instructions.md",
+        "Tokens":  217,
+        "Chars":  1748,
+        "Threshold":  800,
+        "Status":  "OK"
+    },
+    {
+        "File":  "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\instructions\\BOT-00003-instructions.md",
+        "Tokens":  217,
+        "Chars":  1768,
+        "Threshold":  800,
+        "Status":  "OK"
+    },
+    {
+        "File":  "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\instructions\\BOT-00004-instructions.md",
+        "Tokens":  186,
+        "Chars":  1442,
+        "Threshold":  800,
+        "Status":  "OK"
+    }
+]

@@ -1,0 +1,31 @@
+﻿<frozen runpy>:128: RuntimeWarning: 'deia.cli' found in sys.modules after import of package 'deia', but prior to execution of 'deia.cli'; this may result in unpredictable behaviour
++----------------------------------------------------+
+| Documentation Audit                                |
+| Verifying accuracy and identifying redundancies... |
++----------------------------------------------------+
+
+Phase 1: Inventory
+Could not enumerate files (using fallback)
+
+Phase 2: Verification
+Checking CLI command references...
+  OK CLI accessible
+Checking for common documentation issues...
+
+Phase 3: Redundancy Analysis
+
+Phase 4: Summary
+
+Issues Found:
+
+Critical (1):
+  ò BOK_MOVED.md exists but BOK is in bok/ directory - file is incorrect
+
+Overall Grade: D
+
+Report saved: docs\audits\2025-10-13-audit.md
+
+Next Steps:
+  1. Review the audit report
+  2. For detailed guided audit: /doc-audit in Claude Code
+  3. See pattern: bok/patterns/documentation/documentation-audit.md

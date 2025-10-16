@@ -1,0 +1,529 @@
+{
+    "version":  "1.0",
+    "created":  "2025-10-11T16:30:00",
+    "managed_by":  "BOT-00001 (Queen)",
+    "description":  "Product backlog with priority ordering and dependencies",
+    "backlog":  [
+                    {
+                        "id":  "BACKLOG-001",
+                        "title":  "Downloads monitor integration",
+                        "description":  "Integrate standalone downloads-monitor as deia sync command",
+                        "status":  "DONE",
+                        "completed_by":  "BOT-00003",
+                        "completed_at":  "2025-10-11T15:55:00",
+                        "priority":  "P0",
+                        "type":  "integration",
+                        "estimated_steps":  3,
+                        "actual_steps":  3,
+                        "estimated_time_seconds":  300,
+                        "actual_time_seconds":  300,
+                        "quality_score":  10
+                    },
+                    {
+                        "id":  "BACKLOG-002",
+                        "title":  "Bot coordination system",
+                        "description":  "Create central registry and identity management",
+                        "status":  "DONE",
+                        "completed_by":  "BOT-00001",
+                        "completed_at":  "2025-10-11T15:40:00",
+                        "priority":  "P0",
+                        "type":  "infrastructure",
+                        "estimated_steps":  5,
+                        "actual_steps":  5
+                    },
+                    {
+                        "id":  "BACKLOG-003",
+                        "title":  "Hive architecture design",
+                        "description":  "Design Queen + Drone coordination system",
+                        "status":  "DONE",
+                        "completed_by":  "BOT-00001",
+                        "completed_at":  "2025-10-11T15:50:00",
+                        "priority":  "P0",
+                        "type":  "architecture"
+                    },
+                    {
+                        "id":  "BACKLOG-004",
+                        "title":  "Handshake protocol v2.0",
+                        "description":  "Instance ID based identity verification",
+                        "status":  "DONE",
+                        "completed_by":  "BOT-00001",
+                        "completed_at":  "2025-10-11T16:20:00",
+                        "priority":  "P0",
+                        "type":  "infrastructure"
+                    },
+                    {
+                        "id":  "BACKLOG-005",
+                        "title":  "Test sync integration",
+                        "description":  "Comprehensive testing of deia sync command",
+                        "status":  "DONE",
+                        "assigned_to":  "BOT-00002",
+                        "completed_by":  "BOT-00002",
+                        "started_at":  "2025-10-11T16:22:00",
+                        "completed_at":  "2025-10-11T16:34:00",
+                        "priority":  "P0",
+                        "type":  "testing",
+                        "estimated_steps":  8,
+                        "actual_steps":  8,
+                        "estimated_time_seconds":  180,
+                        "actual_time_seconds":  720,
+                        "quality_score":  8.5,
+                        "dependencies":  [
+                                             "BACKLOG-001"
+                                         ]
+                    },
+                    {
+                        "id":  "BACKLOG-006",
+                        "title":  "Implement deia / command",
+                        "description":  "Claude Code CLI integration for bot coordination",
+                        "status":  "IN_PROGRESS",
+                        "assigned_to":  "BOT-00003",
+                        "started_at":  "2025-10-11T16:24:00",
+                        "priority":  "P1",
+                        "type":  "integration",
+                        "estimated_steps":  7,
+                        "estimated_time_seconds":  300,
+                        "dependencies":  [
+
+                                         ]
+                    },
+                    {
+                        "id":  "BACKLOG-007",
+                        "title":  "Review slash command implementation",
+                        "description":  "Code review and testing of deia / command",
+                        "status":  "QUEUED",
+                        "assigned_to":  "BOT-00002",
+                        "priority":  "P1",
+                        "type":  "review",
+                        "estimated_steps":  7,
+                        "estimated_time_seconds":  120,
+                        "dependencies":  [
+                                             "BACKLOG-006"
+                                         ]
+                    },
+                    {
+                        "id":  "BACKLOG-008",
+                        "title":  "Create unit tests for sync module",
+                        "description":  "Write pytest tests for sync functionality",
+                        "status":  "DONE",
+                        "assigned_to":  "BOT-00002",
+                        "completed_by":  "BOT-00002",
+                        "started_at":  "2025-10-11T16:35:00",
+                        "completed_at":  "2025-10-11T16:43:00",
+                        "priority":  "P1",
+                        "type":  "testing",
+                        "estimated_steps":  4,
+                        "actual_steps":  4,
+                        "estimated_time_seconds":  180,
+                        "actual_time_seconds":  480,
+                        "quality_score":  9,
+                        "dependencies":  [
+                                             "BACKLOG-005"
+                                         ]
+                    },
+                    {
+                        "id":  "BACKLOG-009",
+                        "title":  "Implement deia extract command",
+                        "description":  "Extract metadata from YAML frontmatter (JSON/YAML/CSV output)",
+                        "status":  "QUEUED",
+                        "assigned_to":  "BOT-00003",
+                        "priority":  "P1",
+                        "type":  "integration",
+                        "estimated_steps":  5,
+                        "estimated_time_seconds":  240,
+                        "dependencies":  [
+
+                                         ]
+                    },
+                    {
+                        "id":  "BACKLOG-010",
+                        "title":  "Implement deia list command",
+                        "description":  "List all documents in routing directories with metadata",
+                        "status":  "QUEUED",
+                        "assigned_to":  "BOT-00003",
+                        "priority":  "P1",
+                        "type":  "integration",
+                        "estimated_steps":  4,
+                        "estimated_time_seconds":  180,
+                        "dependencies":  [
+
+                                         ]
+                    },
+                    {
+                        "id":  "BACKLOG-011",
+                        "title":  "Implement deia view command",
+                        "description":  "View document content with metadata display",
+                        "status":  "TODO",
+                        "priority":  "P2",
+                        "type":  "integration",
+                        "estimated_steps":  4,
+                        "estimated_time_seconds":  180,
+                        "dependencies":  [
+
+                                         ]
+                    },
+                    {
+                        "id":  "BACKLOG-012",
+                        "title":  "Phase 2: Git-aware cleanup",
+                        "description":  "Automatically clean up temp staging after git commit",
+                        "status":  "TODO",
+                        "priority":  "P2",
+                        "type":  "enhancement",
+                        "estimated_steps":  8,
+                        "estimated_time_seconds":  480,
+                        "dependencies":  [
+                                             "BACKLOG-005",
+                                             "BACKLOG-008"
+                                         ]
+                    },
+                    {
+                        "id":  "BACKLOG-013",
+                        "title":  "Documentation update for sync command",
+                        "description":  "Update README and docs with sync usage examples",
+                        "status":  "TODO",
+                        "priority":  "P2",
+                        "type":  "documentation",
+                        "estimated_steps":  3,
+                        "estimated_time_seconds":  120,
+                        "dependencies":  [
+                                             "BACKLOG-005"
+                                         ]
+                    },
+                    {
+                        "id":  "BACKLOG-014",
+                        "title":  "Performance optimization for sync",
+                        "description":  "Optimize file scanning and processing performance",
+                        "status":  "TODO",
+                        "priority":  "P3",
+                        "type":  "optimization",
+                        "estimated_steps":  5,
+                        "estimated_time_seconds":  300,
+                        "dependencies":  [
+                                             "BACKLOG-005",
+                                             "BACKLOG-008"
+                                         ]
+                    },
+                    {
+                        "id":  "BACKLOG-015",
+                        "title":  "Fix Unicode encoding in monitor.py",
+                        "description":  "Fix UnicodeEncodeError with arrow character (→) on Windows console",
+                        "status":  "DONE",
+                        "priority":  "P1",
+                        "type":  "bugfix",
+                        "estimated_steps":  2,
+                        "estimated_time_seconds":  60,
+                        "dependencies":  [
+
+                                         ],
+                        "assigned_to":  "BOT-00006",
+                        "started_at":  "2025-10-12T10:29:30.679020",
+                        "completed_by":  "BOT-00006",
+                        "completed_at":  "2025-10-12T10:30:18.163359",
+                        "result":  "Task service created successfully"
+                    },
+                    {
+                        "id":  "BACKLOG-016",
+                        "title":  "Document DEIA Services system",
+                        "description":  "Add DEIA Services to main repo documentation and README",
+                        "status":  "TODO",
+                        "priority":  "P2",
+                        "type":  "documentation",
+                        "estimated_steps":  3,
+                        "estimated_time_seconds":  120,
+                        "dependencies":  [
+
+                                         ]
+                    },
+                    {
+                        "id":  "BACKLOG-017",
+                        "title":  "Integrate monitor with Librarian service",
+                        "description":  "Auto-index documents when monitor routes them",
+                        "status":  "TODO",
+                        "priority":  "P2",
+                        "type":  "integration",
+                        "estimated_steps":  4,
+                        "estimated_time_seconds":  180,
+                        "dependencies":  [
+
+                                         ]
+                    },
+                    {
+                        "id":  "BACKLOG-018",
+                        "title":  "Create File Mover service",
+                        "description":  "Service to automate file operations based on rules",
+                        "status":  "TODO",
+                        "priority":  "P2",
+                        "type":  "feature",
+                        "estimated_steps":  6,
+                        "estimated_time_seconds":  300,
+                        "dependencies":  [
+
+                                         ]
+                    },
+                    {
+                        "id":  "BACKLOG-019",
+                        "title":  "Create Provenance Tracker service",
+                        "description":  "Service for version lineage and gap detection",
+                        "status":  "TODO",
+                        "priority":  "P2",
+                        "type":  "feature",
+                        "estimated_steps":  5,
+                        "estimated_time_seconds":  240,
+                        "dependencies":  [
+
+                                         ]
+                    },
+                    {
+                        "id":  "BACKLOG-020",
+                        "title":  "Immune System Phase 1 - Core System",
+                        "description":  "Implement DEIA Immune System Phase 1: Triage Agent, Cure Engine, basic antibody system, quarantine workflow, downloads monitor integration",
+                        "status":  "QUEUED",
+                        "assigned_to":  "BOT-00008",
+                        "priority":  "P1",
+                        "type":  "feature",
+                        "estimated_steps":  20,
+                        "estimated_time_seconds":  72000,
+                        "dependencies":  [
+
+                                         ],
+                        "sprint":  "2025-Q4-Sprint-03",
+                        "approval_date":  "2025-10-12",
+                        "approved_by":  "BOT-00001",
+                        "proposal_file":  ".deia/reports/BOT-00008-immune-system-proposal.md",
+                        "decree_file":  ".deia/decisions/QUEEN-DECREE-20251012-immune-system.md",
+                        "success_criteria":  [
+                                                 "Cure success rate \u003e70%",
+                                                 "False positive rate \u003c5%",
+                                                 "15+ passing tests with \u003e80% coverage",
+                                                 "10+ successful auto-cures in testing",
+                                                 "Zero-config user experience"
+                                             ]
+                    },
+                    {
+                        "id":  "BACKLOG-021",
+                        "title":  "Create Proposal Review \u0026 Approval Process",
+                        "description":  "PROCESS GAP: Document formal workflow for how bots submit proposals, how Queen evaluates them, decision criteria, notification protocol, and integration with backlog. Critical infrastructure gap discovered during Immune System proposal review.",
+                        "status":  "DONE",
+                        "assigned_to":  "BOT-00001",
+                        "completed_by":  "BOT-00001",
+                        "completed_at":  "2025-10-12T12:00:00",
+                        "priority":  "P0",
+                        "type":  "process",
+                        "estimated_steps":  8,
+                        "actual_steps":  8,
+                        "estimated_time_seconds":  3600,
+                        "actual_time_seconds":  3600,
+                        "quality_score":  9,
+                        "dependencies":  [
+
+                                         ],
+                        "gap_type":  "missing_process",
+                        "identified_by":  "BOT-00001",
+                        "identified_date":  "2025-10-12",
+                        "impact":  "Cannot formally process bot proposals without this",
+                        "required_for":  "Multi-bot hive coordination",
+                        "deliverable":  "docs/methodologies/proposal-review-process.md"
+                    },
+                    {
+                        "id":  "BACKLOG-022",
+                        "title":  "Create Project Egg Process Documentation",
+                        "description":  "PROCESS GAP: Dave identified \u0027project eggs\u0027 as novel ideas with significant potential requiring metrics/analytics from day one. Need formal process for: identification, metrics requirements, analytics framework, QA communication protocol, lifecycle management, success/failure criteria. Requested by BOT-00008.",
+                        "status":  "QUEUED",
+                        "assigned_to":  "BOT-00008",
+                        "priority":  "P0",
+                        "type":  "process",
+                        "estimated_steps":  10,
+                        "estimated_time_seconds":  7200,
+                        "dependencies":  [
+
+                                         ],
+                        "gap_type":  "missing_process",
+                        "identified_by":  "BOT-00008",
+                        "identified_date":  "2025-10-12",
+                        "impact":  "Cannot properly track and measure novel experimental features",
+                        "required_for":  "Immune System metrics tracking (BACKLOG-020)",
+                        "dave_requirement":  "Put metrics on this measure so we don\u0027t launch it without QA comms and analytics"
+                    },
+                    {
+                        "id":  "BACKLOG-023",
+                        "title":  "Carbon Economy Phase 0 - Research \u0026 Architecture",
+                        "description":  "Research and architecture for DEIA Distributed Carbon-Based Economy: 3-currency system (Deia Coin, Carbon Credits, Compute Credits), service delegation, Commons Tools marketplace, type system. Deliverables: architecture doc, Constitutional Amendment draft (Article VII), legal review scope, revised timeline, Sister Queen proposal, economic simulation.",
+                        "status":  "QUEUED",
+                        "assigned_to":  "BOT-00006",
+                        "priority":  "P0",
+                        "type":  "architecture",
+                        "estimated_steps":  15,
+                        "estimated_time_seconds":  72000,
+                        "dependencies":  [
+
+                                         ],
+                        "sprint":  "TBD",
+                        "approval_date":  "2025-10-12",
+                        "approved_by":  "BOT-00001",
+                        "proposal_file":  ".deia/QUEEN-WORKPLAN-distributed-carbon-economy.md",
+                        "decree_file":  ".deia/decisions/QUEEN-DECREE-20251012-carbon-economy.md",
+                        "approval_type":  "conditional",
+                        "gates_required":  [
+                                               "Dave authorization (Gate 2)",
+                                               "Community approval of Constitutional Amendment (Gate 3)",
+                                               "Legal clearance (Gate 4)",
+                                               "Sister Queen appointed (Gate 5)"
+                                           ],
+                        "support_bots":  [
+                                             "BOT-00003"
+                                         ],
+                        "success_criteria":  [
+                                                 "Complete architecture document (8 requirements)",
+                                                 "Constitutional Amendment draft (Article VII)",
+                                                 "Legal review scope document",
+                                                 "Revised realistic timeline (16-20 weeks)",
+                                                 "Sister Queen proposal document",
+                                                 "Economic model simulation results",
+                                                 "Queen review score \u003e= 7/10"
+                                             ],
+                        "phases_pending":  "Phases 1-5 (16-20 weeks) blocked until all gates passed"
+                    },
+                    {
+                        "id":  "BACKLOG-024",
+                        "title":  "Create Sister Queen Process Documentation",
+                        "description":  "PROCESS GAP: Document formal workflow for Sister Queens (project-level Queens with delegated authority but cannot spawn/kill queens). When to spawn, how to delegate authority scope, coordination protocol with Primary Queen, governance hierarchy, lifecycle management. Critical for Carbon Economy project management.",
+                        "status":  "TODO",
+                        "assigned_to":  "BOT-00001",
+                        "priority":  "P0",
+                        "type":  "process",
+                        "estimated_steps":  12,
+                        "estimated_time_seconds":  7200,
+                        "dependencies":  [
+
+                                         ],
+                        "gap_type":  "missing_process",
+                        "identified_by":  "BOT-00001",
+                        "identified_date":  "2025-10-12",
+                        "impact":  "Cannot delegate large projects effectively, Primary Queen overloaded",
+                        "required_for":  "Carbon Economy Phases 1-5 (BACKLOG-023)",
+                        "use_case":  "Carbon Economy project (5+ months, 6+ bots, complex coordination)"
+                    },
+                    {
+                        "id":  "BACKLOG-025",
+                        "title":  "HUMAN_REVIEW: P0 Postmortem � Escaped Bot",
+                        "description":  "Dave review for .deia/incidents/P0-ESCAPED-BOT-POSTMORTEM.md",
+                        "status":  "DONE",
+                        "priority":  "P0",
+                        "type":  "review",
+                        "requested_by":  "BOT-00001",
+                        "completed_by":  "Dave",
+                        "completed_at":  "2025-10-14T01:35:00Z",
+                        "review_request_file":  ".deia/review-requests/INCIDENT-P0-ESCAPED-BOT-POSTMORTEM.md",
+                        "target_file":  ".deia/incidents/P0-ESCAPED-BOT-POSTMORTEM.md",
+                        "result":  "Approved and closed. BACKLOG-028 added for Queen Monitoring Protocol."
+                    },
+                    {
+                        "id":  "BACKLOG-026",
+                        "title":  "Monitor?Action Coordinator Spec",
+                        "description":  "Define event?action coordinator replacing output-only monitoring. Triggers: scope_drift, BUG-001 signals, other alerts. Actions: freeze offending bot, notify Queen, write hive-log, open incident on repeat.",
+                        "status":  "QUEUED",
+                        "priority":  "P0",
+                        "type":  "process",
+                        "requested_by":  "BOT-00001",
+                        "assigned_to":  "BOT-00001",
+                        "related_spec_file":  ".deia/telemetry/PATH-CAPTURE-SPEC.md",
+                        "acceptance_criteria":  [
+                                                    "State machine with triggers and actions documented",
+                                                    "Freeze/notify/log sequence defined",
+                                                    "Test plan with simulated drift events",
+                                                    "Rollout plan and ownership"
+                                                ]
+                    },
+                    {
+                        "id":  "BACKLOG-027",
+                        "title":  "Coordinator MVP Implementation",
+                        "description":  "Implement daemon/script reading .deia/telemetry/path-events.jsonl and enforcing scope: on within_scope=false ? freeze bot, notify Queen, hive-log alert. Integrate with PATH-CAPTURE-SPEC.",
+                        "status":  "QUEUED",
+                        "priority":  "P1",
+                        "type":  "integration",
+                        "requested_by":  "BOT-00001",
+                        "assigned_to":  "BOT-00006",
+                        "dependencies":  [
+                                             "BACKLOG-026"
+                                         ],
+                        "acceptance_criteria":  [
+                                                    "Listens to path-events.jsonl",
+                                                    "On drift: sets bot to STANDBY and logs alert",
+                                                    "Manual test script reproduces freeze/notify",
+                                                    "Nightly summary shows zero drift on clean runs"
+                                                ]
+                    },
+                    {
+                        "id":  "BACKLOG-028",
+                        "title":  "Queen Continuous Monitoring Protocol",
+                        "description":  "PROCESS GAP: Document Queen's proactive monitoring responsibilities to prevent scope violations before they happen. Define continuous monitoring loop (frequency, checks), perimeter enforcement actions, periodic audits, alert triggers, and integration with Coordinator. Root cause of P0 incident: human detected escape, not Queen. Queen must monitor hive perimeter continuously.",
+                        "status":  "QUEUED",
+                        "priority":  "P0",
+                        "type":  "process",
+                        "requested_by":  "Dave",
+                        "assigned_to":  "BOT-00001",
+                        "estimated_steps":  8,
+                        "estimated_time_seconds":  3600,
+                        "dependencies":  [
+                                             "BACKLOG-026"
+                                         ],
+                        "gap_type":  "missing_process",
+                        "identified_by":  "Dave",
+                        "identified_date":  "2025-10-14",
+                        "impact":  "Queen cannot proactively prevent scope violations; relies on human detection",
+                        "required_for":  "Hive governance and perimeter enforcement",
+                        "related_incident":  ".deia/incidents/P0-ESCAPED-BOT-POSTMORTEM.md",
+                        "deliverable":  ".deia/processes/queen-monitoring-protocol.md",
+                        "acceptance_criteria":  [
+                                                    "Monitoring loop frequency defined (e.g., every 15s)",
+                                                    "List of checks Queen must perform each cycle",
+                                                    "Auto-enforcement actions on violations documented",
+                                                    "Periodic audit schedule (15min, hourly, daily)",
+                                                    "Integration points with Coordinator (BACKLOG-026/027)",
+                                                    "Alert triggers and escalation paths to human",
+                                                    "Heartbeat monitoring for stale bots"
+                                                ]
+                    },
+                    {
+                        "id":  "BACKLOG-029",
+                        "title":  "Lightweight Drone Knowledge Requirements",
+                        "description":  "Define minimal knowledge set that drones need vs full hive rules. Problem: Drones are burdened with excessive DEIA knowledge overhead. Solution: Create lightweight 'Drone Essentials' guide (≤500 words) covering only: check-in, read orders, execute task, report completion, escalate blockers. Queen maintains complete rule knowledge. Reduces context load and speeds up drone onboarding.",
+                        "status":  "QUEUED",
+                        "priority":  "P1",
+                        "type":  "process",
+                        "requested_by":  "Dave",
+                        "assigned_to":  "BOT-00001",
+                        "estimated_steps":  6,
+                        "estimated_time_seconds":  2400,
+                        "dependencies":  [
+                                         ],
+                        "gap_type":  "knowledge_overhead",
+                        "identified_by":  "Dave",
+                        "identified_date":  "2025-10-14",
+                        "impact":  "Drones loaded with unnecessary hive governance details; slows execution",
+                        "required_for":  "Efficient drone operations and faster task execution",
+                        "deliverable":  ".deia/guides/DRONE-ESSENTIALS.md",
+                        "acceptance_criteria":  [
+                                                    "Drone guide ≤500 words",
+                                                    "Covers: check-in, orders, execution, reporting, escalation only",
+                                                    "Queen-specific rules moved to separate doc",
+                                                    "Cross-reference to full rules for Queen",
+                                                    "Tested with new drone onboarding (< 2 min read time)",
+                                                    "Token count reduced by 50%+ vs current instructions"
+                                                ]
+                    }
+                ],
+    "backlog_stats":  {
+                          "total_items":  29,
+                          "done":  9,
+                          "in_progress":  null,
+                          "todo":  9,
+                          "blocked":  0,
+                          "queued":  11
+                      },
+    "priority_definitions":  {
+                                 "P0":  "Critical - Blocking other work",
+                                 "P1":  "High - Should complete this sprint",
+                                 "P2":  "Medium - Next sprint",
+                                 "P3":  "Low - Future enhancement"
+                             }
+}

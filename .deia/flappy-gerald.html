@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Gerald - The Extremely Anxious Bird</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #4ec0ca 0%, #87ceeb 100%);
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+        }
+
+        #gameContainer {
+            text-align: center;
+        }
+
+        canvas {
+            border: 4px solid #333;
+            border-radius: 8px;
+            background: #4ec0ca;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        #ui {
+            margin-top: 20px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        #score {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #highScore {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        #emotion {
+            font-size: 18px;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        #instructions {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.85);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 24px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .gameOver h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #ff6b6b;
+        }
+
+        .gameOver p {
+            margin: 15px 0;
+        }
+
+        .gameOver button {
+            margin-top: 20px;
+            padding: 15px 40px;
+            font-size: 20px;
+            background: #4ec0ca;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .gameOver button:hover {
+            background: #3aa5af;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="400" height="600"></canvas>
+        <div id="ui">
+            <div id="score">0</div>
+            <div id="highScore">High Score: 0</div>
+            <div id="emotion">Gerald is nervous...</div>
+            <div id="instructions">
+                Press SPACE, CLICK, or TAP to flap<br>
+                Avoid the pipes and don't hit the ground!
+            </div>
+        </div>
+    </div>
+
+    <div id="gameOverScreen" class="gameOver">
+        <h2>Gerald Has Perished</h2>
+        <p id="finalScore"></p>
+        <p id="geraldQuote"></p>
+        <button onclick="restartGame()">Try Again (Gerald Deserves Better)</button>
+    </div>
+
+    <script>
+        // Game constants
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const GRAVITY = 0.5;
+        const FLAP_POWER = -10;
+        const PIPE_SPEED = 3;
+        const PIPE_GAP = 150;
+        const PIPE_WIDTH = 60;
+        const BIRD_SIZE = 30;
+
+        // Game state
+        let gameRunning = false;
+        let gameStarted = false;
+        let score = 0;
+        let highScore = localStorage.getItem('flappyHighScore') || 0;
+
+        // Gerald (the bird)
+        let bird = {
+            x: 100,
+            y: canvas.height / 2,
+            velocity: 0,
+            rotation: 0
+        };
+
+        // Pipes array
+        let pipes = [];
+        let frameCount = 0;
+
+        // Gerald's emotional states
+        const emotions = {
+            nervous: { text: "Gerald is nervous...", color: "#ffeb3b" },
+            confident: { text: "Gerald has false confidence!", color: "#ff9800" },
+            transcendent: { text: "✨ Gerald has transcended ✨", color: "#9c27b0" },
+            dead: { text: "Gerald is disappointed in you.", color: "#f44336" }
+        };
+
+        // Gerald's quotes for death screen
+        const geraldQuotes = [
+            "Really? That's how we're doing this?",
+            "I expected nothing and I'm still disappointed.",
+            "My therapist will hear about this.",
+            "I once dreamed of being a chicken...",
+            "At least gravity is consistent.",
+            "Why do the pipes hate me specifically?",
+            "This is why I have trust issues.",
+            "I'm lactose intolerant, but that's unrelated.",
+            "Perhaps pipes and I were never meant to coexist.",
+            "In my next life, I'll be a penguin. No flying required."
+        ];
+
+        // Update UI
+        function updateUI() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('highScore').textContent = `High Score: ${highScore}`;
+
+            let emotion = emotions.nervous;
+            if (score >= 16) emotion = emotions.transcendent;
+            else if (score >= 6) emotion = emotions.confident;
+
+            document.getElementById('emotion').textContent = emotion.text;
+            document.getElementById('emotion').style.color = emotion.color;
+        }
+
+        // Create pipe
+        function createPipe() {
+            const minGapY = 100;
+            const maxGapY = canvas.height - PIPE_GAP - 100;
+            const gapY = Math.random() * (maxGapY - minGapY) + minGapY;
+
+            pipes.push({
+                x: canvas.width,
+                gapY: gapY,
+                scored: false
+            });
+        }
+
+        // Draw Gerald
+        function drawBird() {
+            ctx.save();
+            ctx.translate(bird.x, bird.y);
+            ctx.rotate(bird.rotation);
+
+            // Determine Gerald's appearance based on score
+            let bodyColor = '#ffd700';
+            let eyeState = '•';
+
+            if (score >= 16) {
+                bodyColor = '#9c27b0'; // Transcendent purple
+                eyeState = '✨';
+            } else if (score >= 6) {
+                bodyColor = '#ff9800'; // Confident orange
+                eyeState = '😎';
+            }
+
+            // Body
+            ctx.fillStyle = bodyColor;
+            ctx.beginPath();
+            ctx.arc(0, 0, BIRD_SIZE / 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eye
+            ctx.font = '20px Arial';
+            ctx.fillStyle = '#000';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(eyeState, 5, -5);
+
+            // Beak
+            ctx.fillStyle = '#ff6b6b';
+            ctx.beginPath();
+            ctx.moveTo(BIRD_SIZE / 2, 0);
+            ctx.lineTo(BIRD_SIZE / 2 + 10, -5);
+            ctx.lineTo(BIRD_SIZE / 2 + 10, 5);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // Draw pipe
+        function drawPipe(pipe) {
+            ctx.fillStyle = '#4caf50';
+            ctx.strokeStyle = '#2e7d32';
+            ctx.lineWidth = 3;
+
+            // Top pipe
+            ctx.fillRect(pipe.x, 0, PIPE_WIDTH, pipe.gapY);
+            ctx.strokeRect(pipe.x, 0, PIPE_WIDTH, pipe.gapY);
+
+            // Bottom pipe
+            ctx.fillRect(pipe.x, pipe.gapY + PIPE_GAP, PIPE_WIDTH, canvas.height);
+            ctx.strokeRect(pipe.x, pipe.gapY + PIPE_GAP, PIPE_WIDTH, canvas.height);
+
+            // Pipe highlights
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.fillRect(pipe.x + 5, 0, 10, pipe.gapY);
+            ctx.fillRect(pipe.x + 5, pipe.gapY + PIPE_GAP, 10, canvas.height);
+        }
+
+        // Draw background
+        function drawBackground() {
+            // Sky
+            ctx.fillStyle = '#4ec0ca';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Clouds
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            for (let i = 0; i < 3; i++) {
+                const x = (frameCount * 0.2 + i * 150) % canvas.width;
+                const y = 50 + i * 80;
+                ctx.beginPath();
+                ctx.arc(x, y, 30, 0, Math.PI * 2);
+                ctx.arc(x + 25, y, 35, 0, Math.PI * 2);
+                ctx.arc(x + 50, y, 30, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Ground
+            ctx.fillStyle = '#8b4513';
+            ctx.fillRect(0, canvas.height - 50, canvas.width, 50);
+            ctx.fillStyle = '#654321';
+            ctx.fillRect(0, canvas.height - 50, canvas.width, 10);
+        }
+
+        // Check collision
+        function checkCollision() {
+            // Ground and ceiling
+            if (bird.y + BIRD_SIZE / 2 >= canvas.height - 50 || bird.y - BIRD_SIZE / 2 <= 0) {
+                return true;
+            }
+
+            // Pipes
+            for (let pipe of pipes) {
+                if (bird.x + BIRD_SIZE / 2 > pipe.x &&
+                    bird.x - BIRD_SIZE / 2 < pipe.x + PIPE_WIDTH) {
+                    if (bird.y - BIRD_SIZE / 2 < pipe.gapY ||
+                        bird.y + BIRD_SIZE / 2 > pipe.gapY + PIPE_GAP) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        // Flap
+        function flap() {
+            if (!gameStarted) {
+                gameStarted = true;
+                gameRunning = true;
+            }
+
+            if (gameRunning) {
+                bird.velocity = FLAP_POWER;
+                // Play flap sound (silent for now, add audio if desired)
+            }
+        }
+
+        // Game over
+        function gameOver() {
+            gameRunning = false;
+            document.getElementById('gameOverScreen').style.display = 'block';
+            document.getElementById('finalScore').textContent = `Final Score: ${score}`;
+
+            const randomQuote = geraldQuotes[Math.floor(Math.random() * geraldQuotes.length)];
+            document.getElementById('geraldQuote').textContent = `"${randomQuote}"`;
+
+            // Update high score
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('flappyHighScore', highScore);
+            }
+        }
+
+        // Restart game
+        function restartGame() {
+            gameRunning = true;
+            gameStarted = true;
+            score = 0;
+            pipes = [];
+            frameCount = 0;
+            bird = {
+                x: 100,
+                y: canvas.height / 2,
+                velocity: 0,
+                rotation: 0
+            };
+            document.getElementById('gameOverScreen').style.display = 'none';
+            updateUI();
+        }
+
+        // Game loop
+        function gameLoop() {
+            // Draw background
+            drawBackground();
+
+            if (gameRunning) {
+                // Update bird physics
+                bird.velocity += GRAVITY;
+                bird.y += bird.velocity;
+                bird.rotation = Math.min(Math.max(bird.velocity * 0.05, -0.5), 0.5);
+
+                // Generate pipes
+                if (frameCount % 90 === 0) {
+                    createPipe();
+                }
+
+                // Update and draw pipes
+                for (let i = pipes.length - 1; i >= 0; i--) {
+                    let pipe = pipes[i];
+                    pipe.x -= PIPE_SPEED;
+
+                    // Score point
+                    if (!pipe.scored && pipe.x + PIPE_WIDTH < bird.x) {
+                        pipe.scored = true;
+                        score++;
+                        updateUI();
+                    }
+
+                    drawPipe(pipe);
+
+                    // Remove off-screen pipes
+                    if (pipe.x + PIPE_WIDTH < 0) {
+                        pipes.splice(i, 1);
+                    }
+                }
+
+                // Check collision
+                if (checkCollision()) {
+                    gameOver();
+                }
+
+                frameCount++;
+            }
+
+            // Draw bird
+            drawBird();
+
+            // Draw score on canvas
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 3;
+            ctx.font = 'bold 48px Arial';
+            ctx.textAlign = 'center';
+            ctx.strokeText(score, canvas.width / 2, 80);
+            ctx.fillText(score, canvas.width / 2, 80);
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Input handlers
+        canvas.addEventListener('click', flap);
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                flap();
+            }
+        });
+
+        // Touch support
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            flap();
+        });
+
+        // Initialize
+        updateUI();
+        gameLoop();
+
+        // Show instructions
+        setTimeout(() => {
+            if (!gameStarted) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                ctx.fillRect(50, canvas.height / 2 - 50, canvas.width - 100, 100);
+                ctx.fillStyle = 'white';
+                ctx.font = '20px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Click, Tap, or Press SPACE to start!', canvas.width / 2, canvas.height / 2);
+            }
+        }, 100);
+    </script>
+</body>
+</html>

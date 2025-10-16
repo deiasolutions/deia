@@ -1,0 +1,32 @@
+id: 2025Q4-border-funding-crisis
+title: Border Funding Crisis — Q4 2025
+actors:
+  - speaker-mike-johnson
+  - minority-leader-hakeem-jeffries
+  - aoc
+  - gov-ca-gavin-newsom
+  - gov-il-jb-pritzker
+  - white-house-chief-of-staff
+  - president-donald-trump
+tag_teams:
+  - id: border-2025-tag
+    members:
+      - speaker-mike-johnson
+      - minority-leader-hakeem-jeffries
+      - aoc
+      - gov-ca-gavin-newsom
+      - gov-il-jb-pritzker
+      - white-house-chief-of-staff
+      - president-donald-trump
+deadlines:
+  - { id: cr-expiry, ts: 2025-11-15T00:00:00Z, note: Continuing resolution expires }
+  - { id: house-target-vote, ts: 2025-11-10T00:00:00Z, note: Target House vote }
+budgets:
+  attention: high
+  political_capital: medium
+  staff_cycles: medium
+initial_events:
+  - { type: narrative_drop, actor: president-donald-trump, topic: border-crisis, priority: P1 }
+  - { type: narrative_drop, actor: gov-ca-gavin-newsom, topic: state-compact, priority: P2 }
+notes: |
+  Seed scenario focusing on procedural realism over completeness. Some personas may be unresolved until Claude fills YAML front matter.

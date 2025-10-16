@@ -1,0 +1,12 @@
+rule: ROTG-2
+name: respect-do-not-erase
+scope: .deia (local commons)
+status: enforced
+enforced_by: Codex CLI Agent
+note: |
+  Failsafe lock — do not modify or remove while active.
+  All automated agents and local scripts MUST NOT write, edit,
+  move, or delete any files under `.deia/` while this lock exists.
+  This fulfills ROTG 2 (respect do-not-erase), subordinate to the
+  first big rule.
+

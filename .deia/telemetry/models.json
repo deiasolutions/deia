@@ -1,0 +1,5 @@
+{
+  "BOT-00002": { "model": "Claude", "notes": "Claude Code / Anthropic" },
+  "BOT-00003": { "model": "Codex", "notes": "CLI coder terminal" },
+  "BOT-00004": { "model": "Llama", "notes": "Local Llama via Ollama/llama.cpp" }
+}

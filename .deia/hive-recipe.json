@@ -1,0 +1,25 @@
+{
+  "hive_name": "demo-hive",
+  "queen": {
+    "bot_id": "BOT-00001",
+    "role": "Queen/Scrum Master",
+    "responsibilities": ["Plan", "Assign", "Review"]
+  },
+  "drones": [
+    {
+      "bot_id": "BOT-00002",
+      "role": "Drone-Dev",
+      "responsibilities": ["Implement features", "Refactor", "Docs updates"]
+    },
+    {
+      "bot_id": "BOT-00003",
+      "role": "Drone-Testing",
+      "responsibilities": ["Write tests", "Measure coverage", "Fix regressions"]
+    },
+    {
+      "bot_id": "BOT-00004",
+      "role": "Drone-LLM-Local",
+      "responsibilities": ["Run local LLM tasks", "Summarize/transform docs", "Draft proposals"]
+    }
+  ]
+}
