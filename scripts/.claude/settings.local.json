@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/**)",
+      "Read(//c/Users/davee/Downloads/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

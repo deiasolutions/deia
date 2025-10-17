@@ -1,0 +1,75 @@
+"""
+Special Instructions:
+- Run this script from the root of the DEIA project directory
+- The script will scan the `bok/` directory for pattern files and generate the `master-index.yaml` file
+- The generated index file will be saved as `.deia/index/master-index.yaml`
+- Ensure that the `bok/` directory exists and contains the pattern files in Markdown format
+"""
+
+import os
+import yaml
+from pathlib import Path
+
+def extract_metadata(file_path: Path) -> dict:
+    with open(file_path, "r") as f:
+        content = f.read()
+
+    metadata = {
+        "id": file_path.stem,
+        "path": str(file_path.relative_to(Path.cwd())),
+    }
+
+    lines = content.split("\n")
+    if lines[0].startswith("# "):
+        metadata["title"] = lines[0][2:]
+    else:
+        metadata["title"] = file_path.stem
+
+    metadata["category"] = str(file_path.parent.relative_to(Path.cwd() / "bok"))
+
+    yaml_lines = []
+    yaml_block = False
+    for line in lines:
+        if line.startswith("---") and not yaml_block:
+            yaml_block = True
+            continue
+        elif line.startswith("---") and yaml_block:
+            break
+        elif yaml_block:
+            yaml_lines.append(line)
+
+    if yaml_lines:
+        yaml_data = yaml.safe_load("\n".join(yaml_lines))
+        metadata.update(yaml_data)
+
+    if "tags" not in metadata:
+        metadata["tags"] = []
+
+    if "summary" not in metadata:
+        summary = ""
+        for line in lines:
+            if line.strip() and not line.startswith("#") and not line.startswith("---"):
+                summary = line.strip()
+                break
+        metadata["summary"] = summary
+
+    return metadata
+
+def generate_bok_index(bok_dir: Path, output_file: Path):
+    index_data = {"patterns": []}
+
+    for file_path in bok_dir.glob("**/*.md"):
+        metadata = extract_metadata(file_path)
+        index_data["patterns"].append(metadata)
+
+    with open(output_file, "w") as f:
+        yaml.dump(index_data, f)
+
+if __name__ == "__main__":
+    bok_dir = Path.cwd() / "bok"
+    output_file = Path.cwd() / ".deia" / "index" / "master-index.yaml"
+
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+
+    generate_bok_index(bok_dir, output_file)
+    print(f"BOK index generated: {output_file}")

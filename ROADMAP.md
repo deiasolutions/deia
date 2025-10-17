@@ -7,6 +7,7 @@
 ## Where We Are Today
 
 **What actually works:**
+- **DEIA iDea Methodology** - Human-AI collaborative development framework (v1.0)
 - `ConversationLogger` Python class for logging Claude Code sessions
 - Manual session capture (call `create_session_log()` with conversation data)
 - BOK structure with ~10 community-contributed patterns
@@ -43,7 +44,16 @@
   - [ ] Test end-to-end with real conversation data
 - [ ] Document actual installation steps
 - [ ] Fix any import/dependency issues
-- [ ] Create simple test suite
+- [x] **Create test infrastructure:** ✅
+  - [x] Test directory structure (`tests/unit/`, `tests/integration/`)
+  - [x] Pytest configuration (`pytest.ini`)
+  - [x] Shared fixtures (`tests/conftest.py`)
+  - [x] Basic CLI tests
+  - [x] Basic logger tests
+  - [x] Test tracking (`admin/testing.md`)
+  - [ ] Add test dependencies to `pyproject.toml`
+  - [ ] Run tests and measure coverage
+  - [ ] Reach 50% test coverage
 - [ ] Write honest installation guide
 
 **Success criteria:** A developer can clone, install, and start logging sessions **with real conversations, not hardcoded test data**
@@ -64,6 +74,131 @@
 - [ ] Integrate with git workflow
 
 **Success criteria:** User can run `deia extract` and get a sanitized, ready-to-submit pattern
+
+---
+
+## Phase 2.5: DEIA Chat Interface (Q4 2025 - Q1 2026)
+
+**Goal:** Web-based chat interface for interacting with DEIA projects
+
+**Status:** Phase 1 (Basic Chat) complete, Phases 2-4 planned
+
+### Overview
+
+A local web GUI that provides:
+- Chat interface with Ollama LLM
+- File operations within DEIA project boundaries
+- Integration with .deia structure (BOK, sessions, ephemera)
+- Secure file modifications with confirmation workflows
+
+**LLH Specification:** `.deia/.projects/simulation_004/gpt-llama-bot-eos-companion.md`
+**Status Document:** `llama-chatbot/STATUS.md`
+
+### Phase 1: Basic Chat ✅ (COMPLETED 2025-10-15)
+
+- [x] FastAPI server with WebSocket support
+- [x] Ollama LLM integration
+- [x] Real-time streaming responses
+- [x] Conversation history management
+- [x] Unified LLM service (Ollama/DeepSeek/OpenAI support)
+- [x] Retry logic and error handling
+- [x] Basic command execution
+
+**Files:** `llama-chatbot/app.py`, `src/deia/services/llm_service.py`
+
+### Phase 2: File Operations (4-6 weeks)
+
+- [ ] DEIA project structure detection
+- [ ] Auto-load .deia context files (BOK, sessions, ephemera)
+- [ ] File reading API with syntax highlighting
+- [ ] Project structure browser (tree view)
+- [ ] Path validation (project boundary enforcement)
+- [ ] File context display in chat
+- [ ] Integration with .deia folder structure
+
+**Estimated Effort:** 8-10 hours
+**Deliverable:** Chat interface aware of DEIA project structure
+
+### Phase 3: File Modifications (6-8 weeks)
+
+**Critical:** Requires Phase 2 security foundation
+
+- [ ] File write API with confirmation workflow
+- [ ] Diff viewer (show changes before applying)
+- [ ] User confirmation dialogs
+- [ ] Audit logging to `.deia/logs/file-operations.jsonl`
+- [ ] Backup/undo mechanism (git-based or file-based)
+- [ ] Change tracking and rollback
+- [ ] Security: Directory traversal prevention
+
+**Estimated Effort:** 12-15 hours
+**Deliverable:** Safe file modification with full audit trail
+
+### Phase 4: Polish & Enhancement (Ongoing)
+
+- [ ] Extract HTML to separate files (better maintainability)
+- [ ] Enhanced UI/UX (Tailwind CSS styling)
+- [ ] Keyboard shortcuts
+- [ ] Session persistence (save/load conversations)
+- [ ] Read-only mode toggle
+- [ ] Mobile responsiveness
+- [ ] Performance optimization for large projects
+
+**Estimated Effort:** 6-12 hours initially, ongoing improvements
+**Deliverable:** Production-quality user experience
+
+### Security Requirements (Critical)
+
+All phases must maintain:
+- **Project boundary enforcement** - No access outside DEIA project
+- **Localhost-only access** - No remote connections by default
+- **File confirmation required** - All write operations need approval
+- **Audit logging** - All file operations logged to RSE format
+- **Path validation** - Prevent directory traversal attacks
+- **Sensitive file protection** - No access to .git, .env, secrets
+
+### Integration Points
+
+**DEIA Structure:**
+- `.deia/bok/` - Body of Knowledge access
+- `.deia/sessions/` - Session log reading
+- `.deia/efemera/` - Ephemera browsing
+- `.deia/context/` - Auto-load project context
+- `.deia/logs/` - Audit trail storage
+
+**External:**
+- Ollama (local LLM)
+- Git (change tracking)
+- File system (with restrictions)
+
+### Success Criteria
+
+**Functional:**
+- Can chat with LLM about DEIA project
+- Can read files from project
+- Can modify files with confirmation
+- Understands .deia structure
+- Provides context-aware responses
+
+**Security:**
+- No unauthorized file access
+- All modifications logged
+- Confirmation required for changes
+- Rollback capability exists
+
+**Performance:**
+- Sub-second file operations
+- Smooth streaming chat
+- Handles large projects efficiently
+
+### Current Status
+
+**Phase Completion:** 1 of 4 (25% phases, ~12% effort)
+**Files Created:** 5 (app.py, llm_service.py, docs)
+**Documentation:** Complete for Phase 1
+**Next Milestone:** DEIA awareness + file reading
+
+See `llama-chatbot/STATUS.md` for detailed implementation plan.
 
 ---
 
@@ -244,10 +379,17 @@
 
 ## Progress Tracking
 
-**Last updated:** 2025-10-07
+**Last updated:** 2025-10-15
 
-**Current phase:** Phase 1 (basic install)
+**Current phase:** Phase 1 (basic install) + Phase 2.5 (chat interface - Phase 1 complete)
 **Current version:** 0.1.0 (development)
+**Methodology:** DEIA iDea v1.0 (released)
+
+**Recent completions:**
+- ✅ DEIA Chat Interface Phase 1 (2025-10-15)
+- ✅ Unified LLM Service (2025-10-15)
+- ✅ Test infrastructure setup
+- ✅ ConversationLogger implementation
 
 See [GitHub Issues](https://github.com/deiasolutions/deia/issues) for detailed progress.
 See [GitHub Discussions](https://github.com/deiasolutions/deia/discussions) for strategic questions.

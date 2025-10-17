@@ -80,6 +80,40 @@
 
 ---
 
+## Experiments & Demos
+
+**Game Development (Flappy Bird):**
+- `.deia/flappy-gerald.html` - Game A: Zero-shot implementation (Gerald the Anxious Bird)
+- `.deia/flappy-bird-story.md` - Game A: Prose description
+- `.deia/flappy-gerald-README.md` - Game A: Documentation
+- `.deia/flappy-bird-game-b.html` - Game B: SDLC implementation (Phoenix the Overconfident Bird)
+- `.deia/flappy-bird-game-b-story.md` - Game B: Phoenix's story & features
+- `.deia/flappy-bird-technical-design.md` - Game B: Technical architecture
+- `.deia/flappy-bird-visual-design.md` - Game B: Visual specifications
+- `.deia/flappy-bird-game-b-README.md` - Game B: User documentation
+- `.deia/flappy-bird-test-plan.md` - Game B: QA test plan
+- `.deia/BLUEPRINT-flappy-bird-full-sdlc.md` - Game B: Complete SDLC blueprint
+
+**AI/ML Experiments:**
+- `.deia/flappy-bird-ai-research-proposal.md` - Neural network training proposal (Round 1 & 2)
+- `.deia/sessions/20251012-flappy-bird-ai-experiment-start.md` - Experiment session log
+- [Future: Training scripts, results, analysis]
+
+**Handoffs (Multi-Role Coordination Demos):**
+- `.deia/handoffs/` - Role transition documents for Game B
+  - `queen-to-designer-game-b-phase1.md` - Design phase kickoff
+  - `designer-to-queen-game-b-phase1-complete.md` - Design approval
+  - `queen-to-developer-game-b-phase2.md` - Implementation kickoff
+  - `developer-to-tester-game-b-phase3.md` - Testing kickoff
+  - `GAME-B-COMPLETE-FINAL-SUMMARY.md` - Project completion summary
+
+**Process Demonstrations:**
+- Game A vs Game B comparison (zero-shot vs full SDLC)
+- Multi-role coordination (Designer → Developer → Tester → Documentation)
+- File-based handoffs for async collaboration
+
+---
+
 ## Working/Private (Gitignored)
 
 **Repo-Level Private (Dave's personal workspace):**
@@ -98,7 +132,7 @@
 
 **Other Gitignored:**
 - `admin/` - Dave's backlog, decisions, ideas
-- `.deia/sessions/` - Conversation logs
+- `.deia/sessions/` - Conversation logs (experiment documentation)
 - `docs/backlog/` - WIP features
 
 **Don't commit these. Don't reference in public docs.**

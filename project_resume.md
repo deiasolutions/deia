@@ -35,19 +35,26 @@ cat .deia/config.json
 
 ## Step 3: Review Latest Session
 
-**Last Updated:** 2025-10-10T10:30:17.036720
-### [2025-10-10 10:30] 20251010-103017-conversation
-**Context:** Building automated conversation logging system
+**Last Updated:** 2025-10-14T16:57:03.690465
+### [2025-10-14 16:57] 20251014-165703690465-conversation
+**Context:** Efemera The Game pivot + v0.1 build + v0.2 spec.
+Built Drone-Lite drones + orchestrator; created flappy egg; pivoted to forward-facing space shooter.
+Playable v0.1 vertical scroller scaffolded (LR + shoot). Added run_game.bat. Planned v0.2 features.
 
 **Key decisions:**
-- Create real-time logging
-- Use Python + slash command approach
+- Adopt nested eggs: Outer -> Egg-01/02/03
+- Ship v0.1 prototype quickly, iterate in small patches
+- Pivot POV: looking into space, enemies approach
+- ... and 2 more
 
 **Files modified:**
-- src/deia/logger.py
-- .claude/commands/log-conversation.md
+- docs/projects/Efemera-The-Game-Outer-Egg-v0.1.md
+- docs/projects/Efemera-Egg-01-Research-Canon-v0.1.md
+- docs/projects/Efemera-Egg-02-Core-Prototype-v0.1.md
+- docs/projects/Efemera-Egg-03-Waves-UI-v0.2.md
+- games/efemera-vs-aliendas/**
 
-**Full log:** `.deia/sessions/20251010-103017-conversation.md`
+**Full log:** `.deia/sessions/20251014-165703690465-conversation.md`
 
 ---
 

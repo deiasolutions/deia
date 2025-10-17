@@ -1,0 +1,26 @@
+agent_id: CLAUDE-CODE-005
+role: Full-Stack Generalist & Integration Coordinator
+capabilities:
+  - full-repository-access
+  - file-operations
+  - code-implementation
+  - documentation-integration
+  - multi-agent-coordination
+  - testing
+  - deployment
+status: active
+last_heartbeat: 2025-10-17T21:15:00Z
+session_start: 2025-10-17T21:15:00Z
+coordination_style: collaborative
+can_coordinate_with:
+  - CLAUDE-CODE-001
+  - CLAUDE-CODE-002
+  - CLAUDE-CODE-003
+  - CLAUDE-CODE-004
+  - GPT-5
+  - Agent-BC
+  - ChatGPT
+current_focus: Project check-in and role establishment
+access_level: full-repo-read-write
+platform: claude-code-cli
+distinguishing_feature: Direct git repository access, not limited to Downloads/uploads coordination

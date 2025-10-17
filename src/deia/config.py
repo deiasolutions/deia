@@ -26,6 +26,14 @@ DEFAULT_CONFIG = {
         "author": "",
         "email": "",
         "anonymous": False
+    },
+    "projects": {},
+    "sync": {
+        "enabled": True,
+        "downloads_folder": str(Path.home() / "Downloads"),
+        "temp_staging_folder": str(Path.home() / "Downloads" / ".deia-staging"),
+        "use_temp_staging": True,
+        "cleanup_policy": "manual"
     }
 }
 

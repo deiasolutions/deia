@@ -1,0 +1,76 @@
+"""DEIA Context Loader"""
+
+import os
+from pathlib import Path
+from typing import List, Dict
+
+import yaml
+
+class DEIAContextLoader:
+    """Loads and manages DEIA project context"""
+
+    def __init__(self, project_root: str = "."):
+        """Initialize with project root directory"""
+        self.project_root = Path(project_root)
+        self.index_file = self.project_root / ".deia" / "index" / "master-index.yaml"
+        self.bok_dir = self.project_root / "bok"
+        self.session_dir = self.project_root / ".deia" / "sessions"
+        self.index_data = self._load_yaml(self.index_file)
+
+    @staticmethod
+    def _load_yaml(file_path: Path) -> Dict:
+        """Load YAML file and return data as dictionary"""
+        if not file_path.exists():
+            return {}
+        with file_path.open("r") as f:
+            return yaml.safe_load(f)
+
+    def load_bok_index(self) -> Dict:
+        """Load .deia/index/master-index.yaml"""
+        return self.index_data
+
+    def search_bok(self, query: str, top_n: int = 10) -> List[Dict]:
+        """Search BOK patterns by keyword"""
+        query_lower = query.lower()
+        results = []
+        for pattern_id, pattern_data in self.index_data.get("patterns", {}).items():
+            if (
+                query_lower in pattern_data.get("title", "").lower()
+                or query_lower in pattern_data.get("keywords", "").lower()
+            ):
+                results.append({"id": pattern_id, **pattern_data})
+        return sorted(results, key=lambda x: x.get("score", 0), reverse=True)[:top_n]
+
+    def get_pattern(self, pattern_id: str) -> str:
+        """Read specific BOK pattern content"""
+        pattern_file = self.bok_dir / f"{pattern_id}.md"
+        if not pattern_file.exists():
+            return ""
+        with pattern_file.open("r") as f:
+            return f.read()
+
+    def get_recent_sessions(self, limit: int = 5) -> List[Dict]:
+        """Get recent session logs"""
+        sessions = []
+        for session_file in sorted(self.session_dir.glob("*.yaml"), reverse=True):
+            session_data = self._load_yaml(session_file)
+            sessions.append(session_data)
+            if len(sessions) >= limit:
+                break
+        return sessions
+
+    def get_project_structure(self) -> Dict:
+        """Map .deia directory structure"""
+        structure = {}
+        for root, dirs, files in os.walk(self.project_root):
+            root_path = Path(root)
+            if root_path == self.project_root:
+                structure["."] = [d for d in dirs if d != ".deia"]
+            else:
+                rel_path = root_path.relative_to(self.project_root)
+                structure[str(rel_path)] = files
+        return structure
+
+    def is_deia_project(self) -> bool:
+        """Check if current directory is DEIA project"""
+        return (self.project_root / ".deia").exists()

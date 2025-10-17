@@ -1,0 +1,138 @@
+import os
+import re
+import logging
+from collections import defaultdict
+from typing import List, Dict
+
+import requests
+from markdown import markdown
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class BOKPatternValidator:
+    def __init__(self, bok_dir: str):
+        self.bok_dir = bok_dir
+        self.required_sections = ["Problem", "Solution", "Tags"]
+
+    def validate_patterns(self) -> Dict[str, Dict]:
+        patterns = self._get_pattern_files()
+        validation_reports = {}
+
+        for pattern_file in patterns:
+            logger.info(f"Validating pattern: {pattern_file}")
+            with open(pattern_file, "r") as f:
+                content = f.read()
+            
+            report = self._validate_pattern(content)
+            report["file"] = pattern_file
+            validation_reports[pattern_file] = report
+
+        return validation_reports
+
+    def _get_pattern_files(self) -> List[str]:
+        patterns = []
+        for root, _, files in os.walk(self.bok_dir):
+            for file in files:
+                if file.endswith(".md"):
+                    patterns.append(os.path.join(root, file))
+        return patterns
+
+    def _validate_pattern(self, content: str) -> Dict:
+        report = defaultdict(list)
+        sections = self._parse_sections(content)
+
+        for section in self.required_sections:
+            if section not in sections:
+                report["missing_sections"].append(section)
+
+        if len(sections.get("Problem", "")) < 50:
+            report["issues"].append("Problem section too short")
+        
+        if len(sections.get("Solution", "")) < 100:
+            report["issues"].append("Solution section too short")
+
+        if "Tags" in sections:
+            if not re.match(r"^[\w\s]+(,\s*[\w\s]+)*$", sections["Tags"]):
+                report["issues"].append("Malformed tags")
+        
+        report["broken_links"] = self._check_broken_links(content)
+
+        score = self._calculate_quality_score(report)
+        report["quality_score"] = score
+
+        return report
+    
+    def _parse_sections(self, content: str) -> Dict[str, str]:
+        sections = {}
+        current_section = None
+
+        for line in content.split("\n"):
+            if line.startswith("## "):
+                current_section = line[3:].strip()
+                sections[current_section] = ""
+            elif current_section:
+                sections[current_section] += line + "\n"
+
+        return sections
+
+    def _check_broken_links(self, content: str) -> List[str]:
+        broken_links = []
+        html = markdown(content)
+        
+        for match in re.finditer(r'<a\s+href="(.+?)"', html):
+            link = match.group(1)
+            if not link.startswith("#"):  # Skip internal links
+                try:
+                    response = requests.head(link)
+                    if response.status_code >= 400:
+                        broken_links.append(link)
+                except requests.exceptions.RequestException:
+                    broken_links.append(link)
+        
+        return broken_links
+
+    def _calculate_quality_score(self, report: Dict) -> int:
+        score = 100
+
+        if report["missing_sections"]:
+            score -= 20 * len(report["missing_sections"])
+        
+        if report["issues"]:
+            score -= 10 * len(report["issues"])
+        
+        if report["broken_links"]:
+            score -= 5 * len(report["broken_links"])
+
+        return max(0, score)
+
+    def generate_report(self, validation_reports: Dict[str, Dict]) -> str:
+        report = "BOK Pattern Validation Report\n\n"
+
+        scores = []
+
+        for pattern, result in validation_reports.items():
+            report += f"Pattern: {pattern}\n"
+            report += f"Quality Score: {result['quality_score']}\n"
+            
+            if result['missing_sections']:
+                report += f"Missing Sections: {', '.join(result['missing_sections'])}\n"
+            
+            if result['issues']:
+                report += f"Issues:\n"
+                for issue in result['issues']:
+                    report += f"- {issue}\n"
+            
+            if result['broken_links']:
+                report += f"Broken Links:\n"
+                for link in result['broken_links']:
+                    report += f"- {link}\n"
+            
+            report += "\n"
+            scores.append(result['quality_score'])
+
+        report += "Summary\n"
+        report += f"Average Quality Score: {sum(scores) / len(scores):.2f}\n"
+        report += f"Patterns with Lowest Scores: {', '.join(sorted(validation_reports, key=lambda x: validation_reports[x]['quality_score'])[:3])}\n"
+
+        return report

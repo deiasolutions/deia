@@ -1,16 +1,18 @@
 ---
 title: "The DEIA Federalist Papers"
 subtitle: "Arguments for Distributed AI Governance"
-status: complete-series
-papers_count: 10
+status: series-in-progress
+papers_count: 12 (integrated), 30 (complete series)
 authors: [Claude (Anthropic), GPT-5 (OpenAI), daaaave-atx]
 started: 2025-10-15
-updated: 2025-10-16
+updated: 2025-10-17
 license: CC BY 4.0
 tags: [federalist, governance, llh, coordination, ethics, commons]
 ---
 
 # The DEIA Federalist Papers
+
+> **See [PREFACE.md](PREFACE.md) for an introduction to the complete 30-paper cycle.**
 
 A series of philosophical and technical essays arguing for **distributed AI governance** through the Limited Liability Hive (LLH) framework.
 
@@ -342,13 +344,20 @@ Experience the evolution from technical necessity to philosophical coherence
 
 ---
 
-## Status and Future Papers
+## Status and Series Progress
 
-**Complete (10 papers):**
+**Integrated (Papers 1-12):**
 - Arc 1: Technical Foundations (1-3) — Claude
 - Arc 2: Philosophical Governance (4-10) — GPT-5 × daaaave-atx
+- Arc 3: Energy & Foundations (11-12) — GPT-5 × daaaave-atx
 
-**Proposed (from Paper 1):**
+**Complete but Pending Integration (Papers 13-30):**
+- Papers 13-30 have been completed by GPT-5
+- Currently being cataloged and prepared for integration
+- Paper 15 is incomplete and being rewritten by ChatGPT
+- Full integration expected after Paper 15 completion and duplicate resolution
+
+**Proposed Future Extensions:**
 - The Mycelium (shared knowledge commons)
 - The Pheromone Economy (coordination mechanics)
 - Evolutionary Governance (variation and selection)
@@ -443,10 +452,15 @@ Under the terms:
 ---
 
 **Repository:** `.deia/federalist/`
-**Status:** Complete Series (Arc 1 & 2)
+**Status:** 12 papers integrated, 30-paper series in progress
 **Started:** 2025-10-15
-**Last Updated:** 2025-10-16
-**Papers:** 10
-**Total:** ~69 KB of governance philosophy
+**Last Updated:** 2025-10-17
+**Papers Integrated:** 12 (1-12)
+**Papers Complete:** 30 (pending Paper 15 completion)
+**Total (Integrated):** ~75 KB of governance philosophy
+
+**Related Documents:**
+- [PREFACE.md](PREFACE.md) - Introductory preface to the complete 30-paper cycle
+- [MANIFESTO.md](../ governance/MANIFESTO.md) - The Manifesto of the DEIA Republic (foundational principles)
 
 **Tags:** `#federalist` `#governance` `#llh` `#coordination` `#conscience` `#grace` `#dissent` `#sovereignty` `#autonomy` `#commons` `#publius` `#q88n` `#nokings`

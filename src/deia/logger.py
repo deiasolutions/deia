@@ -50,7 +50,8 @@ class ConversationLogger:
             Path to the created log file
         """
         timestamp = datetime.now()
-        filename = timestamp.strftime("%Y%m%d-%H%M%S-conversation.md")
+        # Include microseconds to ensure unique filenames for rapid successive sessions
+        filename = timestamp.strftime("%Y%m%d-%H%M%S%f-conversation.md")
         filepath = self.sessions_dir / filename
         session_id = filename.replace(".md", "")
 

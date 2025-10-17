@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEIA Chat Interface</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body { 
+            background-color: #1e1e1e; 
+            color: #e0e0e0;
+        }
+        .chat-container {
+            max-width: 800px;
+            margin: 30px auto;
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #404040;
+            border-radius: 5px;
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+        .agent-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 250px;
+            background-color: #2a2a2a;
+            border: 1px solid #404040;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .bok-suggestions {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 250px;
+            background-color: #2a2a2a;
+            border: 1px solid #404040;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .context-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #3b82f6;
+            color: white;
+            padding: 5px 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chat-container">
+            <h4>DEIA Chat Interface</h4>
+            <hr>
+            <div class="chat-messages" id="chatMessages"></div>
+            <hr>
+            <div class="input-group">
+                <input type="text" class="form-control" id="messageInput" placeholder="Type your message...">
+                <button class="btn btn-primary" id="sendButton">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="agent-status" id="agentStatus">
+        <h6>Agent Status</h6>
+        <hr>
+        <!-- Agent status will be dynamically populated here -->
+    </div>
+
+    <div class="bok-suggestions" id="bokSuggestions">
+        <h6>BOK Suggestions</h6>
+        <hr>
+        <!-- BOK suggestions will be dynamically populated here -->
+    </div>
+
+    <div class="context-bar" id="contextBar">
+        <!-- DEIA context information will be shown here -->
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const agentStatus = document.getElementById('agentStatus');
+        const bokSuggestions = document.getElementById('bokSuggestions');
+        const contextBar = document.getElementById('contextBar');
+
+        let socket;
+
+        function connectWebSocket() {
+            socket = new WebSocket(`ws://${window.location.host}/ws`);
+
+            socket.onopen = () => {
+                console.log('WebSocket connected');
+            };
+
+            socket.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+                handleMessage(message);
+            };
+
+            socket.onclose = () => {
+                console.log('WebSocket disconnected');
+            };
+        }
+
+        function handleMessage(message) {
+            switch (message.type) {
+                case 'response':
+                    displayChatMessage(message.content, 'assistant');
+                    break;
+                case 'agent_status':
+                    displayAgentStatus(message.agents);
+                    break;
+                case 'bok_results':
+                    displayBokResults(message.results);
+                    break;
+                case 'bok_pattern':
+                    displayBokPattern(message.pattern_id, message.content);
+                    break;
+                case 'deia_context':
+                    displayDeiaContext(message);
+                    break;
+                case 'delegation':
+                    displayDelegationMessage(message.agent, message.task_file);
+                    break;
+                case 'error':
+                    displayErrorMessage(message.message);
+                    break;
+            }
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            if (message.startsWith('/')) {
+                socket.send(JSON.stringify({ type: 'command', command: message }));
+            } else {
+                displayChatMessage(message, 'user');
+                socket.send(JSON.stringify({ type: 'query', query: message }));
+            }
+
+            messageInput.value = '';
+        }
+
+        function displayChatMessage(content, role) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.textContent = content;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function displayAgentStatus(agents) {
+            agentStatus.innerHTML = '<h6>Agent Status</h6><hr>';
+            agents.forEach(agent => {
+                const agentDiv = document.createElement('div');
+                agentDiv.textContent = `${agent.id}: ${agent.status}`;
+                if (agent.task) {
+                    agentDiv.textContent += ` (${agent.task})`;
+                }
+                agentStatus.appendChild(agentDiv);
+            });
+        }
+
+        function displayBokResults(results) {
+            bokSuggestions.innerHTML = '<h6>BOK Suggestions</h6><hr>';
+            results.forEach(result => {
+                const resultDiv = document.createElement('div');
+                resultDiv.textContent = result.title;
+                bokSuggestions.appendChild(resultDiv);
+            });
+        }
+
+        function displayBokPattern(patternId, content) {
+            displayChatMessage(`Pattern: ${patternId}\n\n${content}`, 'assistant');
+        }
+
+        function displayDeiaContext(context) {
+            contextBar.textContent = `DEIA Project: ${context.is_deia_project ? 'Yes' : 'No'} | BOK Patterns: ${context.bok_patterns} | Recent Sessions: ${context.recent_sessions}`;
+        }
+
+        function displayDelegationMessage(agent, taskFile) {
+            displayChatMessage(`Delegating to ${agent}. Task file: ${taskFile}`, 'assistant');
+        }
+
+        function displayErrorMessage(message) {
+            displayChatMessage(`Error: ${message}`, 'assistant');
+        }
+
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        connectWebSocket();
+    </script>
+</body>
+</html>

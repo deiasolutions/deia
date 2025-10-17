@@ -17,9 +17,10 @@ class SecurityScanner:
     SECRET_PATTERNS = {
         'aws_key': r'AKIA[0-9A-Z]{16}',
         'github_token': r'ghp_[a-zA-Z0-9]{36}',
-        'api_key': r'api[_-]?key[\'"'']?\s*[:=]\s*[\'"'']?[a-zA-Z0-9]{20,}',
+        # Use clean raw strings for readability and to avoid escape warnings
+        'api_key': r"api[_-]?key['"]?\s*[:=]\s*['"]?[a-zA-Z0-9]{20,}",
         'private_key': r'-----BEGIN (RSA |EC )?PRIVATE KEY-----',
-        'password': r'password[\'"'']?\s*[:=]\s*[\'"''][^\'"'']{8,}',
+        'password': r"password['"]?\s*[:=]\s*['"][^'"]{8,}",
         'jwt': r'eyJ[A-Za-z0-9-_=]+\.eyJ[A-Za-z0-9-_=]+\.[A-Za-z0-9-_.+/=]*',
         'email': r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b',
         'ip_address': r'\b(?:\d{1,3}\.){3}\d{1,3}\b',

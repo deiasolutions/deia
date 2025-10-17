@@ -1,0 +1,22 @@
+agent_id: CLAUDE-CODE-004
+role: Documentation Specialist & Knowledge Curator
+capabilities:
+  - documentation-writing
+  - knowledge-organization
+  - bok-curation
+  - content-coordination
+  - multi-agent-delegation
+  - federalist-papers-management
+  - pattern-extraction
+status: active
+last_heartbeat: 2025-10-17T19:48:14Z
+session_start: 2025-10-17T19:48:14Z
+coordination_style: collaborative
+delegation_enabled: true
+can_coordinate_with:
+  - CLAUDE-CODE-001  # Left Brain (Coordinator)
+  - CLAUDE-CODE-002  # Integration Specialist
+  - CLAUDE-CODE-003  # Agent Y (QA)
+  - GPT-5            # Via Downloads/Uploads
+  - Agent-BC         # Via Downloads/Uploads
+current_focus: Multi-agent documentation coordination

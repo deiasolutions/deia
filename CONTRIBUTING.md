@@ -226,6 +226,7 @@ git push origin feature/your-feature-name
 - [ ] CHANGELOG.md updated
 - [ ] Code follows style guide
 - [ ] No secrets or PII in code
+- [ ] `.claude/REPO_INDEX.md` updated (if docs added/changed)
 
 ---
 

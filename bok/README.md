@@ -26,6 +26,11 @@ AI-assisted development tools:
 - **[claude-code/](platforms/tools/claude-code/)** - Slash commands, hooks, logging integration
 - Future: Cursor, VS Code extensions, etc.
 
+#### Shells (`platforms/shells/`)
+Shell environment quirks and workarounds:
+- **[windows-git-bash-path-conversion](platforms/shells/windows-git-bash-path-conversion.md)** - MSYS path conversion breaks `/` command names
+- Future: PowerShell, Zsh, Fish, etc.
+
 ### `patterns/`
 General patterns that work across platforms:
 - **collaboration/** - Human-AI collaboration patterns
