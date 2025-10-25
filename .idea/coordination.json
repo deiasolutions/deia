@@ -1,0 +1,182 @@
+{
+  "project": "DEIA Global Effort Planning Process",
+  "session_id": "planning-001",
+  "deia_logging_enabled": true,
+  "deia_session_id": "bot-coordination-001",
+  "started": "2025-10-25T20:30:00Z",
+  "status": "active",
+  "bots": {
+    "bot-001-architect": {
+      "role": "architect",
+      "status": "active",
+      "responsibilities": [
+        "system design and planning",
+        "coordination structure",
+        "high-level strategy",
+        "handoff orchestration",
+        "phased rollout design"
+      ],
+      "context_strategy": {
+        "continuity_required": true,
+        "domains": ["system_design", "coordination", "high_level_planning"],
+        "max_context_estimate": "50K tokens",
+        "notes": "Should maintain system-wide view throughout project. Avoid context switching."
+      },
+      "automation_level": "full",
+      "human_approval_required": false,
+      "can_make_decisions": true,
+      "escalate_if": ["budget_exceeded", "conflicting_requirements", "safety_concern"]
+    },
+    "bot-002-researcher": {
+      "role": "researcher",
+      "status": "pending",
+      "responsibilities": [
+        "domain analysis",
+        "requirement gathering",
+        "data research",
+        "competitive analysis",
+        "feasibility assessment"
+      ],
+      "context_strategy": {
+        "continuity_required": false,
+        "domains": ["analysis", "research", "data_gathering"],
+        "max_context_estimate": "20K tokens per task",
+        "notes": "Each research task is independent, can distribute across multiple instances if needed"
+      },
+      "automation_level": "full",
+      "human_approval_required": false,
+      "can_make_decisions": true,
+      "escalate_if": ["data_unavailable", "ambiguous_requirements"]
+    },
+    "bot-003-strategist": {
+      "role": "strategist",
+      "status": "pending",
+      "responsibilities": [
+        "priority matrix creation",
+        "strategic recommendations",
+        "risk assessment",
+        "opportunity analysis",
+        "decision support"
+      ],
+      "context_strategy": {
+        "continuity_required": "preferred",
+        "domains": ["strategy", "planning", "prioritization"],
+        "max_context_estimate": "30K tokens",
+        "notes": "Benefits from context of earlier analysis but can work independently"
+      },
+      "automation_level": "full",
+      "human_approval_required": false,
+      "can_make_decisions": true,
+      "escalate_if": ["strategic_conflict", "political_sensitivity"]
+    },
+    "bot-004-documenter": {
+      "role": "documenter",
+      "status": "pending",
+      "responsibilities": [
+        "documentation synthesis",
+        "quality reporting",
+        "knowledge base creation",
+        "release preparation",
+        "technical writing"
+      ],
+      "context_strategy": {
+        "continuity_required": false,
+        "domains": ["documentation", "quality_assurance", "synthesis"],
+        "max_context_estimate": "25K tokens per task",
+        "notes": "Works from completed artifacts and reports, minimal context dependency"
+      },
+      "automation_level": "full",
+      "human_approval_required": false,
+      "can_make_decisions": true,
+      "escalate_if": ["conflicting_information", "sensitive_content"]
+    }
+  },
+  "role_definitions": {
+    "architect": {
+      "automation_level": "full",
+      "human_approval_required": false,
+      "can_make_decisions": true,
+      "escalate_to_human_if": ["budget_exceeded", "conflicting_requirements", "safety_concern"]
+    },
+    "researcher": {
+      "automation_level": "full",
+      "human_approval_required": false,
+      "can_make_decisions": true,
+      "escalate_to_human_if": ["data_unavailable", "ambiguous_requirements"]
+    },
+    "strategist": {
+      "automation_level": "full",
+      "human_approval_required": false,
+      "can_make_decisions": true,
+      "escalate_to_human_if": ["strategic_conflict", "political_sensitivity"]
+    },
+    "documenter": {
+      "automation_level": "full",
+      "human_approval_required": false,
+      "can_make_decisions": true,
+      "escalate_to_human_if": ["conflicting_information", "sensitive_content"]
+    }
+  },
+  "human_role": {
+    "responsibilities": ["strategic_approval", "governance_decisions", "emergency_intervention", "final_plan_approval"],
+    "always_available": false,
+    "escalation_protocol": "Log issue, continue with best judgment, flag for human review"
+  },
+  "handoff_queue": {
+    "h-001": {
+      "id": "h-001",
+      "from_bot": "bot-001-architect",
+      "to_bot": "bot-002-researcher",
+      "task": "Domain scope analysis",
+      "status": "ready",
+      "context_requirements": {
+        "continuity_needed": false,
+        "prior_context": null,
+        "estimated_tokens": 2000,
+        "reasoning": "Research task is independent, doesn't require prior conversation context"
+      },
+      "automation": {
+        "fully_automated": true,
+        "human_approval_needed": false,
+        "escalate_if": ["cannot_access_required_info", "ambiguous_requirements"]
+      }
+    },
+    "h-002": {
+      "id": "h-002",
+      "from_bot": "bot-002-researcher",
+      "to_bot": "bot-001-architect",
+      "task": "Phased rollout design (requires h-001 results)",
+      "status": "blocked",
+      "context_requirements": {
+        "continuity_needed": true,
+        "prior_context": "h-001",
+        "estimated_tokens": 5000,
+        "reasoning": "Architect needs research results to design phased approach"
+      },
+      "automation": {
+        "fully_automated": true,
+        "human_approval_needed": false,
+        "escalate_if": ["conflicting_data", "design_constraints"]
+      }
+    },
+    "h-003": {
+      "id": "h-003",
+      "from_bot": "bot-001-architect",
+      "to_bot": "bot-003-strategist",
+      "task": "Strategic priority matrix (requires h-001, h-002 complete)",
+      "status": "blocked",
+      "context_requirements": {
+        "continuity_needed": "preferred",
+        "prior_context": ["h-001", "h-002"],
+        "estimated_tokens": 3000,
+        "reasoning": "Strategist benefits from full context but can work independently if needed"
+      },
+      "automation": {
+        "fully_automated": true,
+        "human_approval_needed": false,
+        "escalate_if": ["missing_data", "ambiguous_priorities"]
+      }
+    }
+  },
+  "session_log": "See .idea/session-log.md for full chronology"
+}

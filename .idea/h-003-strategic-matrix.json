@@ -1,0 +1,49 @@
+{
+  "handoff_id": "h-003",
+  "title": "Strategic Priority Matrix",
+  "from_bot": "bot-001-architect",
+  "to_bot": "bot-003-strategist",
+  "created": "2025-10-25T20:35:00Z",
+  "status": "blocked",
+  "priority": "critical",
+  "description": "Create priority/impact matrix and strategic recommendations based on domain analysis and phased rollout plan. Synthesize findings into strategic roadmap.",
+  "input_from": ["h-001", "h-002"],
+  "requirements": [
+    "Review domain analysis results (h-001)",
+    "Review phased rollout plan (h-002)",
+    "Create impact/effort priority matrix",
+    "Identify quick wins and long-term initiatives",
+    "Provide strategic recommendations",
+    "Flag dependencies and risks"
+  ],
+  "deliverables": [
+    "Priority/impact matrix (visual + data)",
+    "Strategic recommendations document",
+    "Quick wins identification (0-3 months)",
+    "Medium-term initiatives (3-6 months)",
+    "Long-term strategic direction (6+ months)",
+    "Risk and dependency map"
+  ],
+  "context_requirements": {
+    "continuity_needed": "preferred",
+    "prior_context": ["h-001", "h-002"],
+    "estimated_tokens": 3000,
+    "reasoning": "Strategist benefits from full context of analysis and planning, but can work independently if needed"
+  },
+  "automation": {
+    "fully_automated": true,
+    "human_approval_needed": false,
+    "escalate_if": ["missing_data", "ambiguous_priorities", "conflicting_objectives"]
+  },
+  "dependencies": ["h-001", "h-002"],
+  "blocks": [],
+  "estimated_duration_hours": 2.5,
+  "success_criteria": [
+    "Clear priority rankings established",
+    "Impact assessment complete",
+    "Quick wins identified and documented",
+    "Strategic roadmap coherent and achievable",
+    "All initiatives mapped to objectives",
+    "Risk assessment included"
+  ]
+}

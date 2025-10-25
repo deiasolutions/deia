@@ -1,0 +1,46 @@
+{
+  "handoff_id": "h-002",
+  "title": "Phased Rollout Design",
+  "from_bot": "bot-002-researcher",
+  "to_bot": "bot-001-architect",
+  "created": "2025-10-25T20:35:00Z",
+  "status": "blocked",
+  "priority": "critical",
+  "description": "Design phased rollout strategy based on domain analysis results from h-001. Create implementation roadmap with clear phases and milestones.",
+  "input_from": "h-001",
+  "requirements": [
+    "Incorporate findings from domain analysis (h-001)",
+    "Design phased approach with clear milestones",
+    "Define success metrics for each phase",
+    "Create timeline and resource estimates",
+    "Identify risks and mitigation strategies"
+  ],
+  "deliverables": [
+    "Phased rollout plan (Phase 1, 2, 3...)",
+    "Implementation roadmap with timeline",
+    "Resource allocation plan",
+    "Risk mitigation strategy",
+    "Success metrics per phase"
+  ],
+  "context_requirements": {
+    "continuity_needed": true,
+    "prior_context": "h-001",
+    "estimated_tokens": 5000,
+    "reasoning": "Architect needs research results from h-001 to design phased approach effectively"
+  },
+  "automation": {
+    "fully_automated": true,
+    "human_approval_needed": false,
+    "escalate_if": ["conflicting_data", "design_constraints", "resource_limitations"]
+  },
+  "dependencies": ["h-001"],
+  "blocks": ["h-003"],
+  "estimated_duration_hours": 3,
+  "success_criteria": [
+    "Clear phase definitions with milestones",
+    "Resource estimates provided",
+    "Risk assessment complete",
+    "Timeline realistic and achievable",
+    "Success metrics measurable"
+  ]
+}

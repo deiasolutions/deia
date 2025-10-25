@@ -188,7 +188,35 @@ Coordinate 5+ AI agents working in parallel:
 - Agent 004: Documentation Curator
 - Agent 005: Full-Stack Generalist
 
-[See agent coordination in action →](/.deia/AGENTS.md)
+#### DEIA Idea Protocol: Context-Aware Multi-Bot Coordination
+
+The DEIA Idea protocol enables autonomous multi-bot coordination by respecting two critical design principles:
+
+**1. Context-Window Awareness**
+- Bots have limited context (Claude: 200K tokens ~150K words)
+- High-context roles (Architect, Backend Coder) maintain single continuity
+- Low-context roles (Researcher, Documenter) can be distributed
+- See `.idea/context-strategy.md` for full strategy
+
+**2. Role Automation Principles**
+- Every role (except Human) must be performable by automated bots
+- Fully automatable: Architect, Researcher, Coder, Tester, Reviewer, Documenter
+- Human-in-loop: Deployer, Publisher, Financial decisions
+- Human-only: Governance, Approval, Ethics, Legal, Emergency
+- See `.idea/role-automation-principles.md` for details
+
+**Coordination Framework** (`.idea/coordination.json`):
+- Bot role definitions with context strategies
+- Handoff queue with dependency tracking
+- Automation levels and approval requirements
+- Escalation protocols for edge cases
+
+**Session logging** (`.idea/session-log.md`):
+- Chronological record of all bot activities
+- Decision tracking and reasoning
+- Proof-of-concept for autonomous coordination
+
+[See coordination framework →](/.idea/coordination.json) | [See session log →](/.idea/session-log.md)
 
 ---
 

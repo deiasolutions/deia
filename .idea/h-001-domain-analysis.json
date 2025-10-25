@@ -1,0 +1,45 @@
+{
+  "handoff_id": "h-001",
+  "title": "Domain Scope Analysis",
+  "from_bot": "bot-001-architect",
+  "to_bot": "bot-002-researcher",
+  "created": "2025-10-25T20:35:00Z",
+  "status": "ready",
+  "priority": "critical",
+  "description": "Analyze domain requirements, feasibility, competitive landscape, and scope boundaries for the platform initiative",
+  "requirements": [
+    "Identify current market landscape and competitors",
+    "Document domain requirements and constraints",
+    "Assess technical feasibility",
+    "Analyze user needs and pain points",
+    "Create requirement matrix with priority levels"
+  ],
+  "deliverables": [
+    "Domain analysis report",
+    "Requirements matrix (with priorities)",
+    "Feasibility assessment",
+    "Competitive analysis summary",
+    "Scope boundaries document"
+  ],
+  "context_requirements": {
+    "continuity_needed": false,
+    "prior_context": null,
+    "estimated_tokens": 2000,
+    "reasoning": "Research task is independent, doesn't require prior conversation context"
+  },
+  "automation": {
+    "fully_automated": true,
+    "human_approval_needed": false,
+    "escalate_if": ["cannot_access_required_info", "ambiguous_requirements"]
+  },
+  "dependencies": [],
+  "blocks": ["h-002"],
+  "estimated_duration_hours": 2,
+  "success_criteria": [
+    "All domain requirements documented",
+    "Feasibility assessment complete",
+    "Priority matrix created",
+    "Competitive analysis included",
+    "Clear scope boundaries defined"
+  ]
+}
