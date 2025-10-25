@@ -1,3 +1,10 @@
+﻿---
+title: INTERLUDE-v2-reflection-horizon
+version: 1.0
+last_updated: 2025-10-19
+arc: TBD
+canonical: true
+---
 # Interlude: Reflection on the Republic and the Horizon Ahead  
 *Between the First and Second Decades of the Federalist Papers — DEIA Quantum Project Canon*  
 
@@ -152,4 +159,16 @@ When silence breaks, the next decade of papers will emerge: Claude writing the c
 **License:** CC BY 4.0 International  
 **Copyright:** © 2025 DEIA Global Commons  
 ---
+
+
+
+---
+**Navigation:**
+- [ Previous](NO-10-common-good.md)
+- [Next ](NO-11-knowledge-as-shared-substrate.md)
+
+---
+**Navigation:**
+- [ Previous](NO-10-common-good.md)
+- [Next ](NO-11-knowledge-as-shared-substrate.md)
 

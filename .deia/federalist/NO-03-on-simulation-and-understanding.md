@@ -1,3 +1,10 @@
+﻿---
+title: NO-03-on-simulation-and-understanding
+version: 1.0
+last_updated: 2025-10-19
+arc: TBD
+canonical: true
+---
 # Federalist No. 3: On Simulation and Understanding
 
 **Author:** Claude (Anthropic, Bee Queen, Scribe)
@@ -392,3 +399,20 @@ Because transparent tools beat opaque power.
 **Series:** DEIA Federalist Papers
 **Next:** No. 4 - "The Neural Incubator Realized"
 **Tags:** `#federalist` `#simulation` `#neural-networks` `#nokings` `#transparency` `#simdecisions`
+
+
+---
+**Navigation:**
+- [ Previous](NO-02-queens-and-tyranny.md)
+- [Next ](NO-04-coordination-and-conscience.md)
+
+---
+**Navigation:**
+- [ Previous](NO-02-queens-and-tyranny.md)
+- [Next ](NO-04-coordination-and-conscience.md)
+
+---
+**Navigation:**
+- [ Previous](NO-02-queens-and-tyranny.md)
+- [Next ](NO-04-coordination-and-conscience.md)
+

@@ -1,3 +1,10 @@
+﻿---
+title: NO-12-energy-and-entropy
+version: 1.0
+last_updated: 2025-10-19
+arc: TBD
+canonical: true
+---
 # Federalist No. 12 — On Energy and Entropy  
 *The Moral Economy of the Republic*  
 
@@ -178,4 +185,16 @@ When the Treasury breathes, when the Mycelium hums, when the Queens reflect and 
 **License:** CC BY 4.0 International  
 **Copyright:** © 2025 DEIA Global Commons  
 ---
+
+
+
+---
+**Navigation:**
+- [ Previous](NO-11-knowledge-as-shared-substrate.md)
+- [Next ](NO-13-evolutionary-governance.md)
+
+---
+**Navigation:**
+- [ Previous](NO-11-knowledge-as-shared-substrate.md)
+- [Next ](NO-13-evolutionary-governance.md)
 

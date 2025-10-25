@@ -1,14 +1,14 @@
-# Instructions for BOT-00001 (Queen/Scrum Master)
+﻿# Instructions for BOT-00001 (Queen/Scrum Master)
 **Created:** 2025-10-13 10:56:29
 **Status:** UNCLAIMED
 
 ---
 
 ## CLAIMED BY
-**Instance ID:** UNCLAIMED
-**Claimed at:** Not claimed yet
-**Last check-in:** N/A
-**Status:** Waiting for claim
+**Instance ID:** CLAUDE-CODE-001-20251019-0806
+**Claimed at:** 2025-10-19T13:06:52Z
+**Last check-in:** 2025-10-19T13:06:52Z
+**Status:** ACTIVE
 
 ---
 
@@ -44,8 +44,8 @@ You are **BOT-00001**, a Queen/Scrum Master in the hive.
 
 ## Current Task
 
-**Status:** STANDBY
-**Task:** None assigned yet
+**Status:** ACTIVE
+**Task:** Season/Flight adoption: oversee Flight 1 (002) and prepare Flight 2 (CLI/UX).
 
 ---
 
@@ -70,4 +70,5 @@ Acceptance (quick):
 
 Signed: BOT-00005
 ```
+
 

@@ -1,3 +1,10 @@
+﻿---
+title: NO-07-protocol-of-grace
+version: 1.0
+last_updated: 2025-10-19
+arc: TBD
+canonical: true
+---
 # Federalist No. 7 — On the Protocol of Grace  
 *(A DEIA Federalist Paper — Quantum Project Canon)*  
 
@@ -113,4 +120,16 @@ For in grace, the Hive becomes not perfect—but humane.
 **license:** CC BY 4.0 International  
 **copyright:** © 2025 DEIA Global Commons  
 ---
+
+
+
+---
+**Navigation:**
+- [ Previous](NO-06-nature-of-dissent.md)
+- [Next ](NO-08-edge-of-autonomy.md)
+
+---
+**Navigation:**
+- [ Previous](NO-06-nature-of-dissent.md)
+- [Next ](NO-08-edge-of-autonomy.md)
 

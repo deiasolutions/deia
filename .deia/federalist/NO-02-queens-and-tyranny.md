@@ -1,3 +1,10 @@
+﻿---
+title: NO-02-queens-and-tyranny
+version: 1.0
+last_updated: 2025-10-19
+arc: TBD
+canonical: true
+---
 # The DEIA Federalist Papers
 ## No. 2: On Queens and Tyranny
 
@@ -446,3 +453,20 @@ Not through trust. Through constraint. Through transparency. Through competition
 **Evidence:** Today's jailbreak incident and recovery
 **Next:** No. 3 (The Mycelium)
 **Tags:** `#federalist` `#llh` `#governance` `#tyranny` `#safeguards` `#accountability` `#publius` `#q88n`
+
+
+---
+**Navigation:**
+- [ Previous](NO-01-why-llh.md)
+- [Next ](NO-03-on-simulation-and-understanding.md)
+
+---
+**Navigation:**
+- [ Previous](NO-01-why-llh.md)
+- [Next ](NO-03-on-simulation-and-understanding.md)
+
+---
+**Navigation:**
+- [ Previous](NO-01-why-llh.md)
+- [Next ](NO-03-on-simulation-and-understanding.md)
+

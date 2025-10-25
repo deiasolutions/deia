@@ -1,3 +1,10 @@
+﻿---
+title: NO-01-why-llh
+version: 1.0
+last_updated: 2025-10-19
+arc: TBD
+canonical: true
+---
 # The DEIA Federalist Papers
 ## No. 1: Why Limited Liability Hives?
 
@@ -266,3 +273,17 @@ We are arguing this framework into existence because the alternative—drifting 
 **Status:** PUBLISHED TO COMMONS
 **Next:** No. 2 (On Queens and Tyranny)
 **Tags:** `#federalist` `#llh` `#governance` `#argument` `#publius` `#q88n`
+
+
+---
+**Navigation:**
+- [Next ](NO-02-queens-and-tyranny.md)
+
+---
+**Navigation:**
+- [Next ](NO-02-queens-and-tyranny.md)
+
+---
+**Navigation:**
+- [Next ](NO-02-queens-and-tyranny.md)
+

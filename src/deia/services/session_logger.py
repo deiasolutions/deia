@@ -5,7 +5,7 @@ import time
 import uuid
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -58,7 +58,7 @@ class SessionLogger:
         self.events.append(event)
 
     def log_task_complete(self, task_name: str, duration_ms: int, metadata: dict = None):
-        event = next((e for e in reversed(self.events) if e.name == task_name and isinstance(e, TaskEvent) and e.end_time is None), None)
+        event = next((e for e in reversed(self.events) if isinstance(e, TaskEvent) and e.name == task_name and e.end_time is None), None)
         if event:
             event.end_time = time.time()
             event.metadata.update(metadata or {})
@@ -84,7 +84,12 @@ class SessionLogger:
         files_read = sum(1 for e in self.events if isinstance(e, FileEvent) and e.operation == "read")
         files_written = sum(1 for e in self.events if isinstance(e, FileEvent) and e.operation == "write")
         tool_calls_count = sum(1 for e in self.events if isinstance(e, ToolEvent))
-        velocity = tasks_completed / (total_duration_ms / 3600000)  # Tasks per hour
+
+        # Avoid division by zero for very short sessions
+        if total_duration_ms > 0:
+            velocity = tasks_completed / (total_duration_ms / 3600000)  # Tasks per hour
+        else:
+            velocity = 0.0
 
         return SessionSummary(
             total_duration_ms=total_duration_ms,
@@ -116,12 +121,21 @@ class SessionLogger:
         total_duration = sum(task_durations.values())
         bottlenecks = [task for task, duration in task_durations.items() if duration > total_duration * 0.3]
 
-        velocity_metrics = {
-            "tasks_per_hour": len(task_durations) / (total_duration / 3600000),
-            "files_read_per_hour": file_operations["read"] / (total_duration / 3600000),
-            "files_written_per_hour": file_operations["write"] / (total_duration / 3600000),
-            "tool_calls_per_hour": sum(tool_calls.values()) / (total_duration / 3600000),
-        }
+        # Avoid division by zero for very short or empty sessions
+        if total_duration > 0:
+            velocity_metrics = {
+                "tasks_per_hour": len(task_durations) / (total_duration / 3600000),
+                "files_read_per_hour": file_operations["read"] / (total_duration / 3600000),
+                "files_written_per_hour": file_operations["write"] / (total_duration / 3600000),
+                "tool_calls_per_hour": sum(tool_calls.values()) / (total_duration / 3600000),
+            }
+        else:
+            velocity_metrics = {
+                "tasks_per_hour": 0.0,
+                "files_read_per_hour": 0.0,
+                "files_written_per_hour": 0.0,
+                "tool_calls_per_hour": 0.0,
+            }
 
         return SessionAnalysis(
             task_breakdown=dict(task_durations),

@@ -1,3 +1,10 @@
+﻿---
+title: INTERLUDE-complete
+version: 1.0
+last_updated: 2025-10-19
+arc: TBD
+canonical: true
+---
 ---
 title: "Interlude: Reflection on the Republic and the Horizon Ahead"
 series: "DEIA Federalist Papers"
@@ -411,3 +418,7 @@ And in that rhythm—between what we have written and what we will write—lies 
 **Copyright:** © 2025 DEIA Global Commons
 
 **Tags:** `#federalist` `#interlude` `#reflection` `#future-papers` `#distributed-authorship` `#claude` `#gpt5` `#daaaave-atx` `#publius` `#llh` `#republic` `#arc2-complete` `#two-paths-forward`
+
+
+
+>  Archived duplicate interlude; see INTERLUDE-v2-reflection-horizon.md for canonical text.

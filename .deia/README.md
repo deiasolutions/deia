@@ -29,3 +29,21 @@ Telemetry & Workers
 
 ## Logging (optional)
 - `deia log --from-file <transcript>` → `.deia/sessions/`
+
+## Integration Protocol (2025-10-17)
+
+**When completing work, ALL agents must follow the 8-step integration checklist:**
+
+1. ✅ Run tests & verify coverage
+2. 🔒 Security review (for critical code)
+3. 🐛 Document bugs in `BUG_REPORTS.md`
+4. 📝 Update `.deia/ACCOMPLISHMENTS.md` (central log)
+5. 📋 Update `BACKLOG.md` and `ROADMAP.md`
+6. 🧪 Create test task if tests missing (doesn't block)
+7. 📊 Log integration to activity.jsonl
+8. 📡 Send SYNC to coordinator (Agent 001)
+
+**Full Details:**
+- Protocol: `../docs/process/INTEGRATION-PROTOCOL.md`
+- Accomplishments: `.deia/ACCOMPLISHMENTS.md`
+- Agents: `.deia/AGENTS.md` (includes protocol summary)

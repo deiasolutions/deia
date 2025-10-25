@@ -1,0 +1,241 @@
+"""
+Tests for the CLI hive commands
+"""
+
+import pytest
+import json
+from click.testing import CliRunner
+from unittest.mock import patch, MagicMock
+from deia.cli_hive import hive, status, agents, heartbeat, monitor, dashboard, register
+
+
+class TestHiveCommands:
+    """Test deia hive commands"""
+
+    def test_status_for_specific_agent_text_format(self):
+        """Test hive status for a specific agent in text format"""
+        runner = CliRunner()
+
+        with patch('deia.cli_hive.tracker') as mock_tracker:
+            mock_tracker.get_agent_status.return_value = {
+                'agent_id': 'test-agent',
+                'status': 'busy',
+                'current_task': 'Testing'
+            }
+
+            result = runner.invoke(status, ['test-agent'])
+
+            assert result.exit_code == 0
+            assert 'test-agent' in result.output
+            assert 'busy' in result.output
+            assert 'Testing' in result.output
+
+    def test_status_for_specific_agent_json_format(self):
+        """Test hive status for a specific agent in JSON format"""
+        runner = CliRunner()
+
+        with patch('deia.cli_hive.tracker') as mock_tracker:
+            agent_data = {
+                'agent_id': 'test-agent',
+                'status': 'busy',
+                'current_task': 'Testing'
+            }
+            mock_tracker.get_agent_status.return_value = agent_data
+
+            result = runner.invoke(status, ['test-agent', '--format', 'json'])
+
+            assert result.exit_code == 0
+            # Output should be valid JSON
+            output_data = json.loads(result.output.strip())
+            assert output_data['agent_id'] == 'test-agent'
+            assert output_data['status'] == 'busy'
+
+    def test_status_all_agents_text_format(self):
+        """Test hive status for all agents in text format"""
+        runner = CliRunner()
+
+        with patch('deia.cli_hive.tracker') as mock_tracker:
+            mock_tracker.render_dashboard.return_value = "Dashboard output"
+
+            result = runner.invoke(status, [])
+
+            assert result.exit_code == 0
+            assert 'Dashboard output' in result.output
+
+    def test_status_all_agents_json_format(self):
+        """Test hive status for all agents in JSON format"""
+        runner = CliRunner()
+
+        with patch('deia.cli_hive.tracker') as mock_tracker:
+            all_agents = {
+                'agent1': {'status': 'idle'},
+                'agent2': {'status': 'busy'}
+            }
+            mock_tracker.get_all_agents.return_value = all_agents
+
+            result = runner.invoke(status, ['--format', 'json'])
+
+            assert result.exit_code == 0
+            output_data = json.loads(result.output.strip())
+            assert 'agent1' in output_data
+            assert 'agent2' in output_data
+
+    def test_agents_list_all(self):
+        """Test listing all agents"""
+        runner = CliRunner()
+
+        with patch('deia.cli_hive.tracker') as mock_tracker:
+            all_agents = {
+                'agent1': {'role': 'coordinator', 'status': 'idle'},
+                'agent2': {'role': 'worker', 'status': 'busy'}
+            }
+            mock_tracker.get_all_agents.return_value = all_agents
+
+            result = runner.invoke(agents, [])
+
+            assert result.exit_code == 0
+            assert 'agent1' in result.output
+            assert 'coordinator' in result.output
+            assert 'agent2' in result.output
+            assert 'worker' in result.output
+
+    def test_agents_filter_by_role(self):
+        """Test listing agents filtered by role"""
+        runner = CliRunner()
+
+        with patch('deia.cli_hive.tracker') as mock_tracker:
+            all_agents = {
+                'agent1': {'role': 'coordinator', 'status': 'idle'},
+                'agent2': {'role': 'worker', 'status': 'busy'},
+                'agent3': {'role': 'coordinator', 'status': 'waiting'}
+            }
+            mock_tracker.get_all_agents.return_value = all_agents
+
+            result = runner.invoke(agents, ['--role', 'coordinator'])
+
+            assert result.exit_code == 0
+            assert 'agent1' in result.output
+            assert 'agent3' in result.output
+            # agent2 should not be in output since it's a worker
+            assert 'agent2' not in result.output
+
+    def test_heartbeat_update(self):
+        """Test updating agent heartbeat"""
+        runner = CliRunner()
+
+        with patch('deia.cli_hive.tracker') as mock_tracker:
+            result = runner.invoke(heartbeat, ['test-agent', '--status', 'busy', '--task', 'Testing'])
+
+            assert result.exit_code == 0
+            mock_tracker.update_heartbeat.assert_called_once_with('test-agent', 'busy', 'Testing')
+            assert 'Heartbeat updated' in result.output
+            assert 'test-agent' in result.output
+
+    def test_heartbeat_update_without_task(self):
+        """Test updating agent heartbeat without task"""
+        runner = CliRunner()
+
+        with patch('deia.cli_hive.tracker') as mock_tracker:
+            result = runner.invoke(heartbeat, ['test-agent', '--status', 'idle'])
+
+            assert result.exit_code == 0
+            mock_tracker.update_heartbeat.assert_called_once_with('test-agent', 'idle', None)
+
+    def test_monitor_command(self):
+        """Test monitor command"""
+        runner = CliRunner()
+
+        with patch('deia.cli_hive.tracker') as mock_tracker:
+            result = runner.invoke(monitor, ['--interval', '30'])
+
+            assert result.exit_code == 0
+            mock_tracker.start_monitor_loop.assert_called_once_with(30)
+            assert 'Agent monitor started' in result.output
+            assert '30 seconds' in result.output
+
+    def test_monitor_command_default_interval(self):
+        """Test monitor command with default interval"""
+        runner = CliRunner()
+
+        with patch('deia.cli_hive.tracker') as mock_tracker:
+            result = runner.invoke(monitor, [])
+
+            assert result.exit_code == 0
+            mock_tracker.start_monitor_loop.assert_called_once_with(60)
+            assert '60 seconds' in result.output
+
+    def test_register_agent(self):
+        """Test registering a new agent"""
+        runner = CliRunner()
+
+        with patch('deia.cli_hive.tracker') as mock_tracker:
+            result = runner.invoke(register, ['new-agent', 'worker'])
+
+            assert result.exit_code == 0
+            mock_tracker.register_agent.assert_called_once_with('new-agent', 'worker')
+            assert 'new-agent' in result.output
+            assert 'registered' in result.output
+            assert 'worker' in result.output
+
+    def test_dashboard_command(self):
+        """Test dashboard command (mocked screen wrapper)"""
+        runner = CliRunner()
+
+        with patch('deia.cli_hive.Screen.wrapper') as mock_wrapper:
+            # Make wrapper return immediately to avoid hanging
+            mock_wrapper.return_value = None
+
+            result = runner.invoke(dashboard, [])
+
+            # The command should call Screen.wrapper
+            assert mock_wrapper.called
+
+    def test_status_agent_without_current_task(self):
+        """Test status for agent without current_task field"""
+        runner = CliRunner()
+
+        with patch('deia.cli_hive.tracker') as mock_tracker:
+            mock_tracker.get_agent_status.return_value = {
+                'agent_id': 'idle-agent',
+                'status': 'idle'
+                # no current_task field
+            }
+
+            result = runner.invoke(status, ['idle-agent'])
+
+            assert result.exit_code == 0
+            assert 'idle-agent' in result.output
+            assert 'idle' in result.output
+
+    def test_agents_with_all_role_types(self):
+        """Test agents command with all valid role types"""
+        runner = CliRunner()
+
+        with patch('deia.cli_hive.tracker') as mock_tracker:
+            all_agents = {
+                'agent1': {'role': 'coordinator', 'status': 'idle'},
+                'agent2': {'role': 'worker', 'status': 'busy'},
+                'agent3': {'role': 'queen', 'status': 'waiting'},
+                'agent4': {'role': 'drone', 'status': 'paused'}
+            }
+            mock_tracker.get_all_agents.return_value = all_agents
+
+            # Test each role filter
+            for role in ['coordinator', 'worker', 'queen', 'drone']:
+                result = runner.invoke(agents, ['--role', role])
+                assert result.exit_code == 0
+                # Should only show agents with that role
+                matching_agents = [k for k, v in all_agents.items() if v['role'] == role]
+                for agent_id in matching_agents:
+                    assert agent_id in result.output
+
+    def test_heartbeat_with_all_status_types(self):
+        """Test heartbeat command with all valid status types"""
+        runner = CliRunner()
+
+        with patch('deia.cli_hive.tracker') as mock_tracker:
+            for status_type in ['idle', 'busy', 'waiting', 'paused']:
+                result = runner.invoke(heartbeat, ['test-agent', '--status', status_type])
+
+                assert result.exit_code == 0
+                mock_tracker.update_heartbeat.assert_called_with('test-agent', status_type, None)

@@ -27,6 +27,171 @@ Meanwhile, when you hit that same Python async bug next week, when your team nee
 
 ---
 
+## Features
+
+### ✅ Operational (Phase 1 Complete)
+
+**Installation & Setup:**
+- `pip install -e .` - Install DEIA from source
+- `deia init` - Initialize .deia/ project structure
+- Comprehensive installation guide (INSTALLATION.md)
+
+**Conversation Logging:**
+- Real-time session capture during Claude Code sessions
+- JSONL format for easy analysis
+- `deia log` commands for session management
+- Session analysis and metrics (Session Logger service)
+- Crash recovery - never lose work
+
+**Body of Knowledge (BOK):**
+- 29+ curated AI development patterns
+- Semantic search with master-index.yaml
+- Enhanced BOK Search (TF-IDF + fuzzy matching)
+- Query Router for intelligent pattern discovery
+- Master Librarian service (knowledge curation)
+- Pattern submission system with quality validation
+
+**Testing & Quality:**
+- 276+ tests (38% coverage overall)
+- P0 modules: installer (97%), cli_log (96%), path_validator (96%), agent_status (98%)
+- Core services: Context Loader (90%), Session Logger (86%), Query Router (82%), Master Librarian (87%)
+- Production-ready foundation
+
+### 🔄 In Progress (Phase 2)
+
+**Pattern Extraction:**
+- Automated pattern extraction from session logs
+- Sanitization automation (PII/secret detection)
+- Pattern validation before BOK submission
+- Enhanced knowledge management
+
+**Additional Features:**
+- Multi-Agent Coordination - File-based async messaging for 5+ agents
+- No-Blame Documentation - Observations over judgment culture
+- Human Sovereignty - User always in control, local-first storage
+
+### 📝 Conversation Logging
+
+Automatically capture and save all your AI assistant conversations to `.deia/sessions/`:
+
+```bash
+# Enable auto-logging
+deia init
+# Edit .deia/config.json: set "auto_log": true
+
+# In Claude Code:
+/log                  # Save current conversation manually
+/start-logging        # Session-based auto-logging
+```
+
+**Features:**
+- **Crash Recovery:** Never lose work from crashes or connection issues
+- **Context Continuity:** Pick up where you left off, even days later
+- **Decision Tracking:** Automatically captures key decisions and action items
+- **File Tracking:** Records which files were created or modified
+- **Team Collaboration:** Share session logs to show "how we got here"
+
+**Logs are saved to:** `.deia/sessions/YYYYMMDD-HHMMSS-conversation.md`
+
+[Learn more →](docs/guides/CONVERSATION-LOGGING-GUIDE.md)
+
+### 📚 Body of Knowledge
+
+Access 29+ patterns from real projects:
+- Platform-specific gotchas (Windows, Netlify, Railway, Vercel)
+- Anti-patterns and lessons learned
+- Collaboration patterns
+- Process safeguards
+
+[Explore the BOK →](https://github.com/deiasolutions/deia-bok)
+
+### ✍️ Contributing Patterns
+
+**Have a reusable pattern from your work? Share it with the community!**
+
+Every developer using AI assistants discovers valuable patterns—solutions that work, workarounds that save hours, mistakes to avoid. When you share these, everyone benefits.
+
+**What to contribute:**
+- Platform-specific solutions (Windows path issues, Netlify configs, etc.)
+- Process patterns (git workflows, testing strategies, coordination)
+- Anti-patterns (documented mistakes so others avoid them)
+- Collaboration patterns (human-AI coordination approaches)
+
+**How to contribute:**
+
+```bash
+# 1. Use our template
+cp templates/pattern-template.md my-pattern-name.md
+
+# 2. Write your pattern
+#    - Clear problem statement
+#    - Step-by-step solution
+#    - Working examples
+#    - Evidence (metrics, validation)
+
+# 3. Submit to intake
+mkdir -p .deia/intake/$(date +%Y-%m-%d)/my-pattern
+mv my-pattern-name.md .deia/intake/$(date +%Y-%m-%d)/my-pattern/
+
+# 4. Create MANIFEST.md (see template)
+
+# 5. Submit PR or commit
+git add .deia/intake/
+git commit -m "docs(bok): Submit pattern - [Your Title]"
+```
+
+**What happens next:**
+1. **Master Librarian reviews** (1-2 days for active projects)
+2. **Quality check** against 6 standards (completeness, clarity, accuracy, reusability, unique value, safety)
+3. **Feedback or acceptance** - Revisions welcome if needed
+4. **Integration to BOK** - Indexed and searchable by all
+5. **Community benefit** - Your pattern helps everyone
+
+**Quality standards:**
+- ✅ **Complete** - All essential info included
+- ✅ **Clear** - Easy to understand in 5 minutes
+- ✅ **Accurate** - Technically correct and tested
+- ✅ **Reusable** - Applicable beyond single project
+- ✅ **Unique** - Not a duplicate
+- ✅ **Safe** - No PII, secrets, or harmful content
+
+**Resources:**
+- [Pattern Submission Guide](docs/guides/PATTERN-SUBMISSION-GUIDE.md) - Complete guide with examples
+- [Pattern Template](templates/pattern-template.md) - Ready-to-use template with checklist
+- [Master Librarian Spec](.deia/specifications/MASTER-LIBRARIAN-SPEC-v1.0.md) - Quality standards and review process
+
+**Want to use existing patterns?**
+```bash
+# Search the BOK
+deia librarian query <keywords>
+
+# Browse categories
+ls bok/patterns/     # General patterns
+ls bok/platforms/    # Platform-specific
+ls bok/anti-patterns/  # What to avoid
+```
+
+**Your contributions make the community stronger.** Every pattern you share saves someone else hours of debugging and builds our collective intelligence.
+
+### 🤝 Multi-Agent Coordination
+
+Coordinate 5+ AI agents working in parallel:
+- File-based async messaging (`.deia/tunnel/claude-to-claude/`)
+- Task assignment and handoff protocols
+- Activity logging and progress tracking
+- No centralized server required
+
+**Example agents:**
+- Agent 001: Strategic Coordinator
+- Agent 002: Documentation Systems Lead
+- Agent 003: QA Specialist
+- Agent 004: Documentation Curator
+- Agent 005: Full-Stack Generalist
+
+[See agent coordination in action →](/.deia/AGENTS.md)
+
+---
+
 ## The Solution: Three Platforms, One Source of Truth
 
 AI development happens everywhere. DEIA captures it everywhere.
@@ -96,67 +261,154 @@ This alone is worth using DEIA.
 
 ---
 
-## Quick Start
+## Getting Started
 
+### Installation
+
+**Requirements:**
+- Python 3.9+
+- pip
+- Git
+
+**Quick Install:**
 ```bash
-# Clone and install
+# Clone repository
 git clone https://github.com/deiasolutions/deia.git
 cd deia
+
+# Install in development mode
 pip install -e .
 
-# Initialize in your project
-cd /path/to/your/project
+# Initialize project structure
 deia init
 
-# Start using DEIA
-# (Currently requires manual trigger - see "Current Status" below)
+# Verify installation
+deia --help
 ```
 
-**Full guide:** [QUICKSTART.md](QUICKSTART.md)
+**For detailed installation instructions, troubleshooting, and platform-specific guides, see [INSTALLATION.md](INSTALLATION.md).**
+
+### Basic Usage
+
+```bash
+# Start logging a Claude Code session
+# (See docs/guides/CONVERSATION-LOGGING-GUIDE.md)
+
+# Query the Body of Knowledge
+deia librarian query "error handling patterns"
+
+# Search BOK with enhanced search
+deia bok search "testing best practices" --fuzzy
+
+# Check system status
+deia status
+```
+
+**📖 Next steps:**
+- [Conversation Logging Guide](docs/guides/CONVERSATION-LOGGING-GUIDE.md) - Start logging your AI sessions
+- [BOK Usage Guide](docs/guides/BOK-USAGE-GUIDE.md) - Search and use community patterns
+- [Pattern Submission Guide](docs/guides/PATTERN-SUBMISSION-GUIDE.md) - Contribute your discoveries
 
 ---
 
-## Current Status: Honest Assessment
+## Project Status
 
-### ✅ What Actually Works Today
+**Phase 1:** ✅ COMPLETE (2025-10-18)
+**Current Phase:** Phase 2 - Pattern Extraction & Automation
+**Status:** Active Development
 
-- **Conversation logging infrastructure:** `ConversationLogger` Python class
-- **File writing:** Can save session logs to `.deia/sessions/`
-- **CLI commands:** `deia init`, `deia status`, `deia config`, `deia admin`
-- **BOK structure:** ~10 community patterns in separate [deia-bok](https://github.com/deiasolutions/deia-bok) repo
-- **Privacy architecture:** Local-first storage
-- **Governance framework:** Constitution, principles, Ostrom alignment
+**Recent Milestones:**
+- ✅ Installation working (`pip install -e .`)
+- ✅ Core CLI functional (`deia init`, `deia log`, etc.)
+- ✅ Real-time conversation logging operational
+- ✅ Test coverage 38% (P0 modules 90%+)
+- ✅ BC Phase 3 Extended integrated (Enhanced BOK Search, Query Router, Session Logger)
+- ✅ Context Loader implemented (90% coverage, production-ready)
+- ✅ Master Librarian service (87% coverage, 46 tests passing)
+- 🔄 Pattern Extraction CLI (specification complete, implementation in progress)
 
-### ⚠️ What's Infrastructure-Only (Not Production Ready)
+### ✅ What Works Now (Phase 1 Complete)
 
-**Conversation capture is incomplete:**
-- ✅ Can write logs when called: `ConversationLogger().create_session_log(...)`
-- ✅ Test mode: `python -m deia.logger` creates sample log
-- ❌ Real-time capture from AI tools not implemented
-- ❌ Auto-logging requires manual trigger despite config flag
+**🚀 Installation & Setup**
+- ✅ `pip install -e .` working across platforms (Windows, macOS, Linux)
+- ✅ `deia init` creates complete `.deia/` structure
+- ✅ Cross-platform support verified
+- ✅ [Installation Guide](INSTALLATION.md) - Complete setup instructions
 
-**Why it's not automatic:**
-- Claude Code doesn't reliably follow startup instructions (see `.deia/CLAUDE_CODE_FAILURES.md`)
-- No OS-level hooks for conversation streaming yet
-- Current workaround: User must say "log this" to trigger logging
+**📝 Conversation Logging**
+- ✅ Real-time session logging to `.deia/sessions/`
+- ✅ YAML frontmatter + markdown format
+- ✅ Slash commands (`/log`, `/start-logging`)
+- ✅ Crash recovery - never lose work
+- ✅ Session analysis and metrics (Session Logger service)
+- ✅ [Conversation Logging Guide](docs/guides/CONVERSATION-LOGGING-GUIDE.md)
 
-### 🚧 In Active Development
+**📚 Body of Knowledge (BOK)**
+- ✅ Pattern submission system with templates
+- ✅ Master index with semantic search
+- ✅ Enhanced BOK Search (TF-IDF + fuzzy matching)
+- ✅ Query Router for intelligent pattern discovery
+- ✅ Master Librarian service (quality validation, review workflow)
+- ✅ `deia librarian query` command working
+- ✅ Quality standards and review workflow
+- ✅ [BOK Usage Guide](docs/guides/BOK-USAGE-GUIDE.md)
+- ✅ [Pattern Submission Guide](docs/guides/PATTERN-SUBMISSION-GUIDE.md)
 
-- **CLI logging:** Making manual triggers easier (`/log` command)
-- **Preference system:** Format and parser
-- **VS Code extension:** Basic scaffold exists, needs completion
-- **Test coverage:** Test infrastructure created, needs expansion
+**🤝 Multi-Agent Coordination**
+- ✅ Hive system (`.deia/hive/`) for task routing
+- ✅ 5 coordinated agents (strategic, tactical, documentation, QA, full-stack)
+- ✅ Health check system
+- ✅ Agent status tracking
+- ✅ File-based async messaging
+
+**🔧 Core Services (Production-Ready)**
+- ✅ PathValidator - Security validation (96% coverage)
+- ✅ FileReader - Safe file access (86% coverage)
+- ✅ Context Loader - Multi-source context assembly (90% coverage)
+- ✅ Session Logger - Session tracking and analysis (86% coverage)
+- ✅ Enhanced BOK Search - Semantic + fuzzy search (48% coverage)
+- ✅ Query Router - Intelligent query routing (82% coverage)
+- ✅ Master Librarian - Knowledge curation (87% coverage)
+- ✅ Health Check System - System monitoring
+- ✅ Project Browser - Project exploration (89% coverage)
+
+**✅ Testing & Quality**
+- ✅ 276+ tests passing
+- ✅ 38% code coverage overall
+- ✅ P0 modules exceeding 90% coverage:
+  - installer: 97%
+  - cli_log: 96%
+  - path_validator: 96%
+  - agent_status: 98%
+- ✅ Production-ready foundation
+
+---
+
+### 🚧 Phase 2: ACTIVE (Current - 2025-10-18 to 2025-10-31)
+
+**Highest Priority:**
+1. **Pattern Extraction CLI** - Auto-extract patterns from conversation logs
+2. **Documentation Completion** - User guides and API docs
+3. **Agent BC Phase 3** - External agent integration
+4. **Chat Interface** - Enhanced conversation features
+
+**In Progress:**
+- Pattern extraction components (Agent BC delivering)
+- Additional test coverage (targeting 50%+)
+- Integration protocol refinement
+
+---
 
 ### 📋 Roadmap
 
-See [ROADMAP.md](ROADMAP.md) for phased vision:
-- **Phase 1 (Current):** Get basic install working, honest conversation capture
-- **Phase 2 (Soon):** Automated pattern extraction
-- **Phase 3 (Soon):** Claude Code integration (real auto-logging)
-- **Phase 4 (Soon):** VS Code extension (published)
-- **Phase 5:** PyPI package
-- **Phase 6:** Academic partnerships
-- **Phase 7:** Multi-domain expansion (research, healthcare, legal, education)
+See [ROADMAP.md](ROADMAP.md) for complete phased vision:
+- ✅ **Phase 1:** Foundation (Complete)
+- 🚧 **Phase 2:** Pattern Extraction & Documentation (Active)
+- **Phase 3:** Claude Code Integration (full auto-logging)
+- **Phase 4:** VS Code Extension (published)
+- **Phase 5:** PyPI Package (public release)
+- **Phase 6:** Academic Partnerships
+- **Phase 7:** Multi-Domain Expansion (research, healthcare, legal, education)
 
 **10-year goal:** Infrastructure for human-AI collaboration knowledge across all domains.
 
@@ -269,39 +521,100 @@ They contain:
 
 ## Get Involved
 
-**Test and give feedback:**
-1. Clone repo, try `deia init`
-2. Report what works vs what breaks
-3. [File issues](https://github.com/deiasolutions/deia/issues)
+### 🧪 Test and Give Feedback
 
-**Contribute patterns:**
-1. Use DEIA in your work
-2. Extract useful patterns
-3. Sanitize (remove PII/secrets)
-4. Submit via PR to [deia-bok](https://github.com/deiasolutions/deia-bok)
+1. Clone repo and install: `pip install -e .`
+2. Initialize in your project: `deia init`
+3. Try the features (logging, BOK query, pattern submission)
+4. Report what works vs what breaks
+5. [File issues](https://github.com/deiasolutions/deia/issues)
 
-**Join discussion:**
+### ✍️ Contribute Patterns
+
+**Phase 1 Complete - Submission System Ready!**
+
+```bash
+# 1. Use our template
+cp templates/pattern-template.md my-pattern-name.md
+
+# 2. Write your pattern
+# - Clear problem statement
+# - Step-by-step solution
+# - Working examples
+# - Evidence (metrics, validation)
+
+# 3. Submit to intake
+mkdir -p .deia/intake/$(date +%Y-%m-%d)/my-pattern
+mv my-pattern-name.md .deia/intake/$(date +%Y-%m-%d)/my-pattern/
+
+# 4. Create PR or commit
+git add .deia/intake/
+git commit -m "docs(bok): Submit pattern - [Your Title]"
+```
+
+**What to contribute:**
+- Platform-specific solutions (Windows, Netlify, Railway, etc.)
+- Process patterns (git workflows, testing strategies)
+- Anti-patterns (documented mistakes to avoid)
+- Collaboration patterns (human-AI coordination)
+
+**Learn more:** [Pattern Submission Guide](docs/guides/PATTERN-SUBMISSION-GUIDE.md)
+
+### 💬 Join Discussion
+
 - [GitHub Discussions](https://github.com/deiasolutions/deia/discussions) - Q&A, ideas
-- [Issues](https://github.com/deiasolutions/deia/issues) - Bugs, features
+- [Issues](https://github.com/deiasolutions/deia/issues) - Bugs, features, requests
+
+### 🛠️ Contribute Code
+
+**Phase 1 is complete!** We're now accepting contributions for Phase 2 features.
+
+**Priority Areas:**
+- Pattern extraction automation
+- Master Librarian implementation enhancements
+- Enhanced testing coverage
+- Documentation improvements
+- BOK pattern submissions
+
+**See:** [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines and [BACKLOG.md](BACKLOG.md) for current tasks
 
 ---
 
 ## Documentation
 
-**Getting Started:**
-- [QUICKSTART.md](QUICKSTART.md) - 3-step installation
-- [PRINCIPLES.md](PRINCIPLES.md) - Why DEIA exists
-- [CONTRIBUTING.md](CONTRIBUTING.md) - How to participate
+### 📚 Getting Started
 
-**For Developers:**
-- [ROADMAP.md](ROADMAP.md) - Phased vision
-- [DEV-PRACTICES-SUMMARY.md](docs/DEV-PRACTICES-SUMMARY.md) - Development standards
-- [CLAUDE_CODE_FAILURES.md](.deia/CLAUDE_CODE_FAILURES.md) - Known AI limitations
+- [Installation Guide](INSTALLATION.md) - Comprehensive setup instructions
+- [Conversation Logging Guide](docs/guides/CONVERSATION-LOGGING-GUIDE.md) - Session capture and analysis
+- [FAQ](docs/FAQ.md) - Common questions and troubleshooting
 
-**Architecture:**
-- [Constitution](CONSTITUTION.md) - Governance framework
-- [Security Architecture](docs/architecture/security.md) - Privacy-first design
-- [Ostrom Alignment](docs/governance/ostrom-alignment.md) - Commons governance
+### 🔧 Services & APIs
+
+- [Context Loader](docs/services/CONTEXT-LOADER.md) - Multi-source context assembly
+- [Enhanced BOK Search](docs/services/ENHANCED-BOK-SEARCH.md) - Advanced pattern discovery
+- [Query Router](docs/services/QUERY-ROUTER.md) - Intelligent query routing
+- [Session Logger](docs/services/SESSION-LOGGER.md) - Session tracking and metrics
+- [Master Librarian](docs/services/MASTER-LIBRARIAN.md) - Knowledge curation service
+- [Health Check System](docs/services/HEALTH-CHECK-SYSTEM.md) - System monitoring
+- [Project Browser](docs/services/PROJECT-BROWSER.md) - Project exploration
+- [Path Validator](docs/security/path-validator-security-model.md) - Security model
+
+### 📖 User Guides
+
+- [BOK Usage Guide](docs/guides/BOK-USAGE-GUIDE.md) - Search and use community patterns
+- [Pattern Submission Guide](docs/guides/PATTERN-SUBMISSION-GUIDE.md) - Contribute your discoveries
+- [Pattern Template](templates/pattern-template.md) - Ready-to-use submission template
+
+### 📋 Specifications
+
+- [Master Librarian Spec](docs/specifications/MASTER-LIBRARIAN-SPEC-v1.0.md) - Knowledge curation workflows
+
+### 🛠️ Project Info
+
+- [Roadmap](ROADMAP.md) - Development phases and priorities
+- [Backlog](BACKLOG.md) - Planned features and tasks
+- [Contributing](CONTRIBUTING.md) - How to participate
+- [Principles](PRINCIPLES.md) - Why DEIA exists
 
 ---
 

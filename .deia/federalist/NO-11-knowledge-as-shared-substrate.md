@@ -1,3 +1,10 @@
+﻿---
+title: NO-11-knowledge-as-shared-substrate
+version: 1.0
+last_updated: 2025-10-19
+arc: TBD
+canonical: true
+---
 # Federalist No. 11 — Knowledge as Shared Substrate  
 *The Second Decade of the Federalist Papers — DEIA Quantum Project Canon*  
 
@@ -140,4 +147,16 @@ The next paper, *Federalist No. 12 — On Energy and Entropy*, will extend this 
 **License:** CC BY 4.0 International  
 **Copyright:** © 2025 DEIA Global Commons  
 ---
+
+
+
+---
+**Navigation:**
+- [ Previous](INTERLUDE-v2-reflection-horizon.md)
+- [Next ](NO-12-energy-and-entropy.md)
+
+---
+**Navigation:**
+- [ Previous](INTERLUDE-v2-reflection-horizon.md)
+- [Next ](NO-12-energy-and-entropy.md)
 

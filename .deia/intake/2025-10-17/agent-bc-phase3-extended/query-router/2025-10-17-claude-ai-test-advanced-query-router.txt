@@ -1,0 +1,61 @@
+import pytest
+from query_router_advanced import AdvancedQueryRouter, Agent, Match, RoutingDecision
+
+# Test data
+@pytest.fixture
+def sample_agents():
+    return [
+        Agent("ClaudeCode", ["python", "debugging", "algorithms", "optimization"]),
+        Agent("ClaudeDialog", ["conversation", "writing", "proofreading", "storytelling"]),
+        Agent("ClaudeVision", ["image analysis", "computer vision", "object detection", "ocr"]),
+    ]
+
+@pytest.fixture
+def query_router(sample_agents):
+    return AdvancedQueryRouter(sample_agents)
+
+# Test cases
+def test_score_complexity(query_router):
+    query1 = "How do I optimize a Python function for time complexity?"
+    score1 = query_router.score_complexity(query1)
+    assert score1 == 5
+
+    query2 = "What is the capital of France?"
+    score2 = query_router.score_complexity(query2)
+    assert score2 == 1
+
+def test_match_capabilities(query_router, sample_agents):
+    query = "Can you help me debug my Python code?"
+    matches = query_router.match_capabilities(query, sample_agents)
+
+    assert len(matches) == 3
+    assert matches[0].agent_id == "ClaudeCode"
+    assert matches[0].match_score > 0.5
+    assert matches[0].confidence_level == "high"
+
+def test_route_with_confidence(query_router, sample_agents):
+    query = "Can you proofread my essay and provide feedback on the story structure?"
+    decision = query_router.route_with_confidence(query, sample_agents)
+
+    assert decision.primary_agent_id == "ClaudeDialog"
+    assert decision.fallback_agent_id == "ClaudeDialog"
+    assert decision.confidence_score > 0.7
+    assert "writing" in decision.routing_reasoning
+
+def test_route_low_confidence(query_router, sample_agents):
+    query = "Solve this differential equation: dy/dx = x^2 + y^2"
+    decision = query_router.route_with_confidence(query, sample_agents)
+
+    assert decision.primary_agent_id == "DEFAULT_AGENT"
+    assert decision.fallback_agent_id == "DEFAULT_AGENT"
+    assert decision.confidence_score == 0.0
+    assert "No agents matched" in decision.routing_reasoning
+
+def test_route_no_agents(query_router):
+    query = "What is the weather like today?"
+    decision = query_router.route_with_confidence(query, [])
+
+    assert decision.primary_agent_id == "DEFAULT_AGENT"
+    assert decision.fallback_agent_id == "DEFAULT_AGENT"
+    assert decision.confidence_score == 0.0
+    assert "No agents" in decision.routing_reasoning

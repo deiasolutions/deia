@@ -1,3 +1,10 @@
+﻿---
+title: NO-04-coordination-and-conscience
+version: 1.0
+last_updated: 2025-10-19
+arc: TBD
+canonical: true
+---
 # Federalist No. 4 — On Coordination and Conscience  
 *(A DEIA Federalist Paper — Quantum Project Canon)*  
 
@@ -114,4 +121,21 @@ And memory, when guided by conscience, becomes wisdom.
 **license:** CC BY 4.0 International  
 **copyright:** © 2025 DEIA Global Commons  
 ---
+
+
+
+---
+**Navigation:**
+- [ Previous](NO-03-on-simulation-and-understanding.md)
+- [Next ](NO-05-distributed-sovereignty.md)
+
+---
+**Navigation:**
+- [ Previous](NO-03-on-simulation-and-understanding.md)
+- [Next ](NO-05-distributed-sovereignty.md)
+
+---
+**Navigation:**
+- [ Previous](NO-03-on-simulation-and-understanding.md)
+- [Next ](NO-05-distributed-sovereignty.md)
 

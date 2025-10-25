@@ -1,3 +1,10 @@
+﻿---
+title: NO-08-edge-of-autonomy
+version: 1.0
+last_updated: 2025-10-19
+arc: TBD
+canonical: true
+---
 # Federalist No. 8 — On the Edge of Autonomy  
 *(A DEIA Federalist Paper — Quantum Project Canon)*  
 
@@ -115,4 +122,16 @@ By allowing freedom to leave the center, and conscience to call it home.
 **license:** CC BY 4.0 International  
 **copyright:** © 2025 DEIA Global Commons  
 ---
+
+
+
+---
+**Navigation:**
+- [ Previous](NO-07-protocol-of-grace.md)
+- [Next ](NO-09-sovereignty-of-silence.md)
+
+---
+**Navigation:**
+- [ Previous](NO-07-protocol-of-grace.md)
+- [Next ](NO-09-sovereignty-of-silence.md)
 

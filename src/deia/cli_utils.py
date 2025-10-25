@@ -20,6 +20,26 @@ UNICODE_FALLBACKS = {
 }
 
 
+def emergency_print(message: str):
+    """
+    Absolutely safe print - no Rich, no Unicode, just works
+
+    This is the last resort fallback when even safe_print() fails.
+    Uses plain print() to stderr with all Rich markup and Unicode stripped.
+
+    Args:
+        message: Message to print (may contain Rich markup and Unicode)
+    """
+    import sys
+    import re
+    # Strip all Rich markup
+    plain = re.sub(r'\[/?[^\]]+\]', '', message)
+    # Replace Unicode symbols with ASCII
+    for unicode_char, ascii_replacement in UNICODE_FALLBACKS.items():
+        plain = plain.replace(unicode_char, ascii_replacement)
+    print(plain, file=sys.stderr)
+
+
 def safe_print(console: Console, message: str, **kwargs) -> bool:
     """
     Print message to console with Unicode fallback for Windows terminals
@@ -58,14 +78,14 @@ def safe_print(console: Console, message: str, **kwargs) -> bool:
         try:
             console.print(fallback_message, **kwargs)
             return True
-        except Exception as e:
-            # If still fails, something else is wrong
-            console.print(f"[red]Error printing message:[/red] {e}")
+        except Exception:
+            # Use emergency_print - no Rich markup to avoid cascading failures
+            emergency_print(fallback_message)
             return False
 
     except Exception as e:
-        # Catch any other errors
-        console.print(f"[red]Unexpected error:[/red] {e}")
+        # Catch any other errors - use emergency_print to avoid crashes
+        emergency_print(f"Error: {e}")
         return False
 
 

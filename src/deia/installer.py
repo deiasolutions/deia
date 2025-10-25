@@ -202,10 +202,24 @@ https://github.com/deiasolutions/deia/issues
         deia_dir.mkdir(exist_ok=True)
         print(f"[OK] Created {deia_dir}")
 
-        # Create sessions directory
-        sessions_dir = deia_dir / "sessions"
-        sessions_dir.mkdir(exist_ok=True)
-        print(f"[OK] Created {sessions_dir}")
+        # Create all required subdirectories
+        subdirs = [
+            "sessions",      # Conversation logs
+            "bok",          # Body of Knowledge patterns
+            "index",        # Master index and metadata
+            "federalist",   # Governance documents
+            "governance",   # Policies and protocols
+            "tunnel",       # Agent-to-agent coordination
+            "bot-logs",     # Agent activity logs
+            "observations", # Bug reports, findings, analytics
+            "handoffs",     # Cross-agent task handoffs
+            "intake"        # Incoming files from external sources
+        ]
+
+        for subdir in subdirs:
+            subdir_path = deia_dir / subdir
+            subdir_path.mkdir(exist_ok=True)
+            print(f"[OK] Created {subdir_path}")
 
         # Create project config
         config_file = deia_dir / "config.json"

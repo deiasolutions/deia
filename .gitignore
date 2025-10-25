@@ -28,6 +28,11 @@
 # Services (may contain credentials)
 /services/
 
+# Environment Variables & Secrets
+.env
+*.env
+.env.*
+
 # LLM Experiments (may contain API keys)
 /llama-chatbot/.env
 /llama-chatbot/config.ini

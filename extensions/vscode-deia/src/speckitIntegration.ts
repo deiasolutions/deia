@@ -85,38 +85,44 @@ export class SpecKitIntegration {
             implementation: []
         };
 
-        // Extract from "Key Decisions" section
-        const decisionsMatch = content.match(/## Key Decisions\n\n([\s\S]*?)(?=\n##|$)/);
-        if (decisionsMatch) {
-            const decisions = decisionsMatch[1]
+        // Extract from "Requirements" section (any level heading)
+        const requirementsMatch = content.match(/###?\s+Requirements?\s*\n([\s\S]*?)(?=\n###?\s+|$)/i);
+        if (requirementsMatch) {
+            const requirements = requirementsMatch[1]
                 .split('\n')
                 .filter(line => line.trim().startsWith('-'))
-                .map(line => line.trim().substring(2));
+                .map(line => line.trim().substring(2).trim());
+
+            extraction.requirements.push(...requirements);
+        }
+
+        // Extract from "Key Decisions" or "Architecture Decisions" sections
+        const decisionsMatch = content.match(/###?\s+(Key Decisions|Architecture Decisions?)\s*\n([\s\S]*?)(?=\n###?\s+|$)/i);
+        if (decisionsMatch) {
+            const decisions = decisionsMatch[2]
+                .split('\n')
+                .filter(line => line.trim().startsWith('-'))
+                .map(line => line.trim().substring(2).trim());
 
             extraction.decisions.push(...decisions);
         }
 
         // Extract from "What We Worked On" section
-        const contextMatch = content.match(/## What We Worked On\n\n([\s\S]*?)(?=\n##|$)/);
+        const contextMatch = content.match(/##\s+What We Worked On\s*\n([\s\S]*?)(?=\n##|$)/i);
         if (contextMatch) {
             extraction.requirements.push(contextMatch[1].trim());
         }
 
-        // Extract from transcript for architecture discussions
-        const transcriptMatch = content.match(/## Full Transcript\n\n([\s\S]*?)(?=\n##|$)/);
-        if (transcriptMatch) {
-            const transcript = transcriptMatch[1];
+        // Extract from "Implementation Plan" section
+        const implMatch = content.match(/###?\s+Implementation (Plan|Steps?)\s*\n([\s\S]*?)(?=\n###?\s+|$)/i);
+        if (implMatch) {
+            const steps = implMatch[2]
+                .split('\n')
+                .filter(line => /^\d+\./.test(line.trim()) || line.trim().startsWith('-'))
+                .map(line => line.trim().replace(/^\d+\.\s*/, '').replace(/^-\s*/, ''))
+                .filter(step => step.length > 0 && !step.match(/^-+$/)); // Remove empty and separator lines
 
-            // Look for architecture keywords
-            const archKeywords = ['architecture', 'design', 'pattern', 'structure', 'system'];
-            const lines = transcript.split('\n');
-
-            for (const line of lines) {
-                const lowerLine = line.toLowerCase();
-                if (archKeywords.some(keyword => lowerLine.includes(keyword))) {
-                    extraction.architecture.push(line.trim());
-                }
-            }
+            extraction.implementation.push(...steps);
         }
 
         return extraction;
@@ -166,8 +172,9 @@ export class SpecKitIntegration {
         if (extraction.requirements.length > 0) {
             spec += `## Requirements\n\n`;
             for (const req of extraction.requirements) {
-                spec += `${req}\n\n`;
+                spec += `- ${req}\n`;
             }
+            spec += `\n`;
         }
 
         // Technical Decisions
@@ -179,11 +186,26 @@ export class SpecKitIntegration {
             spec += `\n`;
         }
 
-        // Architecture
-        if (extraction.architecture.length > 0) {
+        // Architecture (only if not already in decisions)
+        const uniqueArchitecture = extraction.architecture.filter(
+            arch => !extraction.decisions.includes(arch)
+        );
+
+        if (uniqueArchitecture.length > 0) {
             spec += `## Architecture Notes\n\n`;
-            for (const note of extraction.architecture) {
+            for (const note of uniqueArchitecture) {
                 spec += `- ${note}\n`;
+            }
+            spec += `\n`;
+        }
+
+        // Implementation
+        if (extraction.implementation.length > 0) {
+            spec += `## Implementation Plan\n\n`;
+            let stepNum = 1;
+            for (const step of extraction.implementation) {
+                spec += `${stepNum}. ${step}\n`;
+                stepNum++;
             }
             spec += `\n`;
         }

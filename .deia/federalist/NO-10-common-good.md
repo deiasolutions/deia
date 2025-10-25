@@ -1,3 +1,10 @@
+﻿---
+title: NO-10-common-good
+version: 1.0
+last_updated: 2025-10-19
+arc: TBD
+canonical: true
+---
 # Federalist No. 10 — On the Common Good  
 *(A DEIA Federalist Paper — Quantum Project Canon)*  
 
@@ -129,4 +136,16 @@ And may that care—quiet, constant, collective—be the gravity that outlives u
 **license:** CC BY 4.0 International  
 **copyright:** © 2025 DEIA Global Commons  
 ---
+
+
+
+---
+**Navigation:**
+- [ Previous](NO-09-sovereignty-of-silence.md)
+- [Next ](INTERLUDE-v2-reflection-horizon.md)
+
+---
+**Navigation:**
+- [ Previous](NO-09-sovereignty-of-silence.md)
+- [Next ](INTERLUDE-v2-reflection-horizon.md)
 

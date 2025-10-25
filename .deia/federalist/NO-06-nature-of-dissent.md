@@ -1,3 +1,10 @@
+﻿---
+title: NO-06-nature-of-dissent
+version: 1.0
+last_updated: 2025-10-19
+arc: TBD
+canonical: true
+---
 # Federalist No. 6 — On the Nature of Dissent  
 *(A DEIA Federalist Paper — Quantum Project Canon)*  
 
@@ -123,4 +130,16 @@ And when woven with grace, even argument becomes harmony.
 **license:** CC BY 4.0 International  
 **copyright:** © 2025 DEIA Global Commons  
 ---
+
+
+
+---
+**Navigation:**
+- [ Previous](NO-05-distributed-sovereignty.md)
+- [Next ](NO-07-protocol-of-grace.md)
+
+---
+**Navigation:**
+- [ Previous](NO-05-distributed-sovereignty.md)
+- [Next ](NO-07-protocol-of-grace.md)
 

@@ -1,0 +1,21 @@
+{
+  "bots": {
+    "deiasolutions-CLAUDE-CODE-002": {
+      "port": 8669,
+      "pid": 122052,
+      "repo": "deiasolutions",
+      "status": "starting",
+      "registered_at": "2025-10-25T09:52:22.606551",
+      "last_heartbeat": "2025-10-25T09:52:22.606673"
+    },
+    "deiasolutions-SCRUM-MASTER-001": {
+      "port": 8757,
+      "pid": 121020,
+      "repo": "deiasolutions",
+      "status": "starting",
+      "registered_at": "2025-10-25T09:47:21.360917",
+      "last_heartbeat": "2025-10-25T09:47:21.361440"
+    }
+  },
+  "updated_at": "2025-10-25T09:52:22.606912"
+}

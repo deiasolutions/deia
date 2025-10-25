@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 import { promisify } from 'util';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -66,20 +66,14 @@ export class DeiaLogger {
             // Build command
             const cmd = this.buildLogCommand(tempFile, options);
 
-            // Execute
-            const { stdout, stderr } = await execAsync(cmd, {
-                cwd: workspaceRoot
-            });
+            // Execute using spawn to properly pipe stdin
+            const result = await this.executeWithStdin(cmd, 'y\n', workspaceRoot);
 
             // Clean up temp file
             fs.unlinkSync(tempFile);
 
-            if (stderr) {
-                console.error('DEIA CLI stderr:', stderr);
-            }
-
             // Extract log file path from output
-            const match = stdout.match(/Logged to: (.+)/);
+            const match = result.match(/Location:\s+(.+\.md)/);
             return match ? match[1].trim() : undefined;
 
         } catch (error) {
@@ -99,40 +93,55 @@ export class DeiaLogger {
 
         for (const msg of messages) {
             const speaker = msg.role === 'user' ? 'User' : 'Assistant';
-            transcript += `${speaker}: ${msg.content}\n\n`;
+            // Remove emojis and non-ASCII characters to avoid encoding issues
+            const cleanContent = msg.content.replace(/[^\x00-\x7F]/g, '');
+            transcript += `${speaker}: ${cleanContent}\n\n`;
         }
 
         return transcript.trim();
     }
 
     /**
+     * Execute command with stdin input
+     */
+    private executeWithStdin(command: string, input: string, cwd: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const child = spawn('powershell.exe', ['-Command', command], {
+                cwd,
+                env: { ...process.env, PYTHONIOENCODING: 'utf-8' }
+            });
+
+            let stdout = '';
+            let stderr = '';
+
+            child.stdout.on('data', (data) => {
+                stdout += data.toString();
+            });
+
+            child.stderr.on('data', (data) => {
+                stderr += data.toString();
+            });
+
+            child.on('close', (code) => {
+                if (code === 0) {
+                    resolve(stdout);
+                } else {
+                    reject(new Error(`Command failed with code ${code}: ${stderr}`));
+                }
+            });
+
+            // Write input to stdin
+            child.stdin.write(input);
+            child.stdin.end();
+        });
+    }
+
+    /**
      * Build the deia log command
      */
     private buildLogCommand(transcriptFile: string, options: LogOptions): string {
-        let cmd = `${this.deiaCliPath} log conversation`;
-        cmd += ` --context "${this.escapeQuotes(options.context)}"`;
-        cmd += ` --transcript "${transcriptFile}"`;
-
-        if (options.decisions && options.decisions.length > 0) {
-            const decisions = options.decisions.join(',');
-            cmd += ` --decisions "${this.escapeQuotes(decisions)}"`;
-        }
-
-        if (options.actionItems && options.actionItems.length > 0) {
-            const items = options.actionItems.join(',');
-            cmd += ` --action-items "${this.escapeQuotes(items)}"`;
-        }
-
-        if (options.filesModified && options.filesModified.length > 0) {
-            const files = options.filesModified.join(',');
-            cmd += ` --files "${this.escapeQuotes(files)}"`;
-        }
-
-        if (options.nextSteps) {
-            cmd += ` --next-steps "${this.escapeQuotes(options.nextSteps)}"`;
-        }
-
-        return cmd;
+        // Use --from-file to log the transcript
+        return `${this.deiaCliPath} log --from-file "${transcriptFile}"`;
     }
 
     /**
@@ -149,49 +158,11 @@ export class DeiaLogger {
         workspaceRoot: string,
         messages: ChatMessage[]
     ): Promise<string | undefined> {
-        // Prompt for context
-        const context = await vscode.window.showInputBox({
-            prompt: 'What were you working on?',
-            placeHolder: 'e.g., Implementing user authentication'
-        });
-
-        if (!context) {
-            return undefined;
-        }
-
-        // Prompt for decisions
-        const decisionsInput = await vscode.window.showInputBox({
-            prompt: 'Key decisions made (comma-separated, or leave blank)',
-            placeHolder: 'e.g., Used JWT tokens, Added password hashing'
-        });
-
-        const decisions = decisionsInput
-            ? decisionsInput.split(',').map(d => d.trim())
-            : undefined;
-
-        // Prompt for action items
-        const actionItemsInput = await vscode.window.showInputBox({
-            prompt: 'Action items (comma-separated, or leave blank)',
-            placeHolder: 'e.g., Test auth flow, Add password reset'
-        });
-
-        const actionItems = actionItemsInput
-            ? actionItemsInput.split(',').map(a => a.trim())
-            : undefined;
-
-        // Prompt for next steps
-        const nextSteps = await vscode.window.showInputBox({
-            prompt: 'Next steps',
-            placeHolder: 'e.g., Continue with authorization'
-        });
-
-        // Log it
+        // Simply log the conversation using the CLI
+        // The CLI will handle interactive prompts
         return this.logConversation(workspaceRoot, {
-            context,
-            messages,
-            decisions,
-            actionItems,
-            nextSteps: nextSteps || 'Continue from this conversation'
+            context: 'Chat conversation',
+            messages
         });
     }
 }

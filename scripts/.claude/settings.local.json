@@ -2,7 +2,16 @@
   "permissions": {
     "allow": [
       "Read(//c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/**)",
-      "Read(//c/Users/davee/Downloads/**)"
+      "Read(//c/Users/davee/Downloads/**)",
+      "Bash(awk '{print $9}')",
+      "Bash(xargs -I {} basename {})",
+      "Bash(find \"C:/Users/davee/OneDrive/Documents/GitHub/deiasolutions/src/deia/services/\" -type f -name \"*.py\" -mmin -240 -exec ls -lh {} ;)",
+      "Bash(find \"C:/Users/davee/OneDrive/Documents/GitHub/deiasolutions/src/deia/tools/\" -type f -name \"*.py\" -mmin -240 -exec ls -lh {} ;)",
+      "Bash(find \"C:/Users/davee/OneDrive/Documents/GitHub/deiasolutions/src/deia/services/\" -type f -name \"*.py\" -mmin -30 -exec ls -lh {} ;)",
+      "Bash(find src/deia -name \"*.py\" -exec wc -l {})",
+      "Bash(awk '{sum+=$1} END {print \"\"\"\"Total lines of Python code:\"\"\"\", sum}')",
+      "Bash(awk 'NR>1 {print $9, $5}')",
+      "Bash(find \"C:/Users/davee/OneDrive/Documents/GitHub/deiasolutions/.deia/bot-logs/\" -name \"*-activity.jsonl\" -mmin -30 -exec ls -lh {} ;)"
     ],
     "deny": [],
     "ask": []

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEIA Hive Monitor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: #2a2a2a;
+            padding: 1rem 2rem;
+            border-bottom: 2px solid #3a3a3a;
+        }
+
+        h1 {
+            color: #4a9eff;
+            font-size: 1.5rem;
+        }
+
+        .status-bar {
+            margin-top: 0.5rem;
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .indicator.green { background: #4ade80; }
+        .indicator.yellow { background: #fbbf24; }
+        .indicator.red { background: #ef4444; }
+
+        main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .chat-list {
+            width: 300px;
+            background: #2a2a2a;
+            border-right: 2px solid #3a3a3a;
+            overflow-y: auto;
+        }
+
+        .chat-item {
+            padding: 1rem;
+            border-bottom: 1px solid #3a3a3a;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chat-item:hover {
+            background: #333;
+        }
+
+        .chat-item.active {
+            background: #3a3a3a;
+            border-left: 3px solid #4a9eff;
+        }
+
+        .bot-name {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .bot-status {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .conversation {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            max-width: 70%;
+        }
+
+        .message.from-scrum {
+            background: #2563eb;
+            margin-left: 0;
+            margin-right: auto;
+        }
+
+        .message.from-bot {
+            background: #4a5568;
+            margin-right: 0;
+            margin-left: auto;
+        }
+
+        .message.from-human {
+            background: #059669;
+            margin-right: 0;
+            margin-left: auto;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .message-content {
+            white-space: pre-wrap;
+        }
+
+        .input-area {
+            padding: 1rem;
+            background: #2a2a2a;
+            border-top: 2px solid #3a3a3a;
+            display: flex;
+            gap: 1rem;
+        }
+
+        input, textarea {
+            background: #1a1a1a;
+            border: 1px solid #3a3a3a;
+            color: #e0e0e0;
+            padding: 0.75rem;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        textarea {
+            flex: 1;
+            resize: none;
+            height: 80px;
+        }
+
+        select {
+            background: #1a1a1a;
+            border: 1px solid #3a3a3a;
+            color: #e0e0e0;
+            padding: 0.75rem;
+            border-radius: 4px;
+        }
+
+        button {
+            background: #4a9eff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #3a8eef;
+        }
+
+        button.danger {
+            background: #ef4444;
+        }
+
+        button.danger:hover {
+            background: #dc2626;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .connection-status {
+            padding: 0.5rem 1rem;
+            background: #ef4444;
+            color: white;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .connection-status.connected {
+            background: #4ade80;
+            color: #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+    <div id="connection-status" class="connection-status">Connecting...</div>
+
+    <header>
+        <h1>🐝 DEIA Hive Monitor</h1>
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="indicator green"></div>
+                <span>Bots: <strong id="bot-count">0</strong></span>
+            </div>
+            <div class="status-item">
+                <div class="indicator yellow"></div>
+                <span>Violations: <strong id="violation-count">0</strong></span>
+            </div>
+            <div class="status-item">
+                <div class="indicator red"></div>
+                <span>Out of Order: <strong id="oor-count">0</strong></span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="chat-list" id="chat-list">
+            <!-- All Hive broadcast channel -->
+            <div class="chat-item" onclick="selectAllHive()">
+                <div class="bot-name">🐝 ALL HIVE</div>
+                <div class="bot-status">Broadcast Channel</div>
+            </div>
+            <!-- Bots will be listed here -->
+        </div>
+
+        <div class="conversation">
+            <div class="messages" id="messages">
+                <p style="color: #666; text-align: center; margin-top: 2rem;">Select a bot to view conversation</p>
+            </div>
+
+            <div class="input-area">
+                <textarea id="message-input" placeholder="Type your message to the bot..."></textarea>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <select id="priority-select">
+                        <option value="P0">P0 (Urgent)</option>
+                        <option value="P1" selected>P1 (High)</option>
+                        <option value="P2">P2 (Normal)</option>
+                    </select>
+                    <button onclick="sendMessage()">Send</button>
+                    <div class="quick-actions">
+                        <button class="danger" onclick="pauseBot()">Pause</button>
+                        <button onclick="resumeBot()">Resume</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let ws = null;
+        let selectedBot = null;
+        let conversations = {};
+
+        // WebSocket connection
+        function connect() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
+
+            ws.onopen = () => {
+                document.getElementById('connection-status').textContent = 'Connected';
+                document.getElementById('connection-status').classList.add('connected');
+                loadBots();
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                handleEvent(data);
+            };
+
+            ws.onclose = () => {
+                document.getElementById('connection-status').textContent = 'Disconnected - Reconnecting...';
+                document.getElementById('connection-status').classList.remove('connected');
+                setTimeout(connect, 3000);
+            };
+        }
+
+        // Load bots list
+        async function loadBots() {
+            const response = await fetch('/api/bots');
+            const bots = await response.json();
+
+            const chatList = document.getElementById('chat-list');
+            chatList.innerHTML = '';
+
+            bots.forEach(bot => {
+                const item = document.createElement('div');
+                item.className = 'chat-item';
+                item.onclick = () => selectBot(bot.bot_id);
+
+                item.innerHTML = `
+                    <div class="bot-name">${bot.bot_id}</div>
+                    <div class="bot-status">${bot.role} • ${bot.status}</div>
+                `;
+
+                chatList.appendChild(item);
+            });
+
+            // Update status counts
+            const status = await (await fetch('/api/status')).json();
+            document.getElementById('bot-count').textContent = status.total_bots;
+            document.getElementById('violation-count').textContent = status.violations;
+            document.getElementById('oor-count').textContent = status.out_of_order;
+        }
+
+        // Select ALL HIVE broadcast view
+        async function selectAllHive() {
+            selectedBot = 'ALL_HIVE';
+
+            // Update UI
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.textContent.includes('ALL HIVE')) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Load all conversations
+            const response = await fetch('/api/bots');
+            const bots = await response.json();
+
+            // Aggregate all messages from all bots
+            let allMessages = [];
+
+            for (const bot of bots) {
+                const convResponse = await fetch(`/api/conversations/${bot.bot_id}`);
+                const conv = await convResponse.json();
+                allMessages = allMessages.concat(conv.messages);
+            }
+
+            // Sort by timestamp
+            allMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+            conversations['ALL_HIVE'] = allMessages;
+            displayConversation('ALL_HIVE');
+        }
+
+        // Select bot and load conversation
+        async function selectBot(botId) {
+            selectedBot = botId;
+
+            // Update UI
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.textContent.includes(botId)) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Load conversation
+            const response = await fetch(`/api/conversations/${botId}`);
+            const conv = await response.json();
+
+            conversations[botId] = conv.messages;
+            displayConversation(botId);
+        }
+
+        // Display conversation
+        function displayConversation(botId) {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = '';
+
+            const messages = conversations[botId] || [];
+
+            messages.forEach(msg => {
+                const msgDiv = document.createElement('div');
+                let msgClass = 'from-bot';
+
+                if (msg.from.includes('SCRUM') || msg.from.includes('HUMAN')) {
+                    msgClass = msg.from.includes('HUMAN') ? 'from-human' : 'from-scrum';
+                }
+
+                msgDiv.className = `message ${msgClass}`;
+                msgDiv.innerHTML = `
+                    <div class="message-header">
+                        <span><strong>${msg.from}</strong> → ${msg.to}</span>
+                        <span>${new Date(msg.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                    <div class="message-content">${msg.content.substring(0, 300)}</div>
+                `;
+
+                messagesDiv.appendChild(msgDiv);
+            });
+
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Send message to bot or broadcast
+        async function sendMessage() {
+            if (!selectedBot) {
+                alert('Select a bot or ALL HIVE first');
+                return;
+            }
+
+            const message = document.getElementById('message-input').value;
+            const priority = document.getElementById('priority-select').value;
+
+            if (!message.trim()) return;
+
+            if (selectedBot === 'ALL_HIVE') {
+                // Broadcast to all bots
+                const response = await fetch('/api/bots');
+                const bots = await response.json();
+
+                for (const bot of bots) {
+                    await fetch('/api/interject', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            to_bot: bot.bot_id,
+                            message: `[BROADCAST] ${message}`,
+                            priority: priority,
+                            from_human: 'HUMAN-DAVE'
+                        })
+                    });
+                }
+
+                alert(`Broadcast sent to ${bots.length} bots`);
+            } else {
+                // Send to specific bot
+                await fetch('/api/interject', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        to_bot: selectedBot,
+                        message: message,
+                        priority: priority
+                    })
+                });
+            }
+
+            document.getElementById('message-input').value = '';
+
+            // Refresh conversation
+            setTimeout(() => {
+                if (selectedBot === 'ALL_HIVE') {
+                    selectAllHive();
+                } else {
+                    selectBot(selectedBot);
+                }
+            }, 500);
+        }
+
+        // Pause bot
+        async function pauseBot() {
+            if (!selectedBot) return;
+            await fetch(`/api/pause/${selectedBot}`, { method: 'POST' });
+            alert(`Bot ${selectedBot} paused`);
+        }
+
+        // Resume bot
+        async function resumeBot() {
+            if (!selectedBot) return;
+            await fetch(`/api/resume/${selectedBot}`, { method: 'POST' });
+            alert(`Bot ${selectedBot} resumed`);
+        }
+
+        // Handle WebSocket events
+        function handleEvent(event) {
+            console.log('Event:', event);
+
+            if (event.type === 'initial_state') {
+                // Handle initial state
+                return;
+            }
+
+            // Add message to conversation if applicable
+            if (selectedBot && (event.to === selectedBot || event.from === selectedBot)) {
+                if (!conversations[selectedBot]) {
+                    conversations[selectedBot] = [];
+                }
+
+                conversations[selectedBot].push(event);
+                displayConversation(selectedBot);
+            }
+
+            // Refresh bots list
+            loadBots();
+        }
+
+        // Initialize
+        connect();
+    </script>
+</body>
+</html>

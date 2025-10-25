@@ -1,0 +1,9 @@
+{
+  "targets": [
+    "staging_ndjson"
+  ],
+  "transcript_inline": false,
+  "redactions": [],
+  "autorun_on_launch": false,
+  "since": null
+}

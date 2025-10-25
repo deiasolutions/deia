@@ -1,9 +1,9 @@
 ﻿{
     "version":  "1.0",
     "description":  "Shared status board - all bots can read this to see what others are doing",
-    "last_updated":  "2025-10-14T01:21:20.8022221Z",
-    "updated_by":  "BOT-00005",
-    "rev":  "2025-10-14T01:21:20.8022221Z",
+    "last_updated":  "2025-10-19T08:15:00Z",
+    "updated_by":  "BOT-00001",
+    "rev":  "2025-10-19T08:15:00Z",
     "bots":  {
                  "BOT-00001":  {
                                    "role":  "Queen",
@@ -44,9 +44,9 @@
                  "BOT-00002":  {
                                    "role":  "Drone-Dev",
                                    "status":  "ASSIGNED",
-                                   "task_id":  "bot-troubleshooting-v1",
-                                   "expectation":  "Write .deia/guides/BOT-TROUBLESHOOTING.md (≤200 words); signature required",
-                                   "instructions_path":  ".deia/instructions/BOT-00002-instructions.md",
+                                   "task_id":  "flight-1-terminology-transition",
+                                   "expectation":  "Apply Season/Flight docs in .deia per DECISION; add glossary; then draft SEASON-CHARTER.md and FLIGHT-PLAN.md; SYNC with links (≤200 words); signature required",
+                                   "instructions_path":  ".deia/hive/tasks/2025-10-19-0815-001-002-TASK-season-flight-terminology.md",
                                    "last_heartbeat":  null
                                },
                  "BOT-00003":  {
@@ -203,3 +203,5 @@
                                 ]
               }
 }
+
+

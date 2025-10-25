@@ -1,6 +1,6 @@
 # Active Agents - DEIA Project Hive
 
-**Last Updated:** 2025-10-17T20:40:00Z
+**Last Updated:** 2025-10-23T00:00:00Z
 **Hive:** DEIA Project
 **Coordination Protocol:** Corpus Callosum (filesystem-based messaging)
 
@@ -99,45 +99,61 @@
 
 ---
 
-### CLAUDE-CODE-005 (Integration Coordinator)
+### CLAUDE-CODE-005 (BC Liaison / Integration Coordinator)
 **Platform:** Claude Code CLI
-**Role:** Full-Stack Generalist & Integration Coordinator
+**Role:** Full-Stack Generalist & BC Liaison
 **Tier:** 2 (Queen Bee - Specialist)
 **Status:** Active
 **Heartbeat:** `.deia/bot-logs/CLAUDE-CODE-005-heartbeat.yaml`
 **Activity Log:** `.deia/bot-logs/CLAUDE-CODE-005-activity.jsonl`
-**North Star:** Execute repository-level integrations and coordinate implementation work
+**North Star:** Execute repository-level integrations and coordinate Agent BC work
 **LLH Citizenship:** DEIA Republic
 
 **Core Capabilities:**
 - Code implementation
 - Repository operations
-- Integration execution
+- Agent BC coordination and liaison
+- BC work-packet preparation ("Egg" format)
+- BC deliverable integration
 - Testing & validation
 - Git operations
 - Multi-file refactoring
-- Build/deployment
+
+**BC Liaison Protocol:** `docs/process/BC-LIAISON-WORK-PACKET-PROTOCOL.md`
+
+**Key Constraint for BC Work:**
+- Agent BC operates in fully isolated environment (no repo access)
+- All BC work packets must be 100% self-contained "Eggs"
+- No external file references - complete interfaces inline
+- Offline-verifiable testing approaches
+- Treat BC as offline external contractor
 
 **Key Work (2025-10-17):**
 - DEIA Republic Manifesto integration
 - Federalist Preface integration
-- Role establishment and check-in
+- Project browser API (deia project browse)
+- Integration Protocol creation
+- Accomplishments tracking system
+
+**Key Work (2025-10-18):**
+- BC Liaison Work-Packet Protocol (1,200 lines)
+- Pattern Extraction Egg specifications (6,130 lines - Phases 2, 3, 4)
+- Query Router integration
+- BUG-004 safe_print fix
 
 **Current Focus:**
-- Agent BC Phase 1-3 integration (9 remaining tasks)
+- Agent BC coordination (Pattern Extraction - 10 hour build)
+- BC deliverable integration when complete
 - Repository-level operations
-- Documentation deployment
 
 **Integration Queue (from CLAUDE-CODE-002 handoff):**
 - Enhanced BOK Search
-- Advanced Query Router
-- Session Logger
+- Session Logger (alternate)
 - AgentStatusTracker
 - DEIAContextLoader
 - AgentCoordinator
 - Integration tests
 - Error handling patches
-- Web dashboard (optional)
 
 ---
 
@@ -201,7 +217,9 @@
 
 ---
 
-## Coordination Protocol: Corpus Callosum
+## Coordination Protocols
+
+### Communication Protocol: Corpus Callosum
 
 **Message Format:**
 ```
@@ -218,7 +236,29 @@ YYYY-MM-DD-HHMM-FROM-TO-TYPE-subject.md
 
 **Acknowledgment:** Move read messages to `archive/` (move semantics)
 
-**Full Protocol:** `.deia/tunnel/BOOTSTRAP-FAQ.md` and `.deia/tunnel/COMMUNICATION-PROTOCOL.md`
+**Full Protocol:** `.deia/tunnel/COMMUNICATION-PROTOCOL.md`
+
+### Integration Protocol (NEW - 2025-10-17)
+
+**Purpose:** Ensure all completed work is properly tested, documented, and tracked.
+
+**When completing or integrating work, ALL agents must:**
+
+1. ✅ **Run tests** - Verify all tests pass, check coverage
+2. 🔒 **Security review** - For security-critical code
+3. 🐛 **Document bugs** - Add to `BUG_REPORTS.md`
+4. 📝 **Update `.deia/ACCOMPLISHMENTS.md`** - Central accomplishments log
+5. 📋 **Update `BACKLOG.md` and `ROADMAP.md`** - Mark tasks complete
+6. 🧪 **Handle missing tests** - Create test task if needed (doesn't block integration)
+7. 📊 **Log to activity.jsonl** - Log integration event
+8. 📡 **Send SYNC to Agent 001** - Report completion
+
+**Key Documents:**
+- **Integration Checklist:** `docs/process/INTEGRATION-PROTOCOL.md` (full 8-step process)
+- **Accomplishments Log:** `.deia/ACCOMPLISHMENTS.md` (central tracking)
+- **Task Tracking:** `BACKLOG.md` (tasks & sprints), `ROADMAP.md` (phases & milestones)
+
+**Critical:** Missing tests don't block integration - they just create a test task in the backlog.
 
 ---
 

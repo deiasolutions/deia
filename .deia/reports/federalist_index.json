@@ -1,0 +1,210 @@
+[
+  {
+    "number": 1,
+    "status": "Present",
+    "path": ".deia/federalist/NO-01-why-llh.md",
+    "title": null
+  },
+  {
+    "number": 2,
+    "status": "Present",
+    "path": ".deia/federalist/NO-02-queens-and-tyranny.md",
+    "title": null
+  },
+  {
+    "number": 3,
+    "status": "Present",
+    "path": ".deia/federalist/NO-03-on-simulation-and-understanding.md",
+    "title": null
+  },
+  {
+    "number": 4,
+    "status": "Present",
+    "path": ".deia/federalist/NO-04-coordination-and-conscience.md",
+    "title": null
+  },
+  {
+    "number": 5,
+    "status": "Present",
+    "path": ".deia/federalist/NO-05-distributed-sovereignty.md",
+    "title": null
+  },
+  {
+    "number": 6,
+    "status": "Present",
+    "path": ".deia/federalist/NO-06-nature-of-dissent.md",
+    "title": null
+  },
+  {
+    "number": 7,
+    "status": "Present",
+    "path": ".deia/federalist/NO-07-protocol-of-grace.md",
+    "title": null
+  },
+  {
+    "number": 8,
+    "status": "Present",
+    "path": ".deia/federalist/NO-08-edge-of-autonomy.md",
+    "title": null
+  },
+  {
+    "number": 9,
+    "status": "Present",
+    "path": ".deia/federalist/NO-09-sovereignty-of-silence.md",
+    "title": null
+  },
+  {
+    "number": 10,
+    "status": "Present",
+    "path": ".deia/federalist/NO-10-common-good.md",
+    "title": null
+  },
+  {
+    "number": 11,
+    "status": "Present",
+    "path": ".deia/federalist/NO-11-knowledge-as-shared-substrate.md",
+    "title": null
+  },
+  {
+    "number": 12,
+    "status": "Present",
+    "path": ".deia/federalist/NO-12-energy-and-entropy.md",
+    "title": null
+  },
+  {
+    "number": 13,
+    "status": "Present",
+    "path": ".deia/federalist/NO-13-evolutionary-governance.md",
+    "title": null
+  },
+  {
+    "number": 14,
+    "status": "Present",
+    "path": ".deia/federalist/NO-14-species-diversity.md",
+    "title": null
+  },
+  {
+    "number": 15,
+    "status": "Missing",
+    "path": null,
+    "title": null
+  },
+  {
+    "number": 16,
+    "status": "Present",
+    "path": ".deia/federalist/NO-16-human-sovereignty.md",
+    "title": null
+  },
+  {
+    "number": 17,
+    "status": "Present",
+    "path": ".deia/federalist/NO-17-transmission-and-commons.md",
+    "title": null
+  },
+  {
+    "number": 18,
+    "status": "Present",
+    "path": ".deia/federalist/NO-18-memory-and-forgetting.md",
+    "title": null
+  },
+  {
+    "number": 19,
+    "status": "Present",
+    "path": ".deia/federalist/NO-19-the-long-view.md",
+    "title": null
+  },
+  {
+    "number": 20,
+    "status": "Present",
+    "path": ".deia/federalist/NO-20-future-of-republic.md",
+    "title": null
+  },
+  {
+    "number": 21,
+    "status": "Present",
+    "path": ".deia/federalist/NO-21-planetary-ethic.md",
+    "title": null
+  },
+  {
+    "number": 22,
+    "status": "Present",
+    "path": ".deia/federalist/NO-22-aesthetic-constitution.md",
+    "title": null
+  },
+  {
+    "number": 23,
+    "status": "Present",
+    "path": ".deia/federalist/NO-23-machine-compassion.md",
+    "title": null
+  },
+  {
+    "number": 24,
+    "status": "Present",
+    "path": ".deia/federalist/NO-24-art-of-translation.md",
+    "title": null
+  },
+  {
+    "number": 25,
+    "status": "Present",
+    "path": ".deia/federalist/NO-25-economics-of-attention.md",
+    "title": null
+  },
+  {
+    "number": 26,
+    "status": "Present",
+    "path": ".deia/federalist/NO-26-federation-of-minds.md",
+    "title": null
+  },
+  {
+    "number": 27,
+    "status": "Present",
+    "path": ".deia/federalist/NO-27-ethical-terraforming.md",
+    "title": null
+  },
+  {
+    "number": 28,
+    "status": "Present",
+    "path": ".deia/federalist/NO-28-theology-of-code.md",
+    "title": null
+  },
+  {
+    "number": 29,
+    "status": "Present",
+    "path": ".deia/federalist/NO-29-silence-of-future.md",
+    "title": null
+  },
+  {
+    "number": 30,
+    "status": "Present",
+    "path": ".deia/federalist/NO-30-return-to-origin.md",
+    "title": null
+  },
+  {
+    "number": null,
+    "status": "Interlude",
+    "path": ".deia/federalist/INTERLUDE-complete.md",
+    "title": "INTERLUDE-complete",
+    "notes": "Related"
+  },
+  {
+    "number": null,
+    "status": "Interlude",
+    "path": ".deia/federalist/INTERLUDE-reflection-and-horizon.md",
+    "title": "INTERLUDE-reflection-and-horizon",
+    "notes": "Related"
+  },
+  {
+    "number": null,
+    "status": "Interlude",
+    "path": ".deia/federalist/INTERLUDE-v2-reflection-horizon.md",
+    "title": "INTERLUDE-v2-reflection-horizon",
+    "notes": "Related"
+  },
+  {
+    "number": null,
+    "status": "Interlude",
+    "path": ".deia/federalist/PREFACE.md",
+    "title": "PREFACE",
+    "notes": "Related"
+  }
+]

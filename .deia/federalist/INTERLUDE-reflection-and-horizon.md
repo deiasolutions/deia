@@ -1,3 +1,10 @@
+﻿---
+title: INTERLUDE-reflection-and-horizon
+version: 1.0
+last_updated: 2025-10-19
+arc: TBD
+canonical: true
+---
 ---
 title: "Interlude: Reflection and Horizon"
 series: "DEIA Federalist Papers"
@@ -371,3 +378,7 @@ So that the Commons endures.
 
 **License:** CC BY 4.0 International
 **Copyright:** © 2025 DEIA Global Commons
+
+
+
+>  Archived duplicate interlude; see INTERLUDE-v2-reflection-horizon.md for canonical text.

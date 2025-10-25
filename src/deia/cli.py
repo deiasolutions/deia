@@ -17,6 +17,7 @@ from .logger import ConversationLogger
 from .installer import install_global, init_project as installer_init_project
 from .cli_utils import safe_print
 from .minutes import MinutesManager
+from .services.telemetry_etl import maybe_autorun_on_launch, autorun as analytics_autorun
 
 console = Console()
 
@@ -28,6 +29,7 @@ def main():
     DEIA - Development Evidence & Insights Automation
 
     Learn from every AI-assisted development session. Build better with AI.
+    Planning cadence uses Seasons (macro) and Flights (execution bursts).
     """
     pass
 
@@ -131,6 +133,13 @@ def minutes_start(topic, interval, loop):
     mgr = MinutesManager()
     path = mgr.start(topic=topic, interval=interval, loop=loop)
     safe_print(console, f"[green]Minutes started[/green]: {path}")
+    # Optional analytics autorun on launch (controlled by .deia/analytics/config.json)
+    try:
+        res = maybe_autorun_on_launch(Path.cwd())
+        if res:
+            safe_print(console, "[dim]Analytics ETL autorun completed (staging).[/dim]")
+    except Exception:
+        pass
 
 
 @minutes.command('write')
@@ -167,6 +176,21 @@ def minutes_report():
     mgr = MinutesManager()
     path = mgr.report()
     safe_print(console, f"[green]Report event emitted[/green]; minutes file: {path}")
+@main.group()
+def analytics():
+    """Analytics ETL utilities (staging NDJSON; optional DuckDB views)."""
+    pass
+
+
+@analytics.command("autorun")
+def analytics_run_autorun():
+    """Ensure analytics setup and run a lightweight ETL into staging."""
+    try:
+        res = analytics_autorun(Path.cwd())
+        count = len(res.get("written", {}))
+        safe_print(console, f"[green]Analytics ETL wrote[/green] {count} tables (staging).")
+    except Exception as e:
+        console.print(f"[red]Analytics ETL failed:[/red] {e}")
 @session.command('create')
 @click.option('--topic', prompt='Session topic (brief description)',
               help='Brief topic slug (e.g., "https-redirects")')
@@ -1579,6 +1603,64 @@ def slash_command(command, bot, broadcast, wait, timeout):
 
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
+        sys.exit(1)
+
+
+@main.group()
+def librarian():
+    """Master Librarian - Query and manage the Global Commons index"""
+    pass
+
+
+@librarian.command('query')
+@click.argument('query', nargs=-1, required=True)
+@click.option('--urgency', type=click.Choice(['critical', 'high', 'medium', 'low']),
+              help='Filter by urgency level')
+@click.option('--platform', help='Filter by platform (e.g., netlify, windows)')
+@click.option('--audience', type=click.Choice(['beginner', 'intermediate', 'advanced']),
+              help='Filter by audience level')
+@click.option('--no-fuzzy', is_flag=True,
+              help='Disable fuzzy matching (enabled by default)')
+@click.option('--limit', type=int, default=5,
+              help='Number of results to show (default: 5)')
+def librarian_query(query, urgency, platform, audience, no_fuzzy, limit):
+    """
+    Query the Global Commons index with advanced search
+
+    Supports fuzzy matching, AND/OR logic, and multiple filters.
+
+    Examples:
+      deia librarian query "deployment failed"
+      deia librarian query "DNS not working" --urgency critical
+      deia librarian query "python encoding" --platform windows
+      deia librarian query "coordination" AND "governance"
+      deia librarian query "deployment" OR "release"
+    """
+    import subprocess
+
+    # Build command for query.py
+    cmd = [sys.executable, str(Path(__file__).parent / 'tools' / 'query.py')]
+    cmd.extend(query)
+
+    if urgency:
+        cmd.extend(['--urgency', urgency])
+    if platform:
+        cmd.extend(['--platform', platform])
+    if audience:
+        cmd.extend(['--audience', audience])
+    if no_fuzzy:
+        cmd.append('--no-fuzzy')
+    cmd.extend(['--limit', str(limit)])
+
+    try:
+        result = subprocess.run(cmd, check=True)
+        sys.exit(result.returncode)
+    except subprocess.CalledProcessError as e:
+        console.print(f"[red]Query failed:[/red] {e}")
+        sys.exit(1)
+    except FileNotFoundError:
+        console.print("[red]Error:[/red] Query tool not found")
+        console.print("Expected location: src/deia/tools/query.py")
         sys.exit(1)
 
 

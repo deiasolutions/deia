@@ -1,0 +1,7 @@
+{"ts":"2025-10-23T00:00:00.000000Z","agent":"BEE-000","event":"session_start","data":{"rank":"Q33N","tier":0,"authority":"Dave","scope":"local_and_global"}}
+{"ts":"2025-10-23T00:05:00.000000Z","agent":"BEE-000","event":"boot_protocol_created","data":{"location":".deia/protocols/BEE-000-Q33N-BOOT-PROTOCOL.md","status":"complete"}}
+{"ts":"2025-10-23T00:10:00.000000Z","agent":"BEE-000","event":"submission_review_initial","data":{"pending_count":15,"to_global_count":1,"critical_findings":"P1_bug_safe_print"}}
+{"ts":"2025-10-23T00:15:00.000000Z","agent":"BEE-000","event":"review_report_created","data":{"location":".deia/reports/Q33N-REVIEW-2025-10-23-INITIAL.md","status":"complete"}}
+{"ts":"2025-10-23T00:20:00.000000Z","agent":"BEE-000","event":"bug_verification","data":{"bug":"safe_print_crash","status":"already_fixed","tests_passing":true}}
+{"ts":"2025-10-23T00:25:00.000000Z","agent":"BEE-000","event":"submission_promoted","data":{"pattern":"yes-but-handling","from":"pending","to":"to-global","dave_approved":true}}
+{"ts":"2025-10-23T00:30:00.000000Z","agent":"BEE-000","event":"eos_assessment","data":{"submission":"eos-framework-pattern","status":"spec_complete_no_implementation","recommendation":"approve_as_architectural_pattern"}}
