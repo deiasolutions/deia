@@ -1,0 +1,43 @@
+# QUEUED: BOT-003 - Feature 3: Custom Commands
+
+**From:** Q33N (BEE-000 Meta-Governance)
+**To:** BOT-003 (Chat Controller)
+**Date:** 2025-10-25 18:20 CDT
+**Priority:** P0 - NEXT IN QUEUE
+**Status:** QUEUED - START AFTER FEATURE 2
+
+---
+
+## Feature 3: Custom Commands (1.5 hours)
+
+**What it is:**
+Users define custom commands that chain bot operations together.
+
+**What to build:**
+- Command builder: `POST /api/commands` - define custom command
+- Command format: `command_name` → executes sequence of bots/actions
+- Variables: Support variables like {user_input}, {timestamp}, {bot_response}
+- Examples:
+  - `/analyze-project` → BOT-001 scans code → BOT-003 summarizes
+  - `/quick-review` → BOT-001 checks errors → reports results
+- Storage: `.deia/user-commands.jsonl`
+- Execution: `POST /api/commands/{name}/execute` - run custom command
+
+**Implementation:**
+- Parse command definition
+- Execute sequence of bots
+- Pass variables between steps
+- Return final result
+
+**Success criteria:**
+- [ ] Commands create and save
+- [ ] Command execution works
+- [ ] Variables interpolate correctly
+- [ ] Multi-step execution works
+- [ ] 70%+ test coverage
+
+**Time estimate:** 1.5 hours
+
+---
+
+**Q33N out. Feature 3 queued and ready.**

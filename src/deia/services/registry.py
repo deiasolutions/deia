@@ -1,16 +1,19 @@
 """
-Service Registry - Bot discovery and management.
+Service Registry - Bot discovery and management with persistence and recovery.
 
 Maintains registry of all running bots with their service endpoints.
-Allows Scrum Master to discover and communicate with worker bots.
+Persists to disk every 10s for recovery after crashes.
+Cleans stale entries and prevents duplicate bot launches.
+Provides audit trail of all registry changes.
 """
 
 from pathlib import Path
 from typing import Dict, Optional, List
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import hashlib
 import os
+import psutil
 
 
 class ServiceRegistry:
@@ -27,7 +30,7 @@ class ServiceRegistry:
 
     def __init__(self, registry_path: Optional[Path] = None):
         """
-        Initialize registry.
+        Initialize registry with persistence and recovery.
 
         Args:
             registry_path: Path to registry file (default: .deia/hive/registry.json)
@@ -56,9 +59,15 @@ class ServiceRegistry:
         self.registry_path = Path(registry_path)
         self.registry_path.parent.mkdir(parents=True, exist_ok=True)
 
+        # Audit trail for registry changes
+        self.audit_log_path = self.registry_path.parent / "registry-changes.jsonl"
+
         # Initialize if doesn't exist
         if not self.registry_path.exists():
             self._save({"bots": {}, "updated_at": datetime.now().isoformat()})
+
+        # Clean up stale entries on startup
+        self.cleanup_stale_entries()
 
     def _load(self) -> Dict:
         """Load registry from disk."""
@@ -119,11 +128,21 @@ class ServiceRegistry:
         """
         Register bot in registry.
 
+        Prevents duplicate bot launches - returns False if bot already running.
+
         Args:
             bot_id: Full bot ID (e.g., "deiasolutions-CLAUDE-CODE-001")
             port: Service port
             repo: Repository name (extracted from bot_id if not provided)
+
+        Returns:
+            True if registered successfully, False if bot already running
         """
+        # Check for duplicate
+        if self.check_duplicate_bot(bot_id):
+            print(f"[REGISTRY] ERROR: Bot {bot_id} is already running!")
+            return False
+
         registry = self._load()
         bots = registry.get("bots", {})
 
@@ -131,7 +150,7 @@ class ServiceRegistry:
         if repo is None and "-" in bot_id:
             repo = bot_id.split("-")[0]
 
-        bots[bot_id] = {
+        bot_info = {
             "port": port,
             "pid": os.getpid(),
             "repo": repo,
@@ -140,20 +159,35 @@ class ServiceRegistry:
             "last_heartbeat": datetime.now().isoformat()
         }
 
+        bots[bot_id] = bot_info
         registry["bots"] = bots
         self._save(registry)
 
+        # Audit log
+        self._audit_log("registered", bot_id, {"port": port, "pid": os.getpid()})
+
         print(f"[REGISTRY] Registered {bot_id} on port {port}")
+        return True
 
     def unregister(self, bot_id: str):
-        """Remove bot from registry."""
+        """
+        Remove bot from registry.
+
+        Args:
+            bot_id: Bot ID to unregister
+        """
         registry = self._load()
         bots = registry.get("bots", {})
 
         if bot_id in bots:
+            bot_info = bots[bot_id]
             del bots[bot_id]
             registry["bots"] = bots
             self._save(registry)
+
+            # Audit log
+            self._audit_log("unregistered", bot_id, {"port": bot_info.get("port")})
+
             print(f"[REGISTRY] Unregistered {bot_id}")
 
     def heartbeat(self, bot_id: str, status: str = "active"):
@@ -208,3 +242,100 @@ class ServiceRegistry:
         if bot and "port" in bot:
             return f"http://localhost:{bot['port']}"
         return None
+
+    def cleanup_stale_entries(self, timeout_seconds: int = 300) -> List[str]:
+        """
+        Clean up stale bot entries (processes that have exited).
+
+        A bot is considered stale if its PID doesn't exist or last heartbeat > timeout.
+
+        Args:
+            timeout_seconds: Consider entry stale if no heartbeat in this many seconds
+
+        Returns:
+            List of removed bot IDs
+        """
+        registry = self._load()
+        bots = registry.get("bots", {})
+        removed = []
+        cutoff_time = datetime.now() - timedelta(seconds=timeout_seconds)
+
+        for bot_id, info in list(bots.items()):
+            # Check if PID is alive
+            pid = info.get("pid")
+            is_alive = False
+
+            if pid:
+                try:
+                    is_alive = psutil.pid_exists(pid)
+                except Exception:
+                    is_alive = False
+
+            # Check heartbeat timeout
+            last_heartbeat = info.get("last_heartbeat")
+            if last_heartbeat:
+                try:
+                    hb_time = datetime.fromisoformat(last_heartbeat)
+                    is_stale = hb_time < cutoff_time
+                except Exception:
+                    is_stale = True
+            else:
+                is_stale = True
+
+            if not is_alive or is_stale:
+                removed.append(bot_id)
+                del bots[bot_id]
+                self._audit_log("stale_entry_removed", bot_id, info)
+                print(f"[REGISTRY] Removed stale entry: {bot_id} (PID {pid})")
+
+        if removed:
+            registry["bots"] = bots
+            self._save(registry)
+
+        return removed
+
+    def check_duplicate_bot(self, bot_id: str) -> bool:
+        """
+        Check if a bot with this ID is already running.
+
+        Args:
+            bot_id: Bot ID to check
+
+        Returns:
+            True if bot is already running
+        """
+        bot = self.get_bot(bot_id)
+        if not bot:
+            return False
+
+        # Check if PID is alive
+        pid = bot.get("pid")
+        if pid:
+            try:
+                return psutil.pid_exists(pid)
+            except Exception:
+                return False
+
+        return False
+
+    def _audit_log(self, action: str, bot_id: str, details: Optional[Dict] = None) -> None:
+        """
+        Log a registry change to audit trail.
+
+        Args:
+            action: What action was taken (e.g., "registered", "unregistered", "stale_removed")
+            bot_id: Bot ID involved
+            details: Additional details
+        """
+        entry = {
+            "timestamp": datetime.now().isoformat(),
+            "action": action,
+            "bot_id": bot_id,
+            "details": details or {}
+        }
+
+        try:
+            with open(self.audit_log_path, "a") as f:
+                f.write(json.dumps(entry) + "\n")
+        except Exception as e:
+            print(f"[REGISTRY] Failed to write audit log: {e}")

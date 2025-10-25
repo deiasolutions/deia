@@ -17,6 +17,8 @@ from .claude_sdk_adapter import ClaudeSDKAdapter
 from .mock_bot_adapter import MockBotAdapter
 from ..services.bot_service import BotService
 from ..services.registry import ServiceRegistry
+from ..services.bot_activity_logger import BotActivityLogger, EventType
+from ..services.bot_shutdown_handler import GracefulShutdownHandler
 
 
 class BotRunner:
@@ -113,6 +115,17 @@ class BotRunner:
         self.service = BotService(bot_id=bot_id, port=self.port, work_dir=work_dir)
         self.service_started = False
 
+        # Initialize activity logger
+        self.activity_logger = BotActivityLogger(bot_id=bot_id, work_dir=work_dir)
+
+        # Initialize shutdown handler
+        self.shutdown_handler = GracefulShutdownHandler(
+            bot_id=bot_id,
+            work_dir=work_dir
+        )
+        # Register callback to clean up on shutdown
+        self.shutdown_handler.register_shutdown_callback(self.stop)
+
     def start(self) -> bool:
         """
         Start the bot runner (start adapter session and HTTP service).
@@ -139,6 +152,10 @@ class BotRunner:
             self.registry.register(self.bot_id, self.port)
 
             self._log(f"Bot runner started: {self.bot_id} ({self.adapter_type}) on port {self.port}")
+
+            # Log startup event
+            self.activity_logger.log_startup(self.adapter_type)
+
             return True
         else:
             raise RuntimeError("Failed to start adapter session")
@@ -220,6 +237,10 @@ class BotRunner:
             task = parse_task_file(task_file)
         except Exception as e:
             self._log(f"Failed to parse task {task_file.name}: {e}")
+            self.activity_logger.log_task_failed(
+                task_id=task_file.stem,
+                error_message=f"Task parse error: {str(e)}"
+            )
             return {
                 "task_found": True,
                 "task_executed": False,
@@ -228,14 +249,21 @@ class BotRunner:
                 "error": f"Task parse error: {str(e)}"
             }
 
+        # Log task started
+        task_id = task["task_id"]
+        self.activity_logger.log_task_received(task_id, task.get("priority", "P2"))
+
         # Execute task
-        self._log(f"Executing task: {task['task_id']}")
+        self._log(f"Executing task: {task_id}")
+        self.activity_logger.log_task_started(task_id)
 
         # Update service status to working
         if self.service_started:
-            self.service.update_status("working", task["task_id"])
+            self.service.update_status("working", task_id)
 
+        start_time = time.time()
         result = self.adapter.send_task(task["content"])
+        duration = time.time() - start_time
 
         # Write response
         try:
@@ -243,12 +271,31 @@ class BotRunner:
                 response_dir=self.response_dir,
                 from_bot=self.bot_id,
                 to_bot=task["from"],
-                task_id=task["task_id"],
+                task_id=task_id,
                 result=result
             )
             self._log(f"Response written: {response_file.name}")
+
+            # Log task completion
+            if result.get("success"):
+                self.activity_logger.log_task_completed(
+                    task_id=task_id,
+                    duration_seconds=duration,
+                    result_summary="success"
+                )
+            else:
+                self.activity_logger.log_task_failed(
+                    task_id=task_id,
+                    error_message=result.get("error", "Unknown error"),
+                    duration_seconds=duration
+                )
         except Exception as e:
             self._log(f"Failed to write response: {e}")
+            self.activity_logger.log_task_failed(
+                task_id=task_id,
+                error_message=f"Failed to write response: {str(e)}",
+                duration_seconds=duration
+            )
 
         # Mark task as processed
         self.processed_tasks.add(task_file.name)
@@ -296,6 +343,10 @@ class BotRunner:
 
                 result = self.run_once()
 
+                # Track task completions for shutdown handler
+                if result.get("task_executed"):
+                    self.shutdown_handler.register_task_completion()
+
                 if on_iteration:
                     on_iteration(iteration, result)
 
@@ -324,6 +375,10 @@ class BotRunner:
             self.registry.unregister(self.bot_id)
 
         self._log(f"Bot runner stopped: {self.bot_id}")
+
+        # Log shutdown event and save final stats
+        self.activity_logger.log_shutdown("graceful")
+        self.activity_logger.save_stats()
 
     def get_status(self) -> Dict[str, Any]:
         """

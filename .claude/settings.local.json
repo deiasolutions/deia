@@ -85,7 +85,16 @@
       "Bash(del test_cli_startup.py)",
       "Bash(echo:*)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "Bash(git init:*)"
+      "Bash(git init:*)",
+      "Bash(xargs ls:*)",
+      "Bash(__NEW_LINE__ echo \"=== Test 1: Load Bot A history ===\" curl -s \"http://localhost:8000/api/chat/history?bot_id=bot-a\")",
+      "Bash(__NEW_LINE__ echo \"Test 1: Load Bot A history\")",
+      "Bash(__NEW_LINE__ echo \"Bot A history (should have only bot-a messages):\" curl -s \"http://localhost:8000/api/chat/history?bot_id=bot-a\")",
+      "Bash(__NEW_LINE__ curl -s \"http://localhost:8000/api/chat/history?bot_id=bot-a\")",
+      "Bash(kill:*)",
+      "Bash(timeout 30 python -m pytest:*)",
+      "Bash(timeout 120 python -m pytest:*)",
+      "Bash(timeout 60 python -m pytest:*)"
     ],
     "deny": [],
     "ask": []
