@@ -1,0 +1,206 @@
+/* Responsive Design - Mobile First Approach */
+
+/* Tablet and below (1024px) */
+@media (max-width: 1024px) {
+    .status-panel {
+        display: none;
+    }
+
+    .chat-panel {
+        flex: 1;
+    }
+}
+
+/* Mobile devices (768px) */
+@media (max-width: 768px) {
+    .bot-list-panel {
+        width: 200px;
+    }
+
+    .main-container {
+        gap: 0;
+    }
+
+    .chat-header h1 {
+        font-size: 18px;
+    }
+
+    .message-content {
+        max-width: 85%;
+    }
+
+    .bot-item {
+        padding: 10px;
+        margin-bottom: 6px;
+    }
+
+    .bot-actions {
+        margin-top: 6px;
+    }
+
+    .chat-input-container {
+        padding: 12px;
+    }
+
+    .chat-messages {
+        padding: 12px;
+    }
+}
+
+/* Small mobile devices (480px) */
+@media (max-width: 480px) {
+    .bot-list-panel {
+        width: 150px;
+    }
+
+    .panel-header h2 {
+        font-size: 14px;
+    }
+
+    .chat-header {
+        padding: 12px;
+    }
+
+    .chat-header h1 {
+        font-size: 16px;
+        margin-bottom: 3px;
+    }
+
+    .chat-header p {
+        font-size: 12px;
+    }
+
+    .message-content {
+        max-width: 90%;
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .launch-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .send-button {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+
+    .chat-input {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .status-item {
+        padding: 8px;
+        margin-bottom: 6px;
+        font-size: 11px;
+    }
+
+    .status-label {
+        margin-bottom: 2px;
+    }
+
+    .status-value {
+        margin-bottom: 2px;
+        font-size: 10px;
+    }
+}
+
+/* Extra small (320px) */
+@media (max-width: 320px) {
+    .bot-list-panel {
+        width: 130px;
+    }
+
+    .message-content {
+        max-width: 95%;
+    }
+
+    .panel-header h2 {
+        font-size: 12px;
+    }
+
+    .chat-header h1 {
+        font-size: 14px;
+    }
+
+    .launch-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .bot-item {
+        padding: 14px;
+    }
+
+    .bot-action-btn {
+        padding: 6px;
+        min-height: 44px;
+    }
+
+    .launch-btn {
+        min-height: 44px;
+    }
+
+    .send-button {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    .chat-input {
+        min-height: 44px;
+    }
+}
+
+/* Landscape orientation */
+@media (orientation: landscape) and (max-height: 500px) {
+    .chat-header {
+        padding: 10px;
+    }
+
+    .chat-messages {
+        max-height: 300px;
+    }
+
+    .panel-header {
+        padding: 10px;
+    }
+
+    .chat-input-container {
+        padding: 10px;
+    }
+}
+
+/* Accessibility: Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Dark mode preference (already our default) */
+@media (prefers-color-scheme: dark) {
+    /* Already implemented as default */
+}
+
+/* High contrast mode */
+@media (prefers-contrast: more) {
+    .message-content {
+        border: 2px solid currentColor;
+    }
+
+    .bot-item {
+        border-left: 4px solid currentColor;
+    }
+
+    .launch-btn,
+    .send-button {
+        border: 2px solid white;
+    }
+}

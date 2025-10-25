@@ -78,3 +78,68 @@
 {"timestamp": "2025-10-25T15:09:33.938425", "bot_id": null, "role": "user", "content": "Message 12", "session_id": "5ad3cbfd-53d9-4596-8f15-87d3f48205da"}
 {"timestamp": "2025-10-25T15:09:33.945614", "bot_id": null, "role": "assistant", "content": "Message 13", "session_id": "5ad3cbfd-53d9-4596-8f15-87d3f48205da"}
 {"timestamp": "2025-10-25T15:09:33.951038", "bot_id": null, "role": "user", "content": "Message 14", "session_id": "5ad3cbfd-53d9-4596-8f15-87d3f48205da"}
+{"timestamp": "2025-10-25T15:57:28.509370", "bot_id": "BOT-001", "role": "user", "content": "Hello bot", "session_id": null}
+{"timestamp": "2025-10-25T16:05:47.255215", "bot_id": "BOT-A", "role": "user", "content": "Hello Bot A", "session_id": null}
+{"timestamp": "2025-10-25T16:05:51.159379", "bot_id": "BOT-B", "role": "user", "content": "Hello Bot B", "session_id": null}
+{"timestamp": "2025-10-25T16:05:56.889288", "bot_id": "BOT-A", "role": "assistant", "content": "Connected to BOT-A. Ready for commands.", "session_id": null}
+{"timestamp": "2025-10-25T16:06:04.901067", "bot_id": "BOT-A", "role": "user", "content": "hi o", "session_id": null}
+{"timestamp": "2025-10-25T16:06:07.011176", "bot_id": "BOT-A", "role": "assistant", "content": "BOT-A: [Offline] hi o", "session_id": null}
+{"timestamp": "2025-10-25T16:06:19.489268", "bot_id": "BOT-A", "role": "assistant", "content": "\u2713 Bot 009 launched successfully", "session_id": null}
+{"timestamp": "2025-10-25T16:06:23.445056", "bot_id": "009", "role": "assistant", "content": "Connected to 009. Ready for commands.", "session_id": null}
+{"timestamp": "2025-10-25T16:06:30.396903", "bot_id": "009", "role": "user", "content": "helloooo", "session_id": null}
+{"timestamp": "2025-10-25T16:06:32.487778", "bot_id": "009", "role": "assistant", "content": "009: [Offline] helloooo", "session_id": null}
+{"timestamp": "2025-10-25T16:14:57.870217", "bot_id": "009", "role": "assistant", "content": "Connected to 009. Ready for commands.", "session_id": null}
+{"timestamp": "2025-10-25T16:14:59.382237", "bot_id": "BOT-A", "role": "assistant", "content": "Connected to BOT-A. Ready for commands.", "session_id": null}
+{"timestamp": "2025-10-25T16:15:02.578641", "bot_id": "BOT-A", "role": "assistant", "content": "\u2713 Bot BOT-A stopped", "session_id": null}
+{"timestamp": "2025-10-25T16:15:05.327169", "bot_id": null, "role": "assistant", "content": "\u2713 Bot 009 stopped", "session_id": null}
+{"timestamp": "2025-10-25T16:15:07.825427", "bot_id": null, "role": "assistant", "content": "\u2713 Bot BOT-B stopped", "session_id": null}
+{"timestamp": "2025-10-25T16:35:32.188238", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 1", "session_id": null}
+{"timestamp": "2025-10-25T16:35:32.577540", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 2", "session_id": null}
+{"timestamp": "2025-10-25T16:35:32.920121", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 3", "session_id": null}
+{"timestamp": "2025-10-25T16:35:33.261277", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 4", "session_id": null}
+{"timestamp": "2025-10-25T16:35:33.666013", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 5", "session_id": null}
+{"timestamp": "2025-10-25T16:35:33.998090", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 6", "session_id": null}
+{"timestamp": "2025-10-25T16:35:34.313726", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 7", "session_id": null}
+{"timestamp": "2025-10-25T16:35:34.652408", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 8", "session_id": null}
+{"timestamp": "2025-10-25T16:35:35.010511", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 9", "session_id": null}
+{"timestamp": "2025-10-25T16:35:35.364899", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 10", "session_id": null}
+{"timestamp": "2025-10-25T16:35:35.684373", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 11", "session_id": null}
+{"timestamp": "2025-10-25T16:35:36.013702", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 12", "session_id": null}
+{"timestamp": "2025-10-25T16:35:36.354616", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 13", "session_id": null}
+{"timestamp": "2025-10-25T16:35:36.684210", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 14", "session_id": null}
+{"timestamp": "2025-10-25T16:35:37.009351", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 15", "session_id": null}
+{"timestamp": "2025-10-25T16:35:37.392875", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 16", "session_id": null}
+{"timestamp": "2025-10-25T16:35:37.757018", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 17", "session_id": null}
+{"timestamp": "2025-10-25T16:35:38.071989", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 18", "session_id": null}
+{"timestamp": "2025-10-25T16:35:38.420606", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 19", "session_id": null}
+{"timestamp": "2025-10-25T16:35:38.738261", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 20", "session_id": null}
+{"timestamp": "2025-10-25T16:35:39.089155", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 21", "session_id": null}
+{"timestamp": "2025-10-25T16:35:39.436644", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 22", "session_id": null}
+{"timestamp": "2025-10-25T16:35:39.797236", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 23", "session_id": null}
+{"timestamp": "2025-10-25T16:35:40.128956", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 24", "session_id": null}
+{"timestamp": "2025-10-25T16:35:40.456605", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 25", "session_id": null}
+{"timestamp": "2025-10-25T16:35:40.804169", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 26", "session_id": null}
+{"timestamp": "2025-10-25T16:35:41.137392", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 27", "session_id": null}
+{"timestamp": "2025-10-25T16:35:41.464710", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 28", "session_id": null}
+{"timestamp": "2025-10-25T16:35:41.781635", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 29", "session_id": null}
+{"timestamp": "2025-10-25T16:35:42.121846", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 30", "session_id": null}
+{"timestamp": "2025-10-25T16:35:42.456272", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 31", "session_id": null}
+{"timestamp": "2025-10-25T16:35:42.779321", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 32", "session_id": null}
+{"timestamp": "2025-10-25T16:35:43.114055", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 33", "session_id": null}
+{"timestamp": "2025-10-25T16:35:43.466360", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 34", "session_id": null}
+{"timestamp": "2025-10-25T16:35:43.784310", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 35", "session_id": null}
+{"timestamp": "2025-10-25T16:35:44.107849", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 36", "session_id": null}
+{"timestamp": "2025-10-25T16:35:44.462877", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 37", "session_id": null}
+{"timestamp": "2025-10-25T16:35:44.767769", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 38", "session_id": null}
+{"timestamp": "2025-10-25T16:35:45.089518", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 39", "session_id": null}
+{"timestamp": "2025-10-25T16:35:45.456614", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 40", "session_id": null}
+{"timestamp": "2025-10-25T16:35:45.790253", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 41", "session_id": null}
+{"timestamp": "2025-10-25T16:35:46.121282", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 42", "session_id": null}
+{"timestamp": "2025-10-25T16:35:46.447911", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 43", "session_id": null}
+{"timestamp": "2025-10-25T16:35:46.790148", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 44", "session_id": null}
+{"timestamp": "2025-10-25T16:35:47.104844", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 45", "session_id": null}
+{"timestamp": "2025-10-25T16:35:47.431034", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 46", "session_id": null}
+{"timestamp": "2025-10-25T16:35:47.752238", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 47", "session_id": null}
+{"timestamp": "2025-10-25T16:35:48.072935", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 48", "session_id": null}
+{"timestamp": "2025-10-25T16:35:48.389627", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 49", "session_id": null}
+{"timestamp": "2025-10-25T16:35:48.705463", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 50", "session_id": null}

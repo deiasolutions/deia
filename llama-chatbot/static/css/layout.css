@@ -1,0 +1,121 @@
+/* Global layout styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #1a1a1a;
+    color: #e0e0e0;
+    height: 100vh;
+    display: flex;
+}
+
+.main-container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    gap: 1px;
+    background: #0a0a0a;
+}
+
+/* LEFT PANEL - Bot List */
+.bot-list-panel {
+    width: 250px;
+    background: #222;
+    border-right: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.panel-header {
+    padding: 20px;
+    background: linear-gradient(135deg, #4a7ff5 0%, #3d5cb7 100%);
+    color: white;
+    border-bottom: 1px solid #333;
+}
+
+.panel-header h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.bot-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+/* CENTER PANEL - Chat */
+.chat-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #1a1a1a;
+}
+
+.chat-header {
+    background: linear-gradient(135deg, #4a7ff5 0%, #3d5cb7 100%);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #333;
+}
+
+.chat-header h1 {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.chat-header p {
+    opacity: 0.9;
+    font-size: 14px;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #1a1a1a;
+}
+
+.chat-input-container {
+    padding: 20px;
+    background: #222;
+    border-top: 1px solid #333;
+}
+
+.chat-input-wrapper {
+    display: flex;
+    gap: 10px;
+}
+
+/* RIGHT PANEL - Bot Status */
+.status-panel {
+    width: 280px;
+    background: #222;
+    border-left: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.status-header {
+    padding: 20px;
+    background: linear-gradient(135deg, #4a7ff5 0%, #3d5cb7 100%);
+    color: white;
+    border-bottom: 1px solid #333;
+}
+
+.status-header h2 {
+    font-size: 18px;
+}
+
+.status-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}

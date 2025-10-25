@@ -1,0 +1,2 @@
+{"timestamp": "2025-10-25T16:25:41.461004", "event": "config_loaded", "details": {"file": ".deia\\config\\production.yaml", "changes": {"bot_limits": {"min_bots": {"old": 1, "new": 2}}}}}
+{"timestamp": "2025-10-25T16:25:49.833553", "event": "config_loaded", "details": {"file": ".deia\\config\\production.yaml", "changes": {"bot_limits": {"min_bots": {"old": 1, "new": 2}}}}}
