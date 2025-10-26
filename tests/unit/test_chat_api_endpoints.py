@@ -47,7 +47,7 @@ class TestLaunchBotEndpoint:
 
     def test_launch_bot_success(self):
         """Test successful bot launch"""
-        request_data = {"bot_id": "BOT-001"}
+        request_data = {"bot_id": "BOT-001", "bot_type": "claude"}
         with patch.object(service_registry, 'check_duplicate_bot', return_value=False):
             with patch.object(service_registry, 'assign_port', return_value=8001):
                 with patch.object(service_registry, 'register', return_value=True):
@@ -65,7 +65,7 @@ class TestLaunchBotEndpoint:
 
     def test_launch_bot_duplicate(self):
         """Test launching a bot that's already running"""
-        request_data = {"bot_id": "BOT-001"}
+        request_data = {"bot_id": "BOT-001", "bot_type": "claude"}
         with patch.object(service_registry, 'check_duplicate_bot', return_value=True):
             response = client.post("/api/bot/launch", json=request_data)
             assert response.status_code == 200
@@ -75,7 +75,7 @@ class TestLaunchBotEndpoint:
 
     def test_launch_bot_empty_id(self):
         """Test launching with empty bot_id"""
-        request_data = {"bot_id": ""}
+        request_data = {"bot_id": "", "bot_type": "claude"}
         response = client.post("/api/bot/launch", json=request_data)
         assert response.status_code == 200
         data = response.json()
@@ -178,15 +178,44 @@ class TestBotTaskEndpoint:
     def test_send_bot_task_success(self):
         """Test sending task to bot"""
         request_data = {"command": "echo hello"}
-        with patch.object(service_registry, 'get_bot', return_value={"port": 8001}):
-            with patch.object(service_registry, 'get_bot_url', return_value="http://localhost:8001"):
-                with patch('requests.post') as mock_post:
-                    mock_post.return_value.status_code = 200
+        mock_service = MagicMock()
+        mock_service.chat.return_value = "Hello, world!"
+
+        with patch.object(service_registry, 'get_bot', return_value={"port": 8001, "metadata": {"bot_type": "claude"}}):
+            with patch('deia.services.chat_interface_app.ServiceFactory.get_service', return_value=mock_service):
+                with patch('deia.services.chat_interface_app.ServiceFactory.is_cli_service', return_value=False):
                     response = client.post("/api/bot/BOT-001/task", json=request_data)
                     assert response.status_code == 200
                     data = response.json()
                     assert data["success"] is True
-                    assert data["command"] == "echo hello"
+                    assert data["bot_type"] == "claude"
+                    assert data["response"] == "Hello, world!"
+                    mock_service.chat.assert_called_with("echo hello")
+
+    def test_send_bot_task_cli_service(self):
+        """Test sending task when bot uses CLI service"""
+        request_data = {"command": "build project"}
+        mock_service = MagicMock()
+        mock_service.session_active = False
+        mock_service.start_session.return_value = True
+        mock_service.send_task.return_value = {
+            "success": True,
+            "output": "Done",
+            "files_modified": ["main.py"]
+        }
+
+        with patch.object(service_registry, 'get_bot', return_value={"metadata": {"bot_type": "claude-code"}}):
+            with patch('deia.services.chat_interface_app.ServiceFactory.get_service', return_value=mock_service):
+                with patch('deia.services.chat_interface_app.ServiceFactory.is_cli_service', return_value=True):
+                    response = client.post("/api/bot/BOT-001/task", json=request_data)
+                    assert response.status_code == 200
+                    data = response.json()
+                    assert data["success"] is True
+                    assert data["bot_type"] == "claude-code"
+                    assert data["response"] == "Done"
+                    assert data["files_modified"] == ["main.py"]
+                    mock_service.start_session.assert_called_once()
+                    mock_service.send_task.assert_called_with("build project", timeout=30)
 
     def test_send_bot_task_empty_command(self):
         """Test sending empty command"""

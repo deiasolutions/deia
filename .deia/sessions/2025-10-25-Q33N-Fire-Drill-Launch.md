@@ -960,3 +960,4 @@ From observations:
 [11:55 CDT] Resuming backend API task per Q33N override; re-reading focused brief and verifying services (45%).
 [12:00 CDT] Documented service dependencies (status tracker, registry, coordinator) and ready to finalize backend endpoint report.
 [12:35 CDT] Completed backend API code review + tests (see bot-001-code-review-complete.md); ready for BOT-004 integration.
+[14:41 CDT] New task: build service_factory + route /api/bot/{id}/task by bot_type; reviewing claude CLI adapters now (0%).

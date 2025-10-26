@@ -19,6 +19,7 @@ from deia.services.agent_coordinator import AgentCoordinator
 from deia.services.agent_status import AgentStatusTracker
 from deia.services.deia_context import DeiaContextLoader
 from deia.services.registry import ServiceRegistry
+from deia.services.service_factory import ServiceFactory
 from deia.services.security_validators import (
     BotIDValidator,
     CommandValidator,
@@ -624,14 +625,7 @@ async def get_chat_history(bot_id: Optional[str] = None, limit: int = 100):
 @app.post("/api/bot/{bot_id}/task")
 async def send_bot_task(bot_id: str, request: BotTaskRequest):
     """
-    Send a command/task to a specific bot.
-
-    Args:
-        bot_id: Bot ID to send command to
-        request: {"command": "some command"}
-
-    Returns:
-        {"success": true, "response": "..."}  or error
+    Send a command/task to a bot of any type using the service factory.
     """
     try:
         bot_id = bot_id.strip()
@@ -644,7 +638,6 @@ async def send_bot_task(bot_id: str, request: BotTaskRequest):
                 "timestamp": datetime.now().isoformat()
             }
 
-        # Get bot info
         bot_info = service_registry.get_bot(bot_id)
         if not bot_info:
             return {
@@ -653,56 +646,70 @@ async def send_bot_task(bot_id: str, request: BotTaskRequest):
                 "timestamp": datetime.now().isoformat()
             }
 
-        # Send command via WebSocket or REST API
-        # For now, we'll try to send via a direct message endpoint if it exists
-        bot_url = service_registry.get_bot_url(bot_id)
-        if bot_url:
-            try:
-                # Create direct message
-                message_data = {
-                    "from_bot": "chat-interface",
-                    "content": command,
-                    "priority": "P2"
-                }
+        metadata = bot_info.get("metadata", {}) or {}
+        bot_type = metadata.get("bot_type", "claude")
+        work_dir = bot_info.get("work_dir")
+        work_dir_path = Path(work_dir) if work_dir else Path.cwd()
 
-                response = requests.post(
-                    f"{bot_url}/message",
-                    json=message_data,
-                    timeout=5
-                )
+        logger.info(f"Sending task to {bot_id} ({bot_type}): {command[:50]}...")
 
-                if response.status_code == 200:
-                    result = response.json()
-                    logger.info(f"Command sent to {bot_id}: {command[:50]}...")
-                    return {
-                        "success": True,
-                        "bot_id": bot_id,
-                        "command": command,
-                        "response": "Command queued for bot",
-                        "timestamp": datetime.now().isoformat()
-                    }
-                else:
+        try:
+            service = ServiceFactory.get_service(
+                bot_type=bot_type,
+                bot_id=bot_id,
+                work_dir=work_dir_path
+            )
+        except ValueError as factory_error:
+            return {
+                "success": False,
+                "error": str(factory_error),
+                "timestamp": datetime.now().isoformat()
+            }
+
+        if ServiceFactory.is_cli_service(bot_type):
+            # Ensure CLI sessions are started before sending tasks
+            if not getattr(service, "session_active", False):
+                session_started = service.start_session()
+                if session_started is False:
                     return {
                         "success": False,
-                        "error": f"Bot returned status {response.status_code}",
+                        "error": f"Failed to start {bot_type} session",
                         "timestamp": datetime.now().isoformat()
                     }
 
-            except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-                return {
-                    "success": False,
-                    "error": f"Could not reach bot {bot_id} at {bot_url}",
-                    "timestamp": datetime.now().isoformat()
-                }
+            result = service.send_task(command, timeout=30)
+            response_text = result.get("output") or result.get("response", "")
+
+            return {
+                "success": result.get("success", False),
+                "bot_id": bot_id,
+                "bot_type": bot_type,
+                "response": response_text,
+                "files_modified": result.get("files_modified", []),
+                "error": result.get("error"),
+                "timestamp": datetime.now().isoformat()
+            }
+
+        # API-based service
+        response = service.chat(command)
+        if isinstance(response, dict):
+            response_payload = response.get("content", response)
+            success_flag = response.get("success", True)
+        else:
+            response_payload = response
+            success_flag = True
 
         return {
-            "success": False,
-            "error": f"Bot {bot_id} has no service URL",
+            "success": success_flag,
+            "bot_id": bot_id,
+            "bot_type": bot_type,
+            "response": response_payload,
+            "raw_response": response if isinstance(response, dict) else None,
             "timestamp": datetime.now().isoformat()
         }
 
     except Exception as e:
-        logger.error(f"Error sending task to {bot_id}: {e}")
+        logger.error(f"Error in send_bot_task: {e}")
         return {
             "success": False,
             "error": str(e),

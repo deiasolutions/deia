@@ -15,7 +15,9 @@ class ChatPanel {
     store.setSelectedBotId(botId);
 
     if (this.selectedBotInfo) {
-      this.selectedBotInfo.textContent = `Talking to: ${botId}`;
+      const botType = store.getSelectedBotType();
+      const typeLabel = botType ? ` (${botType})` : '';
+      this.selectedBotInfo.textContent = `Talking to: ${botId}${typeLabel}`;
     }
 
     if (this.chatInput) {
@@ -121,7 +123,19 @@ class ChatPanel {
 
         if (result.success) {
           Toast.success('✅ Message sent!');
-          this.addMessage('assistant', result.response || 'Command executed', false);
+
+          // Handle service-specific responses
+          const botType = store.getSelectedBotType();
+          let responseText = result.response || 'Command executed';
+
+          // For CLI services, show modified files
+          if ((botType === 'claude-code' || botType === 'codex') && result.files_modified) {
+            if (result.files_modified.length > 0) {
+              responseText += `\n\n📝 Modified files:\n${result.files_modified.join('\n')}`;
+            }
+          }
+
+          this.addMessage('assistant', responseText, false);
         } else {
           Toast.error(`❌ ${result.error || 'Unknown error'}`);
           this.addMessage('assistant', `❌ ${result.error || 'Unknown error'}`, true);
@@ -138,6 +152,32 @@ class ChatPanel {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${sender}`;
     if (isError) messageDiv.classList.add('error');
+
+    // Add bot type badge for assistant messages
+    if (sender === 'assistant' && !isError) {
+      const botType = store.getSelectedBotType();
+      if (botType) {
+        const badge = document.createElement('span');
+        badge.className = 'bot-type-badge';
+        badge.textContent = botType;
+        badge.style.cssText = `
+          display: inline-block;
+          background: #007bff;
+          color: white;
+          padding: 4px 10px;
+          border-radius: 3px;
+          font-size: 0.85em;
+          margin-right: 8px;
+          font-weight: bold;
+          margin-bottom: 6px;
+        `;
+        messageDiv.appendChild(badge);
+
+        // Add line break after badge
+        const br = document.createElement('br');
+        messageDiv.appendChild(br);
+      }
+    }
 
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';

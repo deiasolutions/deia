@@ -124,7 +124,15 @@ class ServiceRegistry:
 
         return port
 
-    def register(self, bot_id: str, port: int, repo: Optional[str] = None, status: str = "starting", pid: Optional[int] = None):
+    def register(
+        self,
+        bot_id: str,
+        port: int,
+        repo: Optional[str] = None,
+        status: str = "starting",
+        pid: Optional[int] = None,
+        metadata: Optional[Dict] = None
+    ):
         """
         Register bot in registry.
 
@@ -162,7 +170,8 @@ class ServiceRegistry:
             "repo": repo,
             "status": status,
             "registered_at": datetime.now().isoformat(),
-            "last_heartbeat": datetime.now().isoformat()
+            "last_heartbeat": datetime.now().isoformat(),
+            "metadata": metadata or {}
         }
 
         bots[bot_id] = bot_info

@@ -179,7 +179,7 @@ class BotLauncher {
 
       if (result.success) {
         Toast.success(`✅ ${botId} (${botType}) launched successfully!`);
-        this.onLaunchSuccess(botId);
+        this.onLaunchSuccess(botId, botType);
       } else {
         Toast.error(`❌ Failed to launch: ${result.error}`);
         this.onLaunchError(`Failed to launch: ${result.error}`);

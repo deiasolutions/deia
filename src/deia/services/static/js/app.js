@@ -15,11 +15,15 @@ const botList = new BotList(
 const chatPanel = new ChatPanel();
 const statusBoard = new StatusBoard();
 const botLauncher = new BotLauncher(
-  (botId) => {
+  (botId, botType) => {
+    // Store bot type in store
+    store.setSelectedBotType(botType);
+
     const chatMessages = document.getElementById('chatMessages');
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message system';
-    messageDiv.innerHTML = `✓ Bot ${botId} launched successfully`;
+    const botTypeLabel = botType ? ` (${botType})` : '';
+    messageDiv.innerHTML = `✓ Bot ${botId}${botTypeLabel} launched successfully`;
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
     botList.refresh();

@@ -9,6 +9,7 @@ class Store {
       // Bot state
       activeBots: {},
       selectedBotId: null,
+      selectedBotType: null,
 
       // Chat state
       messages: [],
@@ -36,6 +37,14 @@ class Store {
 
   getSelectedBotId() {
     return this.state.selectedBotId;
+  }
+
+  setSelectedBotType(botType) {
+    this.state.selectedBotType = botType;
+  }
+
+  getSelectedBotType() {
+    return this.state.selectedBotType;
   }
 
   // Chat State Methods
