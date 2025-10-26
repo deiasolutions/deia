@@ -11,6 +11,9 @@ from rich.markdown import Markdown
 import sys
 import stat
 import textwrap
+import time
+import socket
+import webbrowser
 from typing import Optional
 
 from .core import (
@@ -1543,6 +1546,44 @@ def hive_launch(hive_file, no_queen):
         sys.exit(1)
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
+        sys.exit(1)
+
+
+@main.command()
+@click.option('--port', default=8000, type=int, help='Port for chat server (default: 8000)')
+@click.option('--host', default='127.0.0.1', help='Host to bind to (default: 127.0.0.1)')
+@click.option('--no-browser', is_flag=True, help='Do not open browser automatically')
+def chat(port, host, no_browser):
+    """Start the chat interface with bot selector on specified port"""
+    # Check if port is available
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    result = sock.connect_ex((host, port))
+    sock.close()
+
+    if result == 0:
+        console.print(f"[red]Error: Port {port} already in use[/red]")
+        sys.exit(1)
+
+    console.print(f"[cyan]Starting chat interface on {host}:{port}...[/cyan]")
+
+    # Open browser if requested
+    if not no_browser:
+        time.sleep(0.5)
+        try:
+            webbrowser.open(f'http://{host}:{port}')
+            console.print(f"[cyan]Browser opened at http://{host}:{port}[/cyan]")
+        except Exception as e:
+            console.print(f"[yellow]Could not open browser: {e}[/yellow]")
+
+    # Run chat server
+    try:
+        from deia.services.chat_interface_app import app
+        import uvicorn
+        uvicorn.run(app, host=host, port=port, log_level='info')
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Chat server stopped[/yellow]")
+    except Exception as e:
+        console.print(f"[red]Error: {e}[/red]")
         sys.exit(1)
 
 

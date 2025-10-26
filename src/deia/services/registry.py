@@ -124,7 +124,7 @@ class ServiceRegistry:
 
         return port
 
-    def register(self, bot_id: str, port: int, repo: Optional[str] = None):
+    def register(self, bot_id: str, port: int, repo: Optional[str] = None, status: str = "starting", pid: Optional[int] = None):
         """
         Register bot in registry.
 
@@ -134,6 +134,8 @@ class ServiceRegistry:
             bot_id: Full bot ID (e.g., "deiasolutions-CLAUDE-CODE-001")
             port: Service port
             repo: Repository name (extracted from bot_id if not provided)
+            status: Initial status (default: "starting", use "ready" for mock bots)
+            pid: Process ID (default: current process PID, use -1 for mock bots)
 
         Returns:
             True if registered successfully, False if bot already running
@@ -150,11 +152,15 @@ class ServiceRegistry:
         if repo is None and "-" in bot_id:
             repo = bot_id.split("-")[0]
 
+        # Use provided PID or current process PID
+        if pid is None:
+            pid = os.getpid()
+
         bot_info = {
             "port": port,
-            "pid": os.getpid(),
+            "pid": pid,
             "repo": repo,
-            "status": "starting",
+            "status": status,
             "registered_at": datetime.now().isoformat(),
             "last_heartbeat": datetime.now().isoformat()
         }
@@ -164,7 +170,7 @@ class ServiceRegistry:
         self._save(registry)
 
         # Audit log
-        self._audit_log("registered", bot_id, {"port": port, "pid": os.getpid()})
+        self._audit_log("registered", bot_id, {"port": port, "pid": pid})
 
         print(f"[REGISTRY] Registered {bot_id} on port {port}")
         return True
@@ -265,6 +271,10 @@ class ServiceRegistry:
             pid = info.get("pid")
             is_alive = False
 
+            # Skip stale cleanup for mock bots (PID = -1)
+            if pid == -1:
+                continue
+
             if pid:
                 try:
                     is_alive = psutil.pid_exists(pid)
@@ -310,6 +320,11 @@ class ServiceRegistry:
 
         # Check if PID is alive
         pid = bot.get("pid")
+
+        # Mock bots (PID = -1) are always considered running if registered
+        if pid == -1:
+            return True
+
         if pid:
             try:
                 return psutil.pid_exists(pid)

@@ -26,7 +26,7 @@ import logging
 import os
 import time
 from abc import ABC, abstractmethod
-from typing import Any, AsyncGenerator, Dict, List, Optional
+from typing import Any, AsyncGenerator, Dict, List, Optional, Tuple
 
 from openai import AsyncOpenAI, OpenAI
 import openai
@@ -51,49 +51,55 @@ def _get_anthropic_module():
 
 
 class ConversationHistory:
-    """Manages conversation history with token limit awareness."""
+    """Manages conversation history with token/token-count heuristics."""
 
-    def __init__(self, max_messages: int = 20, max_tokens: int = 4000):
-        """Initialize conversation history manager.
-
+    def __init__(
+        self,
+        max_messages: int = 20,
+        max_tokens: int = 4000,
+        tokenizer: Optional[Any] = None,
+    ):
+        """
         Args:
-            max_messages: Maximum number of messages to retain
-            max_tokens: Approximate token limit (simplified estimation)
+            max_messages: Maximum message count (excluding system prompts)
+            max_tokens: Approximate max tokens (provider-specific heuristics)
+            tokenizer: Optional callable returning token count for str content
         """
         self.messages: List[Dict[str, str]] = []
         self.max_messages = max_messages
         self.max_tokens = max_tokens
+        self.tokenizer = tokenizer or _estimate_tokens
 
     def add_message(self, role: str, content: str):
-        """Add a message to history."""
         self.messages.append({"role": role, "content": content})
         self._trim_if_needed()
 
     def _trim_if_needed(self):
-        """Trim history if it exceeds limits."""
-        # Keep system messages, trim old user/assistant messages
         system_msgs = [m for m in self.messages if m["role"] == "system"]
         other_msgs = [m for m in self.messages if m["role"] != "system"]
 
-        # Trim by message count
         if len(other_msgs) > self.max_messages:
-            other_msgs = other_msgs[-(self.max_messages):]
+            other_msgs = other_msgs[-self.max_messages :]
 
-        # Simple token estimation (rough: 4 chars = 1 token)
-        total_chars = sum(len(m["content"]) for m in other_msgs)
-        while total_chars > (self.max_tokens * 4) and len(other_msgs) > 2:
+        total_tokens = sum(self.tokenizer(m["content"]) for m in other_msgs)
+        while total_tokens > self.max_tokens and len(other_msgs) > 2:
             removed = other_msgs.pop(0)
-            total_chars -= len(removed["content"])
+            total_tokens -= self.tokenizer(removed["content"])
 
         self.messages = system_msgs + other_msgs
 
     def get_messages(self) -> List[Dict[str, str]]:
-        """Get current message history."""
         return self.messages.copy()
 
     def clear(self):
-        """Clear conversation history."""
         self.messages.clear()
+
+
+def _estimate_tokens(text: str) -> int:
+    """Basic token estimation fallback (approx 4 chars = 1 token)."""
+    if not text:
+        return 1
+    return max(1, len(text) // 4)
 
 
 class BaseLLMService(ABC):
@@ -334,6 +340,7 @@ class BaseLLMService(ABC):
             "unknown_error": "Unexpected error occurred.",
             "max_retries_exceeded": "Request failed after multiple attempts.",
             "missing_api_key": "Anthropic API key missing. Set ANTHROPIC_API_KEY and retry.",
+            "module_missing": "Anthropic SDK not installed. Run `pip install anthropic`.",
             "invalid_message": "Message invalid. Provide non-empty plain text.",
             "token_limit": "Conversation exceeds allowable token limit. Trim context and retry.",
             "stream_error": "Streaming failed mid-response. Check logs.",
@@ -455,6 +462,293 @@ class OpenAIService(BaseLLMService):
         )
 
 
+class AnthropicService(BaseLLMService):
+    """Service for Anthropic Claude models."""
+
+    DEFAULT_MODEL = "claude-3-5-sonnet-20240620"
+
+    def __init__(
+        self,
+        api_key: Optional[str] = None,
+        model: str = DEFAULT_MODEL,
+        max_tokens: int = 2000,
+        temperature: float = 0.7,
+        timeout: int = 120,
+        max_retries: int = 3,
+        conversation_history: Optional[ConversationHistory] = None,
+    ):
+        raw_key = api_key or os.environ.get("ANTHROPIC_API_KEY")
+        module = _get_anthropic_module()
+
+        self.available = raw_key is not None and module is not None
+        self.disabled_reason = None
+        anthropic_key = raw_key or "anthropic-key-missing"
+        if raw_key is None:
+            self.disabled_reason = "missing_api_key"
+        elif module is None:
+            self.disabled_reason = "module_missing"
+
+        super().__init__(
+            api_key=anthropic_key,
+            model=model,
+            base_url="https://api.openai.com/v1",  # unused but required by base
+            max_tokens=max_tokens,
+            temperature=temperature,
+            timeout=timeout,
+            max_retries=max_retries,
+        )
+
+        self.history = conversation_history or ConversationHistory(
+            max_messages=40,
+            max_tokens=max_tokens * 2,
+            tokenizer=_estimate_tokens,
+        )
+
+        self._timeout = timeout
+        self.anthropic_client = None
+        self.anthropic_async_client = None
+
+        if self.available:
+            self.anthropic_client = module.Anthropic(
+                api_key=raw_key,
+                timeout=timeout,
+                max_retries=max_retries,
+            )
+            self.anthropic_async_client = module.AsyncAnthropic(
+                api_key=raw_key,
+                timeout=timeout,
+                max_retries=max_retries,
+            )
+
+    def chat(
+        self,
+        user_message: str,
+        system_prompt: Optional[str] = None,
+        conversation_history: Optional[List[Dict[str, str]]] = None,
+        **kwargs,
+    ) -> Dict[str, Any]:
+        start_time = time.time()
+        validation_error = self._validate_message(user_message)
+        if validation_error:
+            return self._error_response(validation_error, "Invalid message", start_time)
+
+        if not self.available:
+            return self._error_response(self.disabled_reason or "api_error", "Anthropic unavailable", start_time)
+
+        sys_prompt, messages = self._prepare_messages(user_message, system_prompt, conversation_history)
+        if not self._within_token_budget(messages):
+            return self._error_response("token_limit", "Conversation exceeds Anthropic token budget", start_time)
+
+        for attempt in range(self.max_retries):
+            try:
+                response = self.anthropic_client.messages.create(
+                    model=self.model,
+                    max_tokens=self.max_tokens,
+                    temperature=self.temperature,
+                    system=sys_prompt,
+                    messages=messages,
+                    **kwargs,
+                )
+                result = self._build_success_response(response, start_time)
+                if conversation_history is None:
+                    self._append_history(user_message, result["content"])
+                return result
+            except Exception as exc:
+                error_type = self._map_anthropic_error(exc)
+                logger.error(
+                    "Anthropic chat error (%s/%s): %s",
+                    attempt + 1,
+                    self.max_retries,
+                    exc,
+                    exc_info=True,
+                )
+                if error_type == "rate_limit" and attempt < self.max_retries - 1:
+                    time.sleep(2 ** attempt)
+                    continue
+                return self._error_response(error_type, str(exc), start_time)
+
+        return self._error_response("max_retries_exceeded", "All retry attempts failed", start_time)
+
+    async def chat_async(
+        self,
+        user_message: str,
+        system_prompt: Optional[str] = None,
+        conversation_history: Optional[List[Dict[str, str]]] = None,
+        **kwargs,
+    ) -> Dict[str, Any]:
+        start_time = time.time()
+        validation_error = self._validate_message(user_message)
+        if validation_error:
+            return self._error_response(validation_error, "Invalid message", start_time)
+
+        if not self.available:
+            return self._error_response(self.disabled_reason or "api_error", "Anthropic unavailable", start_time)
+
+        sys_prompt, messages = self._prepare_messages(user_message, system_prompt, conversation_history)
+        if not self._within_token_budget(messages):
+            return self._error_response("token_limit", "Conversation exceeds Anthropic token budget", start_time)
+
+        for attempt in range(self.max_retries):
+            try:
+                response = await self.anthropic_async_client.messages.create(
+                    model=self.model,
+                    max_tokens=self.max_tokens,
+                    temperature=self.temperature,
+                    system=sys_prompt,
+                    messages=messages,
+                    **kwargs,
+                )
+                result = self._build_success_response(response, start_time)
+                if conversation_history is None:
+                    self._append_history(user_message, result["content"])
+                return result
+            except Exception as exc:
+                error_type = self._map_anthropic_error(exc)
+                if error_type == "rate_limit" and attempt < self.max_retries - 1:
+                    await asyncio.sleep(2 ** attempt)
+                    continue
+                return self._error_response(error_type, str(exc), start_time)
+
+        return self._error_response("max_retries_exceeded", "All retry attempts failed", start_time)
+
+    async def chat_stream(
+        self,
+        user_message: str,
+        system_prompt: Optional[str] = None,
+        conversation_history: Optional[List[Dict[str, str]]] = None,
+        **kwargs,
+    ) -> AsyncGenerator[str, None]:
+        validation_error = self._validate_message(user_message)
+        if validation_error:
+            yield f"[Error: {validation_error}]"
+            return
+
+        if not self.available:
+            yield "[Error: Anthropic unavailable]"
+            return
+
+        sys_prompt, messages = self._prepare_messages(user_message, system_prompt, conversation_history)
+        if not self._within_token_budget(messages):
+            yield "[Error: Conversation exceeds Anthropic token limit]"
+            return
+
+        try:
+            stream_call = self.anthropic_async_client.messages.stream(
+                model=self.model,
+                max_tokens=self.max_tokens,
+                temperature=self.temperature,
+                system=sys_prompt,
+                messages=messages,
+                **kwargs,
+            )
+            if hasattr(stream_call, "__aenter__"):
+                async with stream_call as stream:
+                    async for chunk in self._iterate_stream(stream):
+                        yield chunk
+            else:
+                async for chunk in self._iterate_stream(stream_call):
+                    yield chunk
+        except Exception as exc:
+            logger.error("Anthropic stream error: %s", exc, exc_info=True)
+            yield f"[Error: {exc}]"
+
+    async def _iterate_stream(self, stream_obj) -> AsyncGenerator[str, None]:
+        async for event in stream_obj:
+            text = self._extract_stream_text(event)
+            if text:
+                yield text
+
+    def _append_history(self, user_message: str, assistant_message: str):
+        self.history.add_message("user", user_message)
+        self.history.add_message("assistant", assistant_message)
+
+    def _build_success_response(self, response: Any, start_time: float) -> Dict[str, Any]:
+        text = self._extract_response_text(response)
+        usage = getattr(response, "usage", None)
+        input_tokens = getattr(usage, "input_tokens", None) if usage else None
+        output_tokens = getattr(usage, "output_tokens", None) if usage else None
+        tokens_used = None
+        if input_tokens is not None and output_tokens is not None:
+            tokens_used = input_tokens + output_tokens
+
+        return {
+            "content": text,
+            "response_time_ms": int((time.time() - start_time) * 1000),
+            "tokens_used": tokens_used,
+            "prompt_tokens": input_tokens,
+            "completion_tokens": output_tokens,
+            "model": self.model,
+            "success": True,
+            "id": getattr(response, "id", None),
+        }
+
+    def _extract_response_text(self, response: Any) -> str:
+        content_blocks = getattr(response, "content", [])
+        fragments: List[str] = []
+        for block in content_blocks:
+            if isinstance(block, dict):
+                text_val = block.get("text")
+            else:
+                text_val = getattr(block, "text", None)
+            if text_val:
+                fragments.append(text_val)
+        if not fragments and hasattr(response, "completion"):
+            fragments.append(getattr(response, "completion"))
+        return "".join(fragments).strip()
+
+    def _extract_stream_text(self, event: Any) -> str:
+        if isinstance(event, dict):
+            if event.get("type") == "content_block_delta":
+                return event.get("delta", {}).get("text", "")
+            return event.get("text", "")
+        event_type = getattr(event, "type", "")
+        if event_type == "content_block_delta":
+            delta = getattr(event, "delta", None)
+            return getattr(delta, "text", "") if delta else ""
+        return getattr(event, "text", "")
+
+    def _validate_message(self, message: str) -> Optional[str]:
+        if message is None or not isinstance(message, str) or not message.strip():
+            return "invalid_message"
+        if len(message) > 50_000:
+            return "token_limit"
+        return None
+
+    def _prepare_messages(
+        self,
+        user_message: str,
+        system_prompt: Optional[str],
+        conversation_history: Optional[List[Dict[str, str]]],
+    ) -> Tuple[Optional[str], List[Dict[str, str]]]:
+        history = conversation_history if conversation_history is not None else self.history.get_messages()
+        sys_prompt = system_prompt
+        prepared: List[Dict[str, str]] = []
+
+        for entry in history:
+            if entry["role"] == "system" and not sys_prompt:
+                sys_prompt = entry["content"]
+                continue
+            prepared.append({"role": entry["role"], "content": entry["content"]})
+
+        prepared.append({"role": "user", "content": user_message})
+        return sys_prompt, prepared
+
+    def _within_token_budget(self, messages: List[Dict[str, str]]) -> bool:
+        total = sum(_estimate_tokens(m["content"]) for m in messages if m["role"] != "system")
+        return total <= self.history.max_tokens
+
+    def _map_anthropic_error(self, exc: Exception) -> str:
+        name = exc.__class__.__name__.lower()
+        if "ratelimit" in name or "rate_limit" in name:
+            return "rate_limit"
+        if "timeout" in name:
+            return "timeout"
+        if "authentication" in name or "invalidapi" in name:
+            return "api_error"
+        return "api_error"
+
+
+
 # Convenience function to create service from config
 def create_llm_service(
     provider: str = "ollama",
@@ -465,7 +759,7 @@ def create_llm_service(
     """Factory function to create LLM service based on provider.
 
     Args:
-        provider: Provider name ("ollama", "deepseek", "openai")
+        provider: Provider name ("ollama", "deepseek", "openai", "anthropic")
         api_key: API key (required for cloud providers)
         model: Model name (uses provider defaults if not specified)
         **kwargs: Additional service parameters
@@ -476,6 +770,7 @@ def create_llm_service(
     Example:
         service = create_llm_service("ollama", model="qwen2.5-coder:7b")
         service = create_llm_service("deepseek", api_key="sk-...", model="deepseek-coder")
+        service = create_llm_service("anthropic", api_key="sk-ant-...", model="claude-3-5-sonnet-20241022")
     """
     provider = provider.lower()
 
@@ -489,8 +784,12 @@ def create_llm_service(
         if not api_key:
             raise ValueError("api_key required for OpenAI service")
         return OpenAIService(api_key=api_key, model=model or "gpt-4", **kwargs)
+    elif provider == "anthropic":
+        if not api_key:
+            api_key = os.getenv("ANTHROPIC_API_KEY")
+        return AnthropicService(api_key=api_key, model=model or "claude-3-5-sonnet-20241022", **kwargs)
     else:
-        raise ValueError(f"Unknown provider: {provider}. Use 'ollama', 'deepseek', or 'openai'")
+        raise ValueError(f"Unknown provider: {provider}. Use 'ollama', 'deepseek', 'openai', or 'anthropic'")
 
 
 # Example usage

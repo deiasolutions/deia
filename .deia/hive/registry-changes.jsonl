@@ -1,0 +1,13 @@
+{"timestamp": "2025-10-26T12:01:07.331335", "action": "stale_entry_removed", "bot_id": "deiasolutions-CLAUDE-CODE-002", "details": {"port": 8669, "pid": 122052, "repo": "deiasolutions", "status": "starting", "registered_at": "2025-10-25T09:52:22.606551", "last_heartbeat": "2025-10-25T09:52:22.606673"}}
+{"timestamp": "2025-10-26T12:01:07.334473", "action": "stale_entry_removed", "bot_id": "deiasolutions-SCRUM-MASTER-001", "details": {"port": 8757, "pid": 121020, "repo": "deiasolutions", "status": "starting", "registered_at": "2025-10-25T09:47:21.360917", "last_heartbeat": "2025-10-25T09:47:21.361440"}}
+{"timestamp": "2025-10-26T13:01:35.555347", "action": "registered", "bot_id": "BOT-001", "details": {"port": 8025, "pid": 46756}}
+{"timestamp": "2025-10-26T13:03:22.197209", "action": "registered", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 46756}}
+{"timestamp": "2025-10-26T13:04:35.619604", "action": "registered", "bot_id": "BOT-003", "details": {"port": 8377, "pid": 46756}}
+{"timestamp": "2025-10-26T13:11:19.194908", "action": "registered", "bot_id": "BOT-005", "details": {"port": 8960, "pid": 46756}}
+{"timestamp": "2025-10-26T13:25:53.470443", "action": "stale_entry_removed", "bot_id": "BOT-001", "details": {"port": 8025, "pid": 46756, "repo": "BOT", "status": "ready", "registered_at": "2025-10-26T13:01:35.553967", "last_heartbeat": "2025-10-26T13:01:35.553982"}}
+{"timestamp": "2025-10-26T13:25:53.473083", "action": "stale_entry_removed", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 46756, "repo": "BOT", "status": "ready", "registered_at": "2025-10-26T13:03:22.195888", "last_heartbeat": "2025-10-26T13:03:22.195905"}}
+{"timestamp": "2025-10-26T13:25:53.474153", "action": "stale_entry_removed", "bot_id": "BOT-003", "details": {"port": 8377, "pid": 46756, "repo": "BOT", "status": "ready", "registered_at": "2025-10-26T13:04:35.618445", "last_heartbeat": "2025-10-26T13:04:35.618456"}}
+{"timestamp": "2025-10-26T13:25:53.475309", "action": "stale_entry_removed", "bot_id": "BOT-005", "details": {"port": 8960, "pid": 46756, "repo": "BOT", "status": "ready", "registered_at": "2025-10-26T13:11:19.194275", "last_heartbeat": "2025-10-26T13:11:19.194280"}}
+{"timestamp": "2025-10-26T13:49:54.846226", "action": "registered", "bot_id": "BOT-001", "details": {"port": 8025, "pid": -1}}
+{"timestamp": "2025-10-26T13:51:35.079610", "action": "registered", "bot_id": "BOT-002", "details": {"port": 8217, "pid": -1}}
+{"timestamp": "2025-10-26T13:57:58.488184", "action": "registered", "bot_id": "BOT-999", "details": {"port": 8118, "pid": -1}}

@@ -1,21 +1,29 @@
 {
   "bots": {
-    "deiasolutions-CLAUDE-CODE-002": {
-      "port": 8669,
-      "pid": 122052,
-      "repo": "deiasolutions",
-      "status": "starting",
-      "registered_at": "2025-10-25T09:52:22.606551",
-      "last_heartbeat": "2025-10-25T09:52:22.606673"
+    "BOT-001": {
+      "port": 8025,
+      "pid": -1,
+      "repo": "BOT",
+      "status": "ready",
+      "registered_at": "2025-10-26T13:49:54.843601",
+      "last_heartbeat": "2025-10-26T13:49:54.843615"
     },
-    "deiasolutions-SCRUM-MASTER-001": {
-      "port": 8757,
-      "pid": 121020,
-      "repo": "deiasolutions",
-      "status": "starting",
-      "registered_at": "2025-10-25T09:47:21.360917",
-      "last_heartbeat": "2025-10-25T09:47:21.361440"
+    "BOT-002": {
+      "port": 8217,
+      "pid": -1,
+      "repo": "BOT",
+      "status": "ready",
+      "registered_at": "2025-10-26T13:51:35.069808",
+      "last_heartbeat": "2025-10-26T13:51:35.069814"
+    },
+    "BOT-999": {
+      "port": 8118,
+      "pid": -1,
+      "repo": "BOT",
+      "status": "ready",
+      "registered_at": "2025-10-26T13:57:58.486605",
+      "last_heartbeat": "2025-10-26T13:57:58.486617"
     }
   },
-  "updated_at": "2025-10-25T09:52:22.606912"
+  "updated_at": "2025-10-26T13:57:58.486625"
 }
