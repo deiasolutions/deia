@@ -61,6 +61,30 @@ if not HTML_FILE.exists():
     # Fallback to looking in current directory
     HTML_FILE = Path("chat_interface.html")
 
+async def call_bot_task(bot_id: str, command: str) -> Dict:
+    """
+    Call the bot's task endpoint by making an HTTP request.
+
+    Args:
+        bot_id: Bot ID to send task to
+        command: Command/query to send
+
+    Returns:
+        Response from task endpoint
+    """
+    try:
+        # Call the task endpoint via HTTP
+        url = f"http://localhost:8000/api/bot/{bot_id}/task"
+        response = requests.post(
+            url,
+            json={"command": command},
+            timeout=30
+        )
+        return response.json()
+    except Exception as e:
+        logger.error(f"Error calling bot task: {e}")
+        return {"success": False, "error": str(e)}
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     """WebSocket endpoint with authentication"""
@@ -134,11 +158,26 @@ async def websocket_endpoint(websocket: WebSocket):
                         chat_history[bot_id] = []
                     chat_history[bot_id].append({"role": "user", "content": query})
 
-                    result = process_query(query)
+                    # Call the actual task endpoint to get bot response
+                    try:
+                        task_response = await call_bot_task(bot_id, query)
+                        result = {
+                            "type": "response",
+                            "content": task_response.get("response", "No response"),
+                            "success": task_response.get("success", False),
+                            "bot_id": bot_id
+                        }
 
-                    # Store bot response
-                    if result.get("type") == "response":
-                        chat_history[bot_id].append({"role": "assistant", "content": result.get("content", "")})
+                        # Store bot response
+                        chat_history[bot_id].append({
+                            "role": "assistant",
+                            "content": task_response.get("response", "Error")
+                        })
+                    except Exception as e:
+                        result = {
+                            "type": "error",
+                            "message": f"Failed to call bot: {str(e)}"
+                        }
 
                     await websocket.send_text(json.dumps(result))
 
@@ -308,18 +347,11 @@ async def get_bots():
         # Get bots from registry
         all_bots = service_registry.get_all_bots()
 
-        # Format response - return clean mock data if registry is empty
+        # Format response - return empty list if no bots (no demo bots)
         if not all_bots:
-            # Return a sample bot for demo
             return {
                 "success": True,
-                "bots": {
-                    "DEMO-BOT": {
-                        "status": "ready",
-                        "port": 8001,
-                        "registered_at": datetime.now().isoformat()
-                    }
-                },
+                "bots": {},
                 "timestamp": datetime.now().isoformat()
             }
 
@@ -522,18 +554,11 @@ async def get_bots_status():
     try:
         all_bots = service_registry.get_all_bots()
 
-        # If no bots, return demo data
+        # If no bots, return empty list (no demo bots)
         if not all_bots:
             return {
                 "success": True,
-                "bots": {
-                    "DEMO-BOT": {
-                        "status": "ready",
-                        "port": 8001,
-                        "registered_at": datetime.now().isoformat(),
-                        "current_task": None
-                    }
-                },
+                "bots": {},
                 "timestamp": datetime.now().isoformat()
             }
 
