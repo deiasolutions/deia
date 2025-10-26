@@ -24,7 +24,10 @@
       "Bash(while read task)",
       "Bash(do if ! grep -q \"$task%%-*\" /c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/.deia/hive/responses/deiasolutions/*.md)",
       "Bash(then echo \"  ⏳ $task\" fi done)",
-      "Bash(sort:*)"
+      "Bash(sort:*)",
+      "Bash(ls -la \"C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\hive\\tasks\"\" | grep -E \"004)",
+      "Bash(003)",
+      "Bash(001 \")"
     ],
     "deny": [],
     "ask": []

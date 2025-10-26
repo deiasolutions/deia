@@ -219,7 +219,7 @@ class Pipeline:
         self.error_count = 0
 
     def execute(self, input_data: Any, input_type: DataType = DataType.STRUCTURED) -> Iterator[PipeFrame]:
-        """Execute pipeline with input data."""
+        """Execute pipeline with input data (streams ALL frames - use execute_final for results only)."""
         # Create initial frame
         initial_frame = PipeFrame(
             data=input_data,
@@ -254,6 +254,46 @@ class Pipeline:
 
                     # Yield immediately for streaming
                     yield output_frame
+
+            frames = new_frames
+
+    def execute_final(self, input_data: Any, input_type: DataType = DataType.STRUCTURED) -> Iterator[PipeFrame]:
+        """Execute pipeline and yield only FINAL stage outputs (for collect())."""
+        # Create initial frame
+        initial_frame = PipeFrame(
+            data=input_data,
+            data_type=input_type,
+            metadata={"pipeline_start": True}
+        )
+
+        # Execute through all stages
+        frames = [initial_frame]
+
+        for stage_idx, stage in enumerate(self.stages):
+            new_frames = []
+
+            for frame in frames:
+                # Validate input
+                if not stage.validate_input(frame) and not frame.is_error:
+                    frame = PipeFrame(
+                        data=frame.data,
+                        data_type=frame.data_type,
+                        is_error=True,
+                        error_message=f"Input type mismatch for {stage.name}"
+                    )
+
+                # Process through stage
+                for output_frame in stage.process(frame):
+                    self.frame_count += 1
+
+                    if output_frame.is_error:
+                        self.error_count += 1
+
+                    new_frames.append(output_frame)
+
+                    # Yield only if this is the final stage
+                    if stage_idx == len(self.stages) - 1:
+                        yield output_frame
 
             frames = new_frames
 
@@ -334,9 +374,17 @@ class CommandChain:
         return self.pipeline.execute_buffered(self.input_data, self.input_type)
 
     def collect(self) -> List[Any]:
-        """Collect all results into a list, flattening frame data."""
+        """Collect all results into a list, flattening frame data (final stage only)."""
         results = []
-        for frame in self.execute_buffered():
+
+        # If no stages, return input as-is
+        if not self.pipeline.stages:
+            if isinstance(self.input_data, list):
+                return self.input_data
+            return [self.input_data]
+
+        # Use execute_final to get only final stage outputs
+        for frame in self.pipeline.execute_final(self.input_data, self.input_type):
             if not frame.is_error and frame.data is not None:
                 # If data is a list, flatten it
                 if isinstance(frame.data, list):

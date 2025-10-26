@@ -225,8 +225,9 @@ class TestCommandChain:
         chain = CommandChain(sample_data)
         results = chain.filter(lambda x: x["age"] > 26).map(lambda x: x["name"]).collect()
 
-        assert len(results) == 1
-        assert results[0] == "Alice"
+        assert len(results) == 2  # Alice (30) and Charlie (35) both > 26
+        assert "Alice" in results
+        assert "Charlie" in results
 
     def test_chain_with_json_parsing(self, json_string):
         """Test chain with JSON parsing."""
@@ -235,8 +236,10 @@ class TestCommandChain:
 
         results = chain.collect()
 
-        assert len(results) == 1
-        assert results[0]["name"] == "Alice"
+        assert len(results) == 2  # Alice (30) and Charlie (35) both > 26
+        names = [r["name"] for r in results]
+        assert "Alice" in names
+        assert "Charlie" in names
 
     def test_chain_format_json(self, sample_data):
         """Test chain with JSON formatting."""

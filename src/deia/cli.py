@@ -9,8 +9,17 @@ from rich.prompt import Prompt, Confirm
 from rich.panel import Panel
 from rich.markdown import Markdown
 import sys
+import stat
+import textwrap
+from typing import Optional
 
-from .core import init_project, create_session_log, sanitize_file, validate_file
+from .core import (
+    init_project,
+    create_session_log,
+    sanitize_file,
+    validate_file,
+    find_project_root,
+)
 from .bok import search_bok, sync_bok
 from .config import load_config, save_config
 from .logger import ConversationLogger
@@ -1604,6 +1613,88 @@ def slash_command(command, bot, broadcast, wait, timeout):
     except Exception as e:
         console.print(f"[red]Error:[/red] {e}")
         sys.exit(1)
+
+
+@main.command("cleanup-temp-staging")
+@click.option(
+    "--config",
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    help="Optional path to .deia/config.json (defaults to project config).",
+)
+def cleanup_temp_staging_cmd(config: Optional[Path]):
+    """Manually clean the temp staging folder used by the sync service."""
+    from .tools.temp_staging_cleanup import cleanup_temp_staging
+
+    config_path = config if config else None
+    result = cleanup_temp_staging(config_path=config_path, source="cli")
+
+    if result["success"]:
+        console.print(f"[green]{result['message']}[/green]")
+        console.print(
+            f"deleted={result['deleted_files']} archived={result['archived_files']}"
+        )
+    else:
+        console.print(f"[red]{result['message']}[/red]")
+        sys.exit(1)
+
+
+@main.command("install-cleanup-hook")
+@click.option("--force", is_flag=True, help="Overwrite an existing post-commit hook.")
+def install_cleanup_hook(force: bool):
+    """Install git post-commit hook to purge temp staging after commits."""
+    project_root = find_project_root()
+    git_dir = project_root / ".git"
+    if not git_dir.exists():
+        console.print("[red]No .git directory found. Run inside a git repository.[/red]")
+        sys.exit(1)
+
+    hooks_dir = git_dir / "hooks"
+    hooks_dir.mkdir(parents=True, exist_ok=True)
+    hook_path = hooks_dir / "post-commit"
+
+    if hook_path.exists() and not force:
+        console.print(
+            "[yellow]A post-commit hook already exists. Use --force to replace it.[/yellow]"
+        )
+        sys.exit(1)
+
+    if hook_path.exists() and force:
+        backup_path = hook_path.with_suffix(".pre-deia")
+        hook_path.replace(backup_path)
+        console.print(f"[yellow]Existing hook backed up to {backup_path.name}[/yellow]")
+
+    script_contents = _render_cleanup_hook_script(project_root)
+    hook_path.write_text(script_contents, encoding="utf-8", newline="\n")
+    _make_hook_executable(hook_path)
+
+    console.print(
+        "[green]Installed post-commit hook for temp staging cleanup.[/green]\n"
+        "Hook runs `deia.tools.temp_staging_cleanup` after every successful commit."
+    )
+
+
+def _render_cleanup_hook_script(project_root: Path) -> str:
+    python_path = Path(sys.executable).resolve().as_posix().replace('"', '\\"')
+    root_path = project_root.resolve().as_posix().replace('"', '\\"')
+    return textwrap.dedent(
+        f"""\
+        #!/bin/sh
+        PYTHON_BIN="{python_path}"
+        PROJECT_ROOT="{root_path}"
+
+        if [ ! -d "$PROJECT_ROOT" ]; then
+          exit 0
+        fi
+
+        cd "$PROJECT_ROOT" || exit 0
+        "$PYTHON_BIN" -m deia.tools.temp_staging_cleanup --source post-commit >/dev/null 2>&1 || true
+        """
+    )
+
+
+def _make_hook_executable(hook_path: Path) -> None:
+    current_mode = hook_path.stat().st_mode
+    hook_path.chmod(current_mode | stat.S_IEXEC)
 
 
 @main.group()
