@@ -20,15 +20,34 @@ Usage:
         print(chunk, end="", flush=True)
 """
 
-import time
 import asyncio
-from typing import Dict, Any, Optional, List, AsyncGenerator
-from abc import ABC, abstractmethod
+import importlib
 import logging
-from openai import OpenAI, AsyncOpenAI
+import os
+import time
+from abc import ABC, abstractmethod
+from typing import Any, AsyncGenerator, Dict, List, Optional
+
+from openai import AsyncOpenAI, OpenAI
 import openai
 
+try:  # Optional dependency; resolved lazily if unavailable
+    _ANTHROPIC_MODULE = importlib.import_module("anthropic")  # pragma: no cover
+except ImportError:  # pragma: no cover
+    _ANTHROPIC_MODULE = None
+
 logger = logging.getLogger(__name__)
+
+
+def _get_anthropic_module():
+    """Return anthropic module if available, attempting lazy import on demand."""
+    global _ANTHROPIC_MODULE
+    if _ANTHROPIC_MODULE is None:
+        try:
+            _ANTHROPIC_MODULE = importlib.import_module("anthropic")
+        except ImportError:
+            return None
+    return _ANTHROPIC_MODULE
 
 
 class ConversationHistory:
@@ -313,7 +332,11 @@ class BaseLLMService(ABC):
             "api_error": "API error occurred. Please try again.",
             "timeout": "Request timed out. Please try again.",
             "unknown_error": "Unexpected error occurred.",
-            "max_retries_exceeded": "Request failed after multiple attempts."
+            "max_retries_exceeded": "Request failed after multiple attempts.",
+            "missing_api_key": "Anthropic API key missing. Set ANTHROPIC_API_KEY and retry.",
+            "invalid_message": "Message invalid. Provide non-empty plain text.",
+            "token_limit": "Conversation exceeds allowable token limit. Trim context and retry.",
+            "stream_error": "Streaming failed mid-response. Check logs.",
         }
         return messages.get(error_type, "An error occurred.")
 
