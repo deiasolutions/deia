@@ -326,10 +326,10 @@ class TestEndpoints:
             "/api/v1/users",
             json={"name": "John"}  # missing email
         )
-        assert response.status_code == 200
+        # FastAPI returns 422 for validation failures (missing required field)
+        assert response.status_code == 422
         data = response.json()
-        assert not data["success"]
-        assert data["error"] is not None
+        assert "detail" in data  # FastAPI validation error format
 
     def test_get_endpoint_retrieves_resource(self, test_client):
         """Test GET endpoint retrieves resource."""

@@ -287,21 +287,40 @@ class RESTAPIBuilder:
         request_model = self._create_request_model(endpoint_config)
         response_model = APIResponse
 
-        # Create handler function
-        async def handler(request_data: request_model):
-            return await self._handle_request(endpoint_config, request_data)
+        # Determine if endpoint needs request body
+        has_request_fields = len(endpoint_config.request_fields) > 0
+        has_path_params = "{" in endpoint_config.path and "}" in endpoint_config.path
+
+        # Create handler function with appropriate signature
+        if has_request_fields and method in ["post", "put", "patch"]:
+            async def handler(request_data: request_model):
+                return await self._handle_request(endpoint_config, request_data)
+        else:
+            # GET/DELETE endpoints may not have request body
+            async def handler(request_data: request_model = None):
+                return await self._handle_request(endpoint_config, request_data)
 
         handler.__name__ = endpoint_config.name
         handler.__doc__ = endpoint_config.description or f"{method.upper()} {path}"
 
         # Add route
-        self.app.add_api_route(
-            path=path,
-            endpoint=handler,
-            methods=[endpoint_config.method.value],
-            tags=endpoint_config.tags,
-            response_model=response_model
-        )
+        if has_request_fields and method in ["post", "put", "patch"]:
+            self.app.add_api_route(
+                path=path,
+                endpoint=handler,
+                methods=[endpoint_config.method.value],
+                tags=endpoint_config.tags,
+                response_model=response_model
+            )
+        else:
+            # For GET/DELETE, don't require request body
+            self.app.add_api_route(
+                path=path,
+                endpoint=handler,
+                methods=[endpoint_config.method.value],
+                tags=endpoint_config.tags,
+                response_model=response_model
+            )
 
         logger.info(f"Generated {endpoint_config.method.value} {path}")
 
