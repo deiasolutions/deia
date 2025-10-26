@@ -8,7 +8,8 @@
       "Bash(pip install websockets)",
       "Bash(python -m pytest:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git tag:*)"
     ],
     "deny": [],
     "ask": []

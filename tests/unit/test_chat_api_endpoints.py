@@ -4,6 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch, MagicMock, Mock
 from deia.services.chat_interface_app import app, service_registry
+from deia.services.registry import ServiceRegistry
 
 
 client = TestClient(app)
@@ -14,7 +15,7 @@ class TestGetBotsEndpoint:
 
     def test_get_bots_empty(self):
         """Test getting bots when none are registered"""
-        with patch.object(service_registry, 'get_all_bots', return_value={}):
+        with patch.object(ServiceRegistry, 'get_all_bots', return_value={}):
             response = client.get("/api/bots")
             assert response.status_code == 200
             data = response.json()
@@ -114,8 +115,8 @@ class TestBotStatusEndpoint:
 
     def test_get_bots_status_empty(self):
         """Test getting status when no bots registered"""
-        with patch.object(service_registry, 'cleanup_stale_entries'):
-            with patch.object(service_registry, 'get_all_bots', return_value={}):
+        with patch.object(ServiceRegistry, 'cleanup_stale_entries'):
+            with patch.object(ServiceRegistry, 'get_all_bots', return_value={}):
                 response = client.get("/api/bots/status")
                 assert response.status_code == 200
                 data = response.json()
