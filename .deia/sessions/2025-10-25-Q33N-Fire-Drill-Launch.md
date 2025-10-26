@@ -952,3 +952,4 @@ From observations:
 [10:45 CDT] Completed BACKLOG-007 slash command code review; preparing next assignment.
 [10:58 CDT] Implementing temp staging cleanup utility + CLI hook; writing unit tests for BACKLOG-012 (60%).
 [11:06 CDT] BACKLOG-012 complete – cleanup utility + CLI/hook delivered, tests passing; report filed.
+[11:15 CDT] Logged Dave’s note for Q33N regarding using logs/BL instead of rereading files.
