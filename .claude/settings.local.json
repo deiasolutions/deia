@@ -23,7 +23,8 @@
       "Bash(do basename \"$f\")",
       "Bash(while read task)",
       "Bash(do if ! grep -q \"$task%%-*\" /c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/.deia/hive/responses/deiasolutions/*.md)",
-      "Bash(then echo \"  ⏳ $task\" fi done)"
+      "Bash(then echo \"  ⏳ $task\" fi done)",
+      "Bash(sort:*)"
     ],
     "deny": [],
     "ask": []
