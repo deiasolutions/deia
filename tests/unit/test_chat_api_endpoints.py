@@ -3,6 +3,9 @@
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch, MagicMock, Mock
+import json
+from pathlib import Path
+
 from deia.services.chat_interface_app import app, service_registry
 from deia.services.registry import ServiceRegistry
 
@@ -10,6 +13,14 @@ from deia.services.registry import ServiceRegistry
 client = TestClient(app)
 
 
+@pytest.fixture(autouse=True)
+def isolated_registry(tmp_path, monkeypatch):
+    """Ensure registry persistence does not leak across tests."""
+    registry_file = tmp_path / "registry.json"
+    registry_file.write_text(json.dumps({"bots": {}, "updated_at": "1970-01-01T00:00:00"}))
+    monkeypatch.setattr(service_registry, "registry_path", registry_file)
+    monkeypatch.setattr(service_registry, "audit_log_path", tmp_path / "registry-changes.jsonl")
+    service_registry._save({"bots": {}, "updated_at": "1970-01-01T00:00:00"})
 class TestGetBotsEndpoint:
     """Test GET /api/bots endpoint"""
 
