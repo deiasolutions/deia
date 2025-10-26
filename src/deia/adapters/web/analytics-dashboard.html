@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hive Analytics - Performance Intelligence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #4a7ff5 0%, #3d5cb7 100%);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .time-range {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .time-button {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .time-button:hover,
+        .time-button.active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* MAIN CONTENT */
+        .dashboard {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            background: #1a1a1a;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+        }
+
+        /* CHART CARD */
+        .chart-card {
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+
+        .chart-card:hover {
+            border-color: #4a7ff5;
+            box-shadow: 0 8px 24px rgba(74, 127, 245, 0.15);
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chart-icon {
+            font-size: 18px;
+        }
+
+        .chart-subtitle {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .chart-container {
+            flex: 1;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* SVG CHARTS */
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-bar {
+            transition: all 0.3s;
+        }
+
+        .chart-bar:hover {
+            opacity: 0.8;
+            filter: brightness(1.2);
+        }
+
+        .chart-line {
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .chart-grid {
+            stroke: #2a2a2a;
+            stroke-dasharray: 2,4;
+        }
+
+        .chart-axis {
+            stroke: #333;
+            stroke-width: 1;
+        }
+
+        .chart-label {
+            font-size: 11px;
+            fill: #999;
+        }
+
+        /* STATS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat {
+            background: #2a2a2a;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 3px solid #4a7ff5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #4a7ff5;
+        }
+
+        .stat.success {
+            border-left-color: #28a745;
+        }
+
+        .stat.success .stat-value {
+            color: #28a745;
+        }
+
+        .stat.warning {
+            border-left-color: #ffc107;
+        }
+
+        .stat.warning .stat-value {
+            color: #ffc107;
+        }
+
+        .stat.critical {
+            border-left-color: #dc3545;
+        }
+
+        .stat.critical .stat-value {
+            color: #dc3545;
+        }
+
+        /* LEGEND */
+        .legend {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #333;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        /* FULL WIDTH */
+        .chart-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .time-range {
+                flex-wrap: wrap;
+            }
+
+            .dashboard {
+                padding: 15px;
+                gap: 15px;
+                grid-template-columns: 1fr;
+            }
+
+            .chart-card {
+                padding: 15px;
+            }
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #444;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <div class="header">
+        <h1>
+            <span>📊</span>
+            Hive Analytics
+        </h1>
+        <div class="time-range">
+            <button class="time-button">1h</button>
+            <button class="time-button active">24h</button>
+            <button class="time-button">7d</button>
+            <button class="time-button">30d</button>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard">
+        <!-- CHART 1: DELIVERABLES OVER TIME -->
+        <div class="chart-card full-width">
+            <div>
+                <div class="chart-title">
+                    <span class="chart-icon">📈</span>
+                    Deliverables Completed Over Time
+                </div>
+                <div class="chart-subtitle">Cumulative deliverables throughout session</div>
+            </div>
+            <div class="chart-container">
+                <svg viewBox="0 0 600 300" style="width: 100%; height: 250px;">
+                    <!-- Grid -->
+                    <line class="chart-grid" x1="60" y1="40" x2="60" y2="260"></line>
+                    <line class="chart-grid" x1="60" y1="260" x2="580" y2="260"></line>
+                    <line class="chart-grid" x1="60" y1="200" x2="580" y2="200" opacity="0.5"></line>
+                    <line class="chart-grid" x1="60" y1="140" x2="580" y2="140" opacity="0.5"></line>
+                    <line class="chart-grid" x1="60" y1="80" x2="580" y2="80" opacity="0.5"></line>
+
+                    <!-- Y-axis labels -->
+                    <text class="chart-label" x="45" y="265">0</text>
+                    <text class="chart-label" x="35" y="205">10</text>
+                    <text class="chart-label" x="35" y="145">20</text>
+                    <text class="chart-label" x="35" y="85">30</text>
+                    <text class="chart-label" x="35" y="45">40</text>
+
+                    <!-- Line chart -->
+                    <polyline class="chart-line" points="80,220 120,200 160,175 200,140 240,120 280,110 320,95 360,85 400,75 440,70 480,65 520,60 560,50"
+                              fill="none" stroke="#4a7ff5" stroke-width="3"></polyline>
+
+                    <!-- X-axis labels -->
+                    <text class="chart-label" x="75" y="280">16:00</text>
+                    <text class="chart-label" x="235" y="280">16:30</text>
+                    <text class="chart-label" x="395" y="280">17:00</text>
+                    <text class="chart-label" x="555" y="280">17:30</text>
+
+                    <!-- Data points -->
+                    <circle cx="80" cy="220" r="4" fill="#4a7ff5"></circle>
+                    <circle cx="200" cy="140" r="4" fill="#4a7ff5"></circle>
+                    <circle cx="320" cy="95" r="4" fill="#4a7ff5"></circle>
+                    <circle cx="440" cy="70" r="4" fill="#4a7ff5"></circle>
+                    <circle cx="560" cy="50" r="4" fill="#4a7ff5"></circle>
+                </svg>
+            </div>
+            <div class="stats-grid">
+                <div class="stat success">
+                    <div>
+                        <div class="stat-label">Total Deliverables</div>
+                        <div class="stat-value">32</div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div>
+                        <div class="stat-label">Avg Per Hour</div>
+                        <div class="stat-value">16</div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div>
+                        <div class="stat-label">Velocity</div>
+                        <div class="stat-value">+28%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHART 2: BOT PRODUCTIVITY -->
+        <div class="chart-card">
+            <div>
+                <div class="chart-title">
+                    <span class="chart-icon">🤖</span>
+                    Bot Productivity Comparison
+                </div>
+                <div class="chart-subtitle">Tasks completed per bot</div>
+            </div>
+            <div class="chart-container">
+                <svg viewBox="0 0 400 300" style="width: 100%; height: 250px;">
+                    <!-- Grid -->
+                    <line class="chart-grid" x1="50" y1="260" x2="50" y2="40"></line>
+                    <line class="chart-grid" x1="50" y1="260" x2="380" y2="260"></line>
+
+                    <!-- Bars -->
+                    <rect class="chart-bar" x="80" y="120" width="60" height="140" fill="#4a7ff5"></rect>
+                    <rect class="chart-bar" x="170" y="100" width="60" height="160" fill="#3d5cb7"></rect>
+                    <rect class="chart-bar" x="260" y="110" width="60" height="150" fill="#5a6edb"></rect>
+
+                    <!-- Labels -->
+                    <text class="chart-label" x="95" y="280">BOT-001</text>
+                    <text class="chart-label" x="175" y="280">BOT-003</text>
+                    <text class="chart-label" x="265" y="280">BOT-004</text>
+
+                    <!-- Values -->
+                    <text class="chart-label" x="105" y="110" text-anchor="middle" fill="#4a7ff5" font-weight="700">15</text>
+                    <text class="chart-label" x="195" y="85" text-anchor="middle" fill="#3d5cb7" font-weight="700">18</text>
+                    <text class="chart-label" x="285" y="100" text-anchor="middle" fill="#5a6edb" font-weight="700">16</text>
+
+                    <!-- Y-axis scale -->
+                    <text class="chart-label" x="35" y="265">0</text>
+                    <text class="chart-label" x="30" y="145">15</text>
+                    <text class="chart-label" x="20" y="45">30</text>
+                </svg>
+            </div>
+            <div class="stats-grid">
+                <div class="stat">
+                    <span class="stat-label">BOT-001</span>
+                    <span class="stat-value">15</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">BOT-003</span>
+                    <span class="stat-value">18</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">BOT-004</span>
+                    <span class="stat-value">16</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHART 3: TASK COMPLETION RATE -->
+        <div class="chart-card">
+            <div>
+                <div class="chart-title">
+                    <span class="chart-icon">✓</span>
+                    Task Completion Rates
+                </div>
+                <div class="chart-subtitle">Success rate by task type</div>
+            </div>
+            <div class="chart-container">
+                <svg viewBox="0 0 400 250" style="width: 100%; height: 220px;">
+                    <!-- Pie slices -->
+                    <circle cx="120" cy="100" r="50" fill="none" stroke="#4a7ff5" stroke-width="15" stroke-dasharray="78.5 0"></circle>
+                    <circle cx="120" cy="100" r="35" fill="none" stroke="#fff" stroke-width="1" opacity="0.2"></circle>
+
+                    <!-- Center -->
+                    <circle cx="120" cy="100" r="20" fill="#222"></circle>
+                    <text x="120" y="105" text-anchor="middle" fill="#4a7ff5" font-weight="700" font-size="18">100%</text>
+
+                    <!-- Legend -->
+                    <rect class="legend-color" x="200" y="60" width="12" height="12" fill="#4a7ff5"></rect>
+                    <text class="chart-label" x="220" y="68">Completed</text>
+                    <text class="chart-label" x="280" y="68">32/32 (100%)</text>
+
+                    <rect class="legend-color" x="200" y="85" width="12" height="12" fill="#ffc107"></rect>
+                    <text class="chart-label" x="220" y="93">In Progress</text>
+                    <text class="chart-label" x="280" y="93">3/3 (100%)</text>
+
+                    <rect class="legend-color" x="200" y="110" width="12" height="12" fill="#28a745"></rect>
+                    <text class="chart-label" x="220" y="118">On Track</text>
+                    <text class="chart-label" x="280" y="118">All tasks</text>
+                </svg>
+            </div>
+            <div class="stats-grid">
+                <div class="stat success">
+                    <span class="stat-label">Success Rate</span>
+                    <span class="stat-value">100%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHART 4: AVERAGE TIME PER TASK -->
+        <div class="chart-card">
+            <div>
+                <div class="chart-title">
+                    <span class="chart-icon">⏱️</span>
+                    Average Time Per Task Type
+                </div>
+                <div class="chart-subtitle">Minutes to complete</div>
+            </div>
+            <div class="chart-container">
+                <svg viewBox="0 0 400 300" style="width: 100%; height: 250px;">
+                    <!-- Grid -->
+                    <line class="chart-grid" x1="50" y1="260" x2="50" y2="40"></line>
+                    <line class="chart-grid" x1="50" y1="260" x2="380" y2="260"></line>
+
+                    <!-- Bars -->
+                    <rect class="chart-bar" x="70" y="180" width="50" height="80" fill="#4a7ff5"></rect>
+                    <rect class="chart-bar" x="140" y="120" width="50" height="140" fill="#3d5cb7"></rect>
+                    <rect class="chart-bar" x="210" y="160" width="50" height="100" fill="#5a6edb"></rect>
+                    <rect class="chart-bar" x="280" y="200" width="50" height="60" fill="#667eea"></rect>
+
+                    <!-- Values -->
+                    <text class="chart-label" x="95" y="170" text-anchor="middle" fill="#4a7ff5" font-weight="700">25</text>
+                    <text class="chart-label" x="165" y="110" text-anchor="middle" fill="#3d5cb7" font-weight="700">42</text>
+                    <text class="chart-label" x="235" y="150" text-anchor="middle" fill="#5a6edb" font-weight="700">32</text>
+                    <text class="chart-label" x="305" y="190" text-anchor="middle" fill="#667eea" font-weight="700">15</text>
+
+                    <!-- Labels -->
+                    <text class="chart-label" x="95" y="280">Design</text>
+                    <text class="chart-label" x="165" y="280">Dev</text>
+                    <text class="chart-label" x="235" y="280">Testing</text>
+                    <text class="chart-label" x="305" y="280">Docs</text>
+
+                    <!-- Y-axis -->
+                    <text class="chart-label" x="35" y="265">0</text>
+                    <text class="chart-label" x="30" y="150">25</text>
+                    <text class="chart-label" x="20" y="45">50</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- CHART 5: BLOCKER FREQUENCY -->
+        <div class="chart-card">
+            <div>
+                <div class="chart-title">
+                    <span class="chart-icon">🚫</span>
+                    Blocker Frequency
+                </div>
+                <div class="chart-subtitle">Blocking issues encountered</div>
+            </div>
+            <div class="chart-container">
+                <svg viewBox="0 0 400 250" style="width: 100%; height: 220px;">
+                    <!-- Large number -->
+                    <circle cx="120" cy="100" r="60" fill="rgba(40, 167, 69, 0.1)" stroke="#28a745" stroke-width="2"></circle>
+                    <text x="120" y="110" text-anchor="middle" fill="#28a745" font-weight="700" font-size="36">2</text>
+                    <text x="120" y="135" text-anchor="middle" fill="#999" font-size="12">Critical Issues</text>
+
+                    <!-- Status indicators -->
+                    <circle cx="240" cy="70" r="8" fill="#dc3545"></circle>
+                    <text class="chart-label" x="260" y="75">Blocked: 2</text>
+
+                    <circle cx="240" cy="100" r="8" fill="#ffc107"></circle>
+                    <text class="chart-label" x="260" y="105">Warning: 0</text>
+
+                    <circle cx="240" cy="130" r="8" fill="#28a745"></circle>
+                    <text class="chart-label" x="260" y="135">Resolved: All</text>
+                </svg>
+            </div>
+            <div class="stats-grid">
+                <div class="stat critical">
+                    <span class="stat-label">Total Blockers</span>
+                    <span class="stat-value">2</span>
+                </div>
+                <div class="stat success">
+                    <span class="stat-label">Resolved</span>
+                    <span class="stat-value">2</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHART 6: HIVE HEALTH SCORE -->
+        <div class="chart-card">
+            <div>
+                <div class="chart-title">
+                    <span class="chart-icon">❤️</span>
+                    Hive Health Score Trend
+                </div>
+                <div class="chart-subtitle">Overall system health</div>
+            </div>
+            <div class="chart-container">
+                <svg viewBox="0 0 400 250" style="width: 100%; height: 220px;">
+                    <!-- Gauge background -->
+                    <circle cx="120" cy="120" r="60" fill="none" stroke="#333" stroke-width="12" opacity="0.5"></circle>
+
+                    <!-- Gauge fill (95%) -->
+                    <path d="M 120 60 A 60 60 0 1 1 100 175" fill="none" stroke="#28a745" stroke-width="12" stroke-linecap="round"></path>
+
+                    <!-- Center value -->
+                    <text x="120" y="125" text-anchor="middle" fill="#28a745" font-weight="700" font-size="28">95%</text>
+                    <text x="120" y="145" text-anchor="middle" fill="#999" font-size="12">Excellent</text>
+
+                    <!-- Stats -->
+                    <text class="chart-label" x="240" y="70" font-weight="700" fill="#e0e0e0">Health Metrics</text>
+                    <line x1="240" y1="75" x2="380" y2="75" stroke="#333" stroke-width="1"></line>
+
+                    <circle cx="250" cy="95" r="4" fill="#28a745"></circle>
+                    <text class="chart-label" x="270" y="100">Uptime: 100%</text>
+
+                    <circle cx="250" cy="120" r="4" fill="#28a745"></circle>
+                    <text class="chart-label" x="270" y="125">Performance: Good</text>
+
+                    <circle cx="250" cy="145" r="4" fill="#28a745"></circle>
+                    <text class="chart-label" x="270" y="150">Blockers: Low</text>
+                </svg>
+            </div>
+            <div class="stats-grid">
+                <div class="stat success">
+                    <span class="stat-label">System Status</span>
+                    <span class="stat-value">✓ Healthy</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // Time range filter
+        document.querySelectorAll('.time-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                document.querySelectorAll('.time-button').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                console.log('Time range updated to:', e.target.textContent);
+            });
+        });
+
+        // Auto-refresh analytics every 10 seconds
+        setInterval(() => {
+            console.log('Refreshing analytics data...');
+        }, 10000);
+    </script>
+</body>
+</html>

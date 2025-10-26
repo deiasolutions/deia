@@ -143,3 +143,6 @@
 {"timestamp": "2025-10-25T16:35:48.072935", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 48", "session_id": null}
 {"timestamp": "2025-10-25T16:35:48.389627", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 49", "session_id": null}
 {"timestamp": "2025-10-25T16:35:48.705463", "bot_id": "PERF-TEST", "role": "user", "content": "Test message 50", "session_id": null}
+{"timestamp": "2025-10-25T17:09:06.273529", "bot_id": "COMM-TEST-001", "role": "assistant", "content": "Connected to COMM-TEST-001. Ready for commands.", "session_id": null}
+{"timestamp": "2025-10-25T17:09:12.125504", "bot_id": "COMM-TEST-001", "role": "user", "content": "heloooo", "session_id": null}
+{"timestamp": "2025-10-25T17:09:14.187901", "bot_id": "COMM-TEST-001", "role": "assistant", "content": "COMM-TEST-001: [Offline] heloooo", "session_id": null}

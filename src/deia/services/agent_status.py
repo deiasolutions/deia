@@ -32,7 +32,7 @@ class AgentStatusTracker:
     def _load_agents(self) -> Dict[str, Dict]:
         agents = {}
         for file in self.heartbeat_dir.glob("*.yaml"):
-            agent_id = file.stem.split("-")[0]
+            agent_id = file.stem.replace("-heartbeat", "")
             try:
                 with file.open() as f:
                     data = yaml.safe_load(f)
@@ -61,7 +61,7 @@ class AgentStatusTracker:
                     "agent_id": agent_id,
                     "status": "idle",
                     "role": role,
-                    "last_heartbeat": datetime.datetime.now().isoformat()
+                    "last_heartbeat": datetime.datetime.now(datetime.timezone.utc).isoformat()
                 }
                 self._save_agent(agent_id)
 
@@ -76,7 +76,7 @@ class AgentStatusTracker:
             self.agents[agent_id].update({
                 "status": status,
                 "current_task": current_task,
-                "last_heartbeat": datetime.datetime.now().isoformat()
+                "last_heartbeat": datetime.datetime.now(datetime.timezone.utc).isoformat()
             })
             self._save_agent(agent_id)
 
@@ -91,7 +91,7 @@ class AgentStatusTracker:
             offline = {}
             for agent_id, data in self.agents.items():
                 last_heartbeat = datetime.datetime.fromisoformat(data["last_heartbeat"])
-                if (datetime.datetime.now() - last_heartbeat).total_seconds() > 300:
+                if (datetime.datetime.now(datetime.timezone.utc) - last_heartbeat).total_seconds() > 300:
                     offline[agent_id] = data["status"]
                     data["status"] = "offline"
                     self._save_agent(agent_id)
@@ -99,7 +99,7 @@ class AgentStatusTracker:
             return {**offline, **stale}
 
     def _check_stale_states(self) -> Dict[str, str]:
-        now = datetime.datetime.now()
+        now = datetime.datetime.now(datetime.timezone.utc)
         stale = {}
         for agent_id, data in self.agents.items():
             last_update = datetime.datetime.fromisoformat(data["last_heartbeat"])

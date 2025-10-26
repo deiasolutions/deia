@@ -10,7 +10,20 @@
       "Bash(git add:*)",
       "Bash(powershell:*)",
       "Bash(git commit:*)",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "Bash(mkdir:*)",
+      "Bash(git push:*)",
+      "Bash(find:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(cat:*)",
+      "Bash(for file in /c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/.deia/hive/tasks/2025-10-25*BOT-003* /c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/.deia/hive/tasks/2025-10-25*004-ASSIGNMENT*)",
+      "Bash(head:*)",
+      "Bash(done)",
+      "Bash(while read f)",
+      "Bash(do basename \"$f\")",
+      "Bash(while read task)",
+      "Bash(do if ! grep -q \"$task%%-*\" /c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/.deia/hive/responses/deiasolutions/*.md)",
+      "Bash(then echo \"  ⏳ $task\" fi done)"
     ],
     "deny": [],
     "ask": []

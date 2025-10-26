@@ -1,7 +1,7 @@
 import time
 from typing import Dict, List
 
-from agent_status_tracker import AgentStatusTracker
+from deia.services.agent_status import AgentStatusTracker
 
 
 class HeartbeatWatcher:

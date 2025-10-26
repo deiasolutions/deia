@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queue Manager - Task Control Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #4a7ff5 0%, #3d5cb7 100%);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .button-primary {
+            background: linear-gradient(135deg, #4a7ff5 0%, #3d5cb7 100%);
+            color: white;
+        }
+
+        .button-primary:hover {
+            box-shadow: 0 4px 12px rgba(74, 127, 245, 0.3);
+        }
+
+        .button-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .button-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* MAIN CONTENT */
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 1px;
+            background: #0a0a0a;
+            overflow: hidden;
+        }
+
+        /* LEFT SIDEBAR - FILTERS */
+        .sidebar {
+            width: 250px;
+            background: #222;
+            border-right: 1px solid #333;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #4a7ff5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-item {
+            padding: 10px 12px;
+            background: #2a2a2a;
+            border: 1px solid #333;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #e0e0e0;
+        }
+
+        .filter-item:hover {
+            background: #313131;
+            border-color: #4a7ff5;
+        }
+
+        .filter-item.active {
+            background: #2d3a4d;
+            border-color: #4a7ff5;
+            color: #4a7ff5;
+            font-weight: 600;
+        }
+
+        .filter-count {
+            margin-left: auto;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .filter-item.active .filter-count {
+            color: #4a7ff5;
+        }
+
+        .filter-badge {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .badge-pending {
+            background: #ffc107;
+        }
+
+        .badge-active {
+            background: #4a7ff5;
+        }
+
+        .badge-complete {
+            background: #28a745;
+        }
+
+        .badge-blocked {
+            background: #dc3545;
+        }
+
+        /* MAIN AREA */
+        .main-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #1a1a1a;
+            overflow: hidden;
+        }
+
+        /* TOOLBAR */
+        .toolbar {
+            background: #222;
+            border-bottom: 1px solid #333;
+            padding: 15px 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .toolbar-label {
+            font-size: 13px;
+            color: #999;
+            font-weight: 600;
+        }
+
+        .sort-select {
+            background: #2a2a2a;
+            border: 1px solid #333;
+            color: #e0e0e0;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .sort-select:hover {
+            border-color: #4a7ff5;
+        }
+
+        .search-box {
+            background: #2a2a2a;
+            border: 1px solid #333;
+            color: #e0e0e0;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: all 0.2s;
+            min-width: 200px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #4a7ff5;
+            box-shadow: 0 0 0 3px rgba(74, 127, 245, 0.15);
+        }
+
+        /* TASK GRID */
+        .tasks-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        /* TASK CARD */
+        .task-card {
+            background: #2a2a2a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .task-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #4a7ff5;
+        }
+
+        .task-card.status-pending::before {
+            background: #ffc107;
+        }
+
+        .task-card.status-active::before {
+            background: #4a7ff5;
+            animation: pulse-border 2s infinite;
+        }
+
+        .task-card.status-complete::before {
+            background: #28a745;
+        }
+
+        .task-card.status-blocked::before {
+            background: #dc3545;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .task-card:hover {
+            border-color: #4a7ff5;
+            box-shadow: 0 8px 24px rgba(74, 127, 245, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .task-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #e0e0e0;
+            flex: 1;
+        }
+
+        .task-status {
+            display: inline-block;
+            padding: 4px 8px;
+            background: rgba(74, 127, 245, 0.1);
+            border: 1px solid #4a7ff5;
+            color: #4a7ff5;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            text-transform: uppercase;
+        }
+
+        .task-status.pending {
+            background: rgba(255, 193, 7, 0.1);
+            border-color: #ffc107;
+            color: #ffc107;
+        }
+
+        .task-status.active {
+            background: rgba(74, 127, 245, 0.1);
+            border-color: #4a7ff5;
+            color: #4a7ff5;
+        }
+
+        .task-status.complete {
+            background: rgba(40, 167, 69, 0.1);
+            border-color: #28a745;
+            color: #28a745;
+        }
+
+        .task-status.blocked {
+            background: rgba(220, 53, 69, 0.1);
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+
+        .task-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .task-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .task-meta-label {
+            color: #999;
+        }
+
+        .task-meta-value {
+            color: #e0e0e0;
+            font-weight: 600;
+        }
+
+        .task-bot {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #1a1a1a;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #4a7ff5;
+            font-weight: 600;
+        }
+
+        .task-time {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .task-progress {
+            width: 100%;
+            height: 4px;
+            background: #1a1a1a;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .task-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4a7ff5, #3d5cb7);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-button {
+            flex: 1;
+            padding: 8px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #999;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .action-button:hover {
+            background: #222;
+            border-color: #4a7ff5;
+            color: #4a7ff5;
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #999;
+            gap: 15px;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #222;
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #e0e0e0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            background: #2a2a2a;
+            border: 1px solid #333;
+            color: #e0e0e0;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4a7ff5;
+            box-shadow: 0 0 0 3px rgba(74, 127, 245, 0.15);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-footer .button {
+            flex: 1;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1200px) {
+            .tasks-area {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .tasks-area {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #333;
+                padding: 15px;
+                max-height: 150px;
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                padding: 10px;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            .tasks-area {
+                grid-template-columns: 1fr;
+                padding: 15px;
+            }
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #444;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <div class="header">
+        <h1>
+            <span>📋</span>
+            Queue Manager
+        </h1>
+        <div class="header-controls">
+            <button class="button button-primary" onclick="openCreateModal()">
+                + New Task
+            </button>
+            <button class="button button-secondary" onclick="refreshTasks()">
+                ⟳ Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+        <!-- SIDEBAR FILTERS -->
+        <div class="sidebar">
+            <div class="sidebar-title">🔍 Filters</div>
+
+            <div class="filter-group">
+                <div class="filter-item active" onclick="filterTasks('all')">
+                    <span>All Tasks</span>
+                    <span class="filter-count">45</span>
+                </div>
+                <div class="filter-item" onclick="filterTasks('pending')">
+                    <span class="filter-badge badge-pending"></span>
+                    <span>Pending</span>
+                    <span class="filter-count">12</span>
+                </div>
+                <div class="filter-item" onclick="filterTasks('active')">
+                    <span class="filter-badge badge-active"></span>
+                    <span>Active</span>
+                    <span class="filter-count">3</span>
+                </div>
+                <div class="filter-item" onclick="filterTasks('complete')">
+                    <span class="filter-badge badge-complete"></span>
+                    <span>Complete</span>
+                    <span class="filter-count">28</span>
+                </div>
+                <div class="filter-item" onclick="filterTasks('blocked')">
+                    <span class="filter-badge badge-blocked"></span>
+                    <span>Blocked</span>
+                    <span class="filter-count">2</span>
+                </div>
+            </div>
+
+            <div class="sidebar-title" style="margin-top: 20px;">🤖 Assigned To</div>
+
+            <div class="filter-group">
+                <div class="filter-item" onclick="filterByBot('001')">
+                    <span>BOT-001</span>
+                    <span class="filter-count">15</span>
+                </div>
+                <div class="filter-item" onclick="filterByBot('003')">
+                    <span>BOT-003</span>
+                    <span class="filter-count">18</span>
+                </div>
+                <div class="filter-item" onclick="filterByBot('004')">
+                    <span>BOT-004</span>
+                    <span class="filter-count">12</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN AREA -->
+        <div class="main-area">
+            <!-- TOOLBAR -->
+            <div class="toolbar">
+                <input type="text" class="search-box" placeholder="Search tasks..." onkeyup="searchTasks(this.value)">
+                <div class="toolbar-group">
+                    <span class="toolbar-label">Sort by:</span>
+                    <select class="sort-select" onchange="sortTasks(this.value)">
+                        <option value="due-time">Due Time</option>
+                        <option value="priority">Priority</option>
+                        <option value="assigned-bot">Assigned Bot</option>
+                        <option value="created">Recently Created</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- TASKS GRID -->
+            <div class="tasks-area" id="tasks-container">
+                <!-- Task cards will be rendered here -->
+
+                <!-- Task Card 1 -->
+                <div class="task-card status-active" onclick="selectTask(this)">
+                    <div class="task-header">
+                        <div class="task-title">E2E Integration Test</div>
+                        <span class="task-status active">Active</span>
+                    </div>
+                    <div class="task-meta">
+                        <div class="task-meta-row">
+                            <span class="task-meta-label">Assigned:</span>
+                            <span class="task-bot">BOT-001</span>
+                        </div>
+                        <div class="task-meta-row">
+                            <span class="task-meta-label">Due:</span>
+                            <span class="task-time">18:12 CDT</span>
+                        </div>
+                    </div>
+                    <div class="task-progress">
+                        <div class="task-progress-bar" style="width: 65%"></div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="action-button" onclick="viewTask(event)">View</button>
+                        <button class="action-button" onclick="assignTask(event)">Reassign</button>
+                    </div>
+                </div>
+
+                <!-- Task Card 2 -->
+                <div class="task-card status-pending">
+                    <div class="task-header">
+                        <div class="task-title">Queue Manager UI</div>
+                        <span class="task-status pending">Pending</span>
+                    </div>
+                    <div class="task-meta">
+                        <div class="task-meta-row">
+                            <span class="task-meta-label">Assigned:</span>
+                            <span class="task-bot">BOT-004</span>
+                        </div>
+                        <div class="task-meta-row">
+                            <span class="task-meta-label">Due:</span>
+                            <span class="task-time">17:48 CDT</span>
+                        </div>
+                    </div>
+                    <div class="task-progress">
+                        <div class="task-progress-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="action-button" onclick="viewTask(event)">View</button>
+                        <button class="action-button" onclick="startTask(event)">Start</button>
+                    </div>
+                </div>
+
+                <!-- Task Card 3 -->
+                <div class="task-card status-complete">
+                    <div class="task-header">
+                        <div class="task-title">Component Library</div>
+                        <span class="task-status complete">Complete</span>
+                    </div>
+                    <div class="task-meta">
+                        <div class="task-meta-row">
+                            <span class="task-meta-label">Assigned:</span>
+                            <span class="task-bot">BOT-004</span>
+                        </div>
+                        <div class="task-meta-row">
+                            <span class="task-meta-label">Completed:</span>
+                            <span class="task-time">17:22 CDT</span>
+                        </div>
+                    </div>
+                    <div class="task-progress">
+                        <div class="task-progress-bar" style="width: 100%"></div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="action-button" onclick="viewTask(event)">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Task Card 4 -->
+                <div class="task-card status-blocked">
+                    <div class="task-header">
+                        <div class="task-title">Production Config Validation</div>
+                        <span class="task-status blocked">Blocked</span>
+                    </div>
+                    <div class="task-meta">
+                        <div class="task-meta-row">
+                            <span class="task-meta-label">Assigned:</span>
+                            <span class="task-bot">BOT-001</span>
+                        </div>
+                        <div class="task-meta-row">
+                            <span class="task-meta-label">Blocked by:</span>
+                            <span class="task-time">Database migration</span>
+                        </div>
+                    </div>
+                    <div class="task-progress">
+                        <div class="task-progress-bar" style="width: 30%"></div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="action-button" onclick="viewTask(event)">View</button>
+                        <button class="action-button" onclick="resolveBlocker(event)">Resolve</button>
+                    </div>
+                </div>
+
+                <!-- Task Card 5 -->
+                <div class="task-card status-pending">
+                    <div class="task-header">
+                        <div class="task-title">Analytics Dashboard</div>
+                        <span class="task-status pending">Pending</span>
+                    </div>
+                    <div class="task-meta">
+                        <div class="task-meta-row">
+                            <span class="task-meta-label">Assigned:</span>
+                            <span class="task-bot">BOT-004</span>
+                        </div>
+                        <div class="task-meta-row">
+                            <span class="task-meta-label">Due:</span>
+                            <span class="task-time">18:18 CDT</span>
+                        </div>
+                    </div>
+                    <div class="task-progress">
+                        <div class="task-progress-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="action-button" onclick="viewTask(event)">View</button>
+                        <button class="action-button" onclick="startTask(event)">Start</button>
+                    </div>
+                </div>
+
+                <!-- Task Card 6 -->
+                <div class="task-card status-active">
+                    <div class="task-header">
+                        <div class="task-title">Deep Analytics Phase</div>
+                        <span class="task-status active">Active</span>
+                    </div>
+                    <div class="task-meta">
+                        <div class="task-meta-row">
+                            <span class="task-meta-label">Assigned:</span>
+                            <span class="task-bot">BOT-003</span>
+                        </div>
+                        <div class="task-meta-row">
+                            <span class="task-meta-label">Due:</span>
+                            <span class="task-time">20:18 CDT</span>
+                        </div>
+                    </div>
+                    <div class="task-progress">
+                        <div class="task-progress-bar" style="width: 42%"></div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="action-button" onclick="viewTask(event)">View</button>
+                        <button class="action-button" onclick="assignTask(event)">Reassign</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CREATE TASK -->
+    <div class="modal" id="createModal">
+        <div class="modal-content">
+            <div class="modal-title">Create New Task</div>
+            <div class="modal-form">
+                <div class="form-group">
+                    <label class="form-label">Task Name</label>
+                    <input type="text" class="form-input" placeholder="Enter task name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Assign To</label>
+                    <select class="form-input">
+                        <option>BOT-001 (Infrastructure Lead)</option>
+                        <option>BOT-003 (Testing & Backend)</option>
+                        <option>BOT-004 (Design Architect)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Due Time</label>
+                    <input type="time" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Priority</label>
+                    <select class="form-input">
+                        <option>Low</option>
+                        <option>Medium</option>
+                        <option selected>High</option>
+                        <option>Critical</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <input type="text" class="form-input" placeholder="Task description" style="min-height: 60px; padding-top: 12px; resize: vertical;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="button button-secondary" onclick="closeCreateModal()">Cancel</button>
+                <button class="button button-primary" onclick="createTask()">Create Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // Filter tasks
+        function filterTasks(status) {
+            console.log('Filtering tasks by status:', status);
+            document.querySelectorAll('.filter-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.filter-item').classList.add('active');
+        }
+
+        // Filter by bot
+        function filterByBot(botId) {
+            console.log('Filtering tasks by bot:', botId);
+        }
+
+        // Search tasks
+        function searchTasks(query) {
+            console.log('Searching tasks:', query);
+        }
+
+        // Sort tasks
+        function sortTasks(criteria) {
+            console.log('Sorting tasks by:', criteria);
+        }
+
+        // Select task
+        function selectTask(element) {
+            document.querySelectorAll('.task-card').forEach(card => {
+                card.style.transform = 'scale(1)';
+            });
+            element.style.transform = 'scale(1.02)';
+        }
+
+        // View task details
+        function viewTask(event) {
+            event.stopPropagation();
+            console.log('Viewing task details');
+        }
+
+        // Start task
+        function startTask(event) {
+            event.stopPropagation();
+            console.log('Starting task');
+        }
+
+        // Assign/reassign task
+        function assignTask(event) {
+            event.stopPropagation();
+            console.log('Assigning task');
+        }
+
+        // Resolve blocker
+        function resolveBlocker(event) {
+            event.stopPropagation();
+            console.log('Resolving blocker');
+        }
+
+        // Open create task modal
+        function openCreateModal() {
+            document.getElementById('createModal').classList.add('open');
+        }
+
+        // Close create task modal
+        function closeCreateModal() {
+            document.getElementById('createModal').classList.remove('open');
+        }
+
+        // Create task
+        function createTask() {
+            console.log('Creating new task');
+            closeCreateModal();
+        }
+
+        // Refresh tasks
+        function refreshTasks() {
+            console.log('Refreshing task list');
+        }
+
+        // Close modal on backdrop click
+        document.getElementById('createModal').addEventListener('click', (e) => {
+            if (e.target.id === 'createModal') {
+                closeCreateModal();
+            }
+        });
+    </script>
+</body>
+</html>

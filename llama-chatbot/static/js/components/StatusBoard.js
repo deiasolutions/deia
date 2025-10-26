@@ -1,107 +1,43 @@
 /**
- * StatusBoard.js - Status Dashboard Component
- * Handles real-time bot status display and updates
+ * StatusBoard.js - Status Board Component
  */
 
 class StatusBoard {
   constructor() {
-    this.statusList = document.getElementById('statusList');
+    this.statusContainer = document.getElementById('statusPanel');
   }
 
-  /**
-   * Start polling for status updates
-   */
-  startUpdates() {
-    if (store.getStatusUpdateInterval()) return;
-
-    const interval = setInterval(async () => {
-      try {
-        const response = await fetch('/api/bots');
-        const data = await response.json();
-
-        this.render(data.bots || {});
-      } catch (error) {
-        console.error('Status update error:', error);
-      }
-    }, 3000); // Update every 3 seconds
-
-    store.setStatusUpdateInterval(interval);
-  }
-
-  /**
-   * Stop polling for status updates
-   */
-  stopUpdates() {
-    const interval = store.getStatusUpdateInterval();
-    if (interval) {
-      clearInterval(interval);
-      store.setStatusUpdateInterval(null);
+  init() {
+    if (!this.statusContainer) {
+      this.statusContainer = document.createElement('div');
+      this.statusContainer.id = 'statusPanel';
+      this.statusContainer.style.cssText = 'padding: 15px; background: #1a1a1a; border-radius: 8px; margin: 10px;';
+      document.body.appendChild(this.statusContainer);
     }
   }
 
-  /**
-   * Render status items to DOM
-   */
-  render(bots) {
-    this.statusList.innerHTML = '';
+  updateStatus(bots) {
+    if (!this.statusContainer) return;
 
-    for (const [botId, botData] of Object.entries(bots)) {
-      const statusDiv = document.createElement('div');
-      statusDiv.className = `status-item ${botData.status}`;
+    this.statusContainer.innerHTML = '<h3 style="margin-top: 0;">Active Bots</h3>';
 
-      statusDiv.innerHTML = `
-        <div class="status-label">${botId}</div>
-        <div class="status-value">Status: ${botData.status}</div>
-        <div class="status-value">PID: ${botData.pid || 'N/A'}</div>
-        <div class="status-value">Port: ${botData.port || 'N/A'}</div>
+    if (!bots || bots.length === 0) {
+      this.statusContainer.innerHTML += '<p style="color: #999;">No active bots</p>';
+      return;
+    }
+
+    bots.forEach(bot => {
+      const botEl = document.createElement('div');
+      botEl.style.cssText = 'padding: 8px; margin: 5px 0; background: #2a2a2a; border-radius: 4px; border-left: 3px solid ' +
+                           (bot.running ? '#4CAF50' : '#f44336') + ';';
+
+      const indicator = bot.running ? '🟢' : '🔴';
+      botEl.innerHTML = `
+        <div><strong>${bot.id}</strong> ${indicator}</div>
+        <div style="font-size: 12px; color: #999;">Port: ${bot.port || 'N/A'}</div>
       `;
 
-      this.statusList.appendChild(statusDiv);
-    }
-  }
-
-  /**
-   * Update status for a single bot
-   */
-  async updateBotStatus(botId) {
-    try {
-      const response = await fetch(`/api/bot/${botId}/status`);
-      const data = await response.json();
-
-      const activeBots = store.getActiveBots();
-      activeBots[botId] = data;
-      store.setActiveBots(activeBots);
-
-      this.render(activeBots);
-    } catch (error) {
-      console.error(`Failed to update status for ${botId}:`, error);
-    }
-  }
-
-  /**
-   * Update all bot statuses
-   */
-  async updateAllStatuses() {
-    try {
-      const activeBots = store.getActiveBots();
-
-      for (const botId of Object.keys(activeBots)) {
-        const response = await fetch(`/api/bot/${botId}/status`);
-        const data = await response.json();
-        activeBots[botId] = data;
-      }
-
-      store.setActiveBots(activeBots);
-      this.render(activeBots);
-    } catch (error) {
-      console.error('Failed to update statuses:', error);
-    }
-  }
-
-  /**
-   * Clear status display
-   */
-  clear() {
-    this.statusList.innerHTML = '';
+      this.statusContainer.appendChild(botEl);
+    });
   }
 }

@@ -28,6 +28,11 @@ from .disaster_recovery import DisasterRecovery
 from .audit_logger import AuditLogger
 from .degradation_manager import DegradationManager
 from .migration_manager import MigrationManager
+from .bot_process_monitor import BotProcessMonitor
+from .api_health_monitor import APIHealthMonitor
+from .queue_analytics import QueueAnalytics
+from .failure_analyzer import FailureAnalyzer
+from .observability_api import ObservabilityAPI
 
 
 class DirectMessage(BaseModel):
@@ -105,6 +110,19 @@ class BotService:
 
         # Migration/deployment support
         self.migration_manager = MigrationManager(work_dir)
+
+        # Monitoring services
+        self.process_monitor = BotProcessMonitor(work_dir)
+        self.api_health_monitor = APIHealthMonitor(work_dir)
+        self.queue_analytics = QueueAnalytics(work_dir)
+        self.failure_analyzer = FailureAnalyzer(work_dir)
+        self.observability_api = ObservabilityAPI(
+            process_monitor=self.process_monitor,
+            api_monitor=self.api_health_monitor,
+            queue_analytics=self.queue_analytics,
+            failure_analyzer=self.failure_analyzer,
+            health_monitor=self.health_monitor
+        )
 
         # Setup routes
         self._setup_routes()
@@ -1328,6 +1346,361 @@ class BotService:
             stats = self.audit_logger.get_statistics()
             return {
                 **stats,
+                "timestamp": datetime.now().isoformat()
+            }
+
+        # ============================================================
+        # Monitoring Services Endpoints
+        # ============================================================
+
+        @self.app.get("/api/monitoring/process/{bot_id}")
+        async def get_process_health(bot_id: str, pid: int = None):
+            """
+            Get process health for a bot.
+
+            Path params:
+            - bot_id: Bot identifier
+
+            Query params:
+            - pid: Process ID (optional, will monitor if provided)
+
+            Returns:
+            {
+                "bot_id": "bot-001",
+                "status": "healthy|warning",
+                "latest_metrics": {...},
+                "memory_trend": {...},
+                "alerts": [...]
+            }
+            """
+            if pid:
+                self.process_monitor.monitor_bot(bot_id, pid)
+
+            health = self.process_monitor.get_bot_health(bot_id)
+
+            return {
+                "bot_id": bot_id,
+                "health": health,
+                "timestamp": datetime.now().isoformat()
+            }
+
+        @self.app.get("/api/monitoring/process/all/health")
+        async def get_all_process_health():
+            """
+            Get process health for all monitored bots.
+
+            Returns:
+            {
+                "bots": {
+                    "bot-001": {...},
+                    ...
+                },
+                "total_bots": 5
+            }
+            """
+            all_health = self.process_monitor.get_all_health()
+
+            return {
+                "bots": all_health,
+                "total_bots": len(all_health),
+                "timestamp": datetime.now().isoformat()
+            }
+
+        @self.app.get("/api/monitoring/process/{bot_id}/memory-leak")
+        async def check_memory_leak(bot_id: str):
+            """
+            Check for memory leak on a bot.
+
+            Path params:
+            - bot_id: Bot identifier
+
+            Returns:
+            {
+                "bot_id": "bot-001",
+                "is_leaking": false,
+                "growth_rate_mb_per_hour": 2.5,
+                "duration_minutes": 60,
+                "measurements": [...]
+            }
+            """
+            trend = self.process_monitor.detect_memory_leak(bot_id)
+
+            if not trend:
+                return {
+                    "bot_id": bot_id,
+                    "is_leaking": False,
+                    "message": "No memory leak detected or insufficient data",
+                    "timestamp": datetime.now().isoformat()
+                }
+
+            return {
+                "bot_id": bot_id,
+                "is_leaking": trend.is_leaking,
+                "growth_rate_mb_per_hour": trend.growth_rate_mb_per_hour,
+                "duration_minutes": trend.duration_minutes,
+                "measurements": trend.measurements,
+                "timestamp": datetime.now().isoformat()
+            }
+
+        @self.app.get("/api/monitoring/api/status")
+        async def get_api_health():
+            """
+            Get API health status.
+
+            Returns:
+            {
+                "overall_health": "healthy|warning|critical",
+                "endpoints": {...},
+                "cascade_risk": 0.1,
+                "response_time_p95_ms": 150
+            }
+            """
+            return self.api_health_monitor.get_api_status()
+
+        @self.app.get("/api/monitoring/queue/status")
+        async def get_queue_status():
+            """
+            Get queue analytics status.
+
+            Returns:
+            {
+                "total_tasks": 50,
+                "queue_depth": 5,
+                "throughput_tasks_per_minute": 2.5,
+                "avg_latency_seconds": 45.2,
+                "p95_latency_seconds": 120,
+                "p99_latency_seconds": 180
+            }
+            """
+            return self.queue_analytics.get_queue_status()
+
+        @self.app.get("/api/monitoring/queue/bottlenecks")
+        async def identify_bottlenecks():
+            """
+            Identify queue bottlenecks.
+
+            Returns:
+            {
+                "bottlenecks": [
+                    {
+                        "type": "queue_depth_high",
+                        "severity": "warning",
+                        "message": "...",
+                        "metrics": {...}
+                    }
+                ]
+            }
+            """
+            bottlenecks = self.queue_analytics.identify_bottlenecks()
+
+            return {
+                "bottlenecks": bottlenecks,
+                "count": len(bottlenecks),
+                "timestamp": datetime.now().isoformat()
+            }
+
+        @self.app.get("/api/monitoring/failures/stats")
+        async def get_failure_stats():
+            """
+            Get failure analysis statistics.
+
+            Returns:
+            {
+                "total_failures": 5,
+                "failure_rate": 0.1,
+                "by_task_type": {...},
+                "by_bot": {...},
+                "recent_failures": [...]
+            }
+            """
+            return self.failure_analyzer.get_failure_stats()
+
+        @self.app.get("/api/monitoring/failures/cascade-risk")
+        async def predict_cascade_risk():
+            """
+            Predict cascade failure risk.
+
+            Returns:
+            {
+                "cascade_risk_score": 0.25,
+                "risk_level": "low|medium|high",
+                "affected_bots": [...],
+                "vulnerable_services": [...]
+            }
+            """
+            return self.failure_analyzer.predict_cascade_risk()
+
+        @self.app.get("/api/monitoring/failures/trends")
+        async def get_error_trends():
+            """
+            Get error trend analysis.
+
+            Returns:
+            {
+                "total_errors": 15,
+                "trend": "increasing|stable|decreasing",
+                "by_error_type": {...},
+                "hourly_distribution": [...]
+            }
+            """
+            return self.failure_analyzer.get_error_trends()
+
+        @self.app.get("/api/monitoring/observability/snapshot")
+        async def get_observability_snapshot():
+            """
+            Get comprehensive observability snapshot.
+
+            Returns:
+            {
+                "system": {...},
+                "queues": {...},
+                "api": {...},
+                "failures": {...},
+                "health": {...}
+            }
+            """
+            return self.observability_api.get_metrics_snapshot()
+
+        @self.app.get("/api/monitoring/observability/history/{metric_type}")
+        async def get_observability_history(metric_type: str, hours: int = 24, limit: int = 100):
+            """
+            Get historical observability metrics.
+
+            Path params:
+            - metric_type: "process", "queue", "api", "failures", "health"
+
+            Query params:
+            - hours: Hours of history (default 24)
+            - limit: Max data points (default 100)
+
+            Returns:
+            {
+                "metric_type": "queue",
+                "hours": 24,
+                "data": [...],
+                "count": 50
+            }
+            """
+            history = self.observability_api.get_historical_metrics(metric_type, hours, limit)
+
+            return {
+                **history,
+                "count": len(history.get("data", [])),
+                "timestamp": datetime.now().isoformat()
+            }
+
+        @self.app.post("/api/monitoring/queue/add-task")
+        async def add_to_queue(task_data: Dict[str, Any]):
+            """
+            Add a task to the queue (for analytics tracking).
+
+            Request body:
+            {
+                "task_id": "TASK-123",
+                "task_type": "type",
+                "priority": "P2"
+            }
+
+            Returns:
+            {
+                "success": true,
+                "task_id": "TASK-123",
+                "queue_depth": 5
+            }
+            """
+            task_id = task_data.get("task_id", f"task-{datetime.now().timestamp()}")
+            task_type = task_data.get("task_type", "general")
+            priority = task_data.get("priority", "P2")
+
+            self.queue_analytics.add_task(task_id, task_type, priority)
+
+            queue_status = self.queue_analytics.get_queue_status()
+
+            return {
+                "success": True,
+                "task_id": task_id,
+                "queue_depth": queue_status.get("queue_depth", 0),
+                "timestamp": datetime.now().isoformat()
+            }
+
+        @self.app.post("/api/monitoring/queue/complete-task")
+        async def complete_task(task_data: Dict[str, Any]):
+            """
+            Mark a task as complete (for analytics tracking).
+
+            Request body:
+            {
+                "task_id": "TASK-123",
+                "execution_time_seconds": 45.2,
+                "success": true
+            }
+
+            Returns:
+            {
+                "success": true,
+                "task_id": "TASK-123",
+                "queue_depth": 4
+            }
+            """
+            task_id = task_data.get("task_id")
+            execution_time = task_data.get("execution_time_seconds", 0.0)
+            success = task_data.get("success", True)
+
+            if not task_id:
+                raise HTTPException(status_code=400, detail="Missing task_id")
+
+            self.queue_analytics.complete_task(task_id, execution_time, success)
+
+            queue_status = self.queue_analytics.get_queue_status()
+
+            return {
+                "success": True,
+                "task_id": task_id,
+                "queue_depth": queue_status.get("queue_depth", 0),
+                "timestamp": datetime.now().isoformat()
+            }
+
+        @self.app.post("/api/monitoring/failures/record")
+        async def record_failure(failure_data: Dict[str, Any]):
+            """
+            Record a task failure (for analytics tracking).
+
+            Request body:
+            {
+                "task_id": "TASK-123",
+                "bot_id": "bot-001",
+                "task_type": "development",
+                "error_message": "timeout",
+                "error_code": 504
+            }
+
+            Returns:
+            {
+                "success": true,
+                "failure_id": "uuid",
+                "total_failures": 15
+            }
+            """
+            task_id = failure_data.get("task_id", f"task-{datetime.now().timestamp()}")
+            bot_id = failure_data.get("bot_id", "unknown")
+            task_type = failure_data.get("task_type", "general")
+            error_message = failure_data.get("error_message", "unknown error")
+            error_code = failure_data.get("error_code", 500)
+
+            self.failure_analyzer.record_failure(
+                task_id=task_id,
+                bot_id=bot_id,
+                task_type=task_type,
+                error_message=error_message,
+                error_code=error_code
+            )
+
+            stats = self.failure_analyzer.get_failure_stats()
+
+            return {
+                "success": True,
+                "task_id": task_id,
+                "total_failures": stats.get("total_failures", 0),
                 "timestamp": datetime.now().isoformat()
             }
 

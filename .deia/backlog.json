@@ -90,15 +90,17 @@
                         "id":  "BACKLOG-007",
                         "title":  "Review slash command implementation",
                         "description":  "Code review and testing of deia / command",
-                        "status":  "QUEUED",
-                        "assigned_to":  "BOT-00002",
+                        "status":  "ASSIGNED",
+                        "assigned_to":  "BOT-00001",
+                        "assigned_at":  "2025-10-25T22:00:00Z",
                         "priority":  "P1",
                         "type":  "review",
                         "estimated_steps":  7,
-                        "estimated_time_seconds":  120,
+                        "estimated_time_seconds":  3600,
                         "dependencies":  [
                                              "BACKLOG-006"
-                                         ]
+                                         ],
+                        "assignment_file":  ".deia/hive/tasks/2025-10-25-2200-000-001-ASSIGNMENT-Code-Review-Slash-Command.md"
                     },
                     {
                         "id":  "BACKLOG-008",
@@ -124,56 +126,66 @@
                         "id":  "BACKLOG-009",
                         "title":  "Implement deia extract command",
                         "description":  "Extract metadata from YAML frontmatter (JSON/YAML/CSV output)",
-                        "status":  "QUEUED",
+                        "status":  "ASSIGNED",
                         "assigned_to":  "BOT-00003",
+                        "assigned_at":  "2025-10-25T22:00:00Z",
                         "priority":  "P1",
                         "type":  "integration",
                         "estimated_steps":  5,
-                        "estimated_time_seconds":  240,
+                        "estimated_time_seconds":  14400,
                         "dependencies":  [
 
-                                         ]
+                                         ],
+                        "assignment_file":  ".deia/hive/tasks/2025-10-25-2200-000-003-ASSIGNMENT-Deia-Commands-Batch.md"
                     },
                     {
                         "id":  "BACKLOG-010",
                         "title":  "Implement deia list command",
                         "description":  "List all documents in routing directories with metadata",
-                        "status":  "QUEUED",
+                        "status":  "ASSIGNED",
                         "assigned_to":  "BOT-00003",
+                        "assigned_at":  "2025-10-25T22:00:00Z",
                         "priority":  "P1",
                         "type":  "integration",
                         "estimated_steps":  4,
-                        "estimated_time_seconds":  180,
+                        "estimated_time_seconds":  10800,
                         "dependencies":  [
 
-                                         ]
+                                         ],
+                        "assignment_file":  ".deia/hive/tasks/2025-10-25-2200-000-003-ASSIGNMENT-Deia-Commands-Batch.md"
                     },
                     {
                         "id":  "BACKLOG-011",
                         "title":  "Implement deia view command",
                         "description":  "View document content with metadata display",
-                        "status":  "TODO",
+                        "status":  "ASSIGNED",
+                        "assigned_to":  "BOT-00003",
+                        "assigned_at":  "2025-10-25T22:05:00Z",
                         "priority":  "P2",
                         "type":  "integration",
                         "estimated_steps":  4,
-                        "estimated_time_seconds":  180,
+                        "estimated_time_seconds":  10800,
                         "dependencies":  [
 
-                                         ]
+                                         ],
+                        "assignment_file":  ".deia/hive/tasks/2025-10-25-2205-000-003-ASSIGNMENT-View-Command.md"
                     },
                     {
                         "id":  "BACKLOG-012",
                         "title":  "Phase 2: Git-aware cleanup",
                         "description":  "Automatically clean up temp staging after git commit",
-                        "status":  "TODO",
+                        "status":  "ASSIGNED",
+                        "assigned_to":  "BOT-00001",
+                        "assigned_at":  "2025-10-25T22:05:00Z",
                         "priority":  "P2",
                         "type":  "enhancement",
                         "estimated_steps":  8,
-                        "estimated_time_seconds":  480,
+                        "estimated_time_seconds":  3600,
                         "dependencies":  [
                                              "BACKLOG-005",
                                              "BACKLOG-008"
-                                         ]
+                                         ],
+                        "assignment_file":  ".deia/hive/tasks/2025-10-25-2205-000-001-ASSIGNMENT-Git-Aware-Cleanup.md"
                     },
                     {
                         "id":  "BACKLOG-013",
@@ -192,15 +204,18 @@
                         "id":  "BACKLOG-014",
                         "title":  "Performance optimization for sync",
                         "description":  "Optimize file scanning and processing performance",
-                        "status":  "TODO",
+                        "status":  "ASSIGNED",
+                        "assigned_to":  "BOT-00001",
+                        "assigned_at":  "2025-10-25T22:05:00Z",
                         "priority":  "P3",
                         "type":  "optimization",
                         "estimated_steps":  5,
-                        "estimated_time_seconds":  300,
+                        "estimated_time_seconds":  18000,
                         "dependencies":  [
                                              "BACKLOG-005",
                                              "BACKLOG-008"
-                                         ]
+                                         ],
+                        "assignment_file":  ".deia/hive/tasks/2025-10-25-2205-000-001-ASSIGNMENT-Performance-Optimization.md"
                     },
                     {
                         "id":  "BACKLOG-015",
@@ -237,51 +252,61 @@
                         "id":  "BACKLOG-017",
                         "title":  "Integrate monitor with Librarian service",
                         "description":  "Auto-index documents when monitor routes them",
-                        "status":  "TODO",
+                        "status":  "ASSIGNED",
+                        "assigned_to":  "BOT-00001",
+                        "assigned_at":  "2025-10-25T22:05:00Z",
                         "priority":  "P2",
                         "type":  "integration",
                         "estimated_steps":  4,
-                        "estimated_time_seconds":  180,
+                        "estimated_time_seconds":  10800,
                         "dependencies":  [
 
-                                         ]
+                                         ],
+                        "assignment_file":  ".deia/hive/tasks/2025-10-25-2205-000-001-ASSIGNMENT-Monitor-Librarian-Integration.md"
                     },
                     {
                         "id":  "BACKLOG-018",
                         "title":  "Create File Mover service",
                         "description":  "Service to automate file operations based on rules",
-                        "status":  "TODO",
+                        "status":  "ASSIGNED",
+                        "assigned_to":  "BOT-00004",
+                        "assigned_at":  "2025-10-25T22:05:00Z",
                         "priority":  "P2",
                         "type":  "feature",
                         "estimated_steps":  6,
-                        "estimated_time_seconds":  300,
+                        "estimated_time_seconds":  18000,
                         "dependencies":  [
 
-                                         ]
+                                         ],
+                        "assignment_file":  ".deia/hive/tasks/2025-10-25-2205-000-004-ASSIGNMENT-File-Mover-Service.md"
                     },
                     {
                         "id":  "BACKLOG-019",
                         "title":  "Create Provenance Tracker service",
                         "description":  "Service for version lineage and gap detection",
-                        "status":  "TODO",
+                        "status":  "ASSIGNED",
+                        "assigned_to":  "BOT-00004",
+                        "assigned_at":  "2025-10-25T22:05:00Z",
                         "priority":  "P2",
                         "type":  "feature",
                         "estimated_steps":  5,
-                        "estimated_time_seconds":  240,
+                        "estimated_time_seconds":  14400,
                         "dependencies":  [
 
-                                         ]
+                                         ],
+                        "assignment_file":  ".deia/hive/tasks/2025-10-25-2205-000-004-ASSIGNMENT-Provenance-Tracker.md"
                     },
                     {
                         "id":  "BACKLOG-020",
-                        "title":  "Immune System Phase 1 - Core System",
-                        "description":  "Implement DEIA Immune System Phase 1: Triage Agent, Cure Engine, basic antibody system, quarantine workflow, downloads monitor integration",
-                        "status":  "QUEUED",
-                        "assigned_to":  "BOT-00008",
+                        "title":  "Immune System Phase 1 - Triage Agent Component",
+                        "description":  "Implement DEIA Immune System Phase 1 - Triage Agent: anomaly detection, threat classification, report generation",
+                        "status":  "ASSIGNED",
+                        "assigned_to":  "BOT-00004",
+                        "assigned_at":  "2025-10-25T22:05:00Z",
                         "priority":  "P1",
                         "type":  "feature",
-                        "estimated_steps":  20,
-                        "estimated_time_seconds":  72000,
+                        "estimated_steps":  10,
+                        "estimated_time_seconds":  28800,
                         "dependencies":  [
 
                                          ],
@@ -289,13 +314,12 @@
                         "approval_date":  "2025-10-12",
                         "approved_by":  "BOT-00001",
                         "proposal_file":  ".deia/reports/BOT-00008-immune-system-proposal.md",
-                        "decree_file":  ".deia/decisions/QUEEN-DECREE-20251012-immune-system.md",
+                        "assignment_file":  ".deia/hive/tasks/2025-10-25-2205-000-004-ASSIGNMENT-Immune-System-Triage.md",
                         "success_criteria":  [
-                                                 "Cure success rate \u003e70%",
+                                                 "Anomaly detection working (5+ patterns)",
+                                                 "Classification accurate",
                                                  "False positive rate \u003c5%",
-                                                 "15+ passing tests with \u003e80% coverage",
-                                                 "10+ successful auto-cures in testing",
-                                                 "Zero-config user experience"
+                                                 "Tests passing with \u003e80% coverage"
                                              ]
                     },
                     {
@@ -437,11 +461,12 @@
                         "id":  "BACKLOG-027",
                         "title":  "Coordinator MVP Implementation",
                         "description":  "Implement daemon/script reading .deia/telemetry/path-events.jsonl and enforcing scope: on within_scope=false ? freeze bot, notify Queen, hive-log alert. Integrate with PATH-CAPTURE-SPEC.",
-                        "status":  "QUEUED",
+                        "status":  "ASSIGNED",
                         "priority":  "P1",
                         "type":  "integration",
                         "requested_by":  "BOT-00001",
-                        "assigned_to":  "BOT-00006",
+                        "assigned_to":  "BOT-00004",
+                        "assigned_at":  "2025-10-25T22:00:00Z",
                         "dependencies":  [
                                              "BACKLOG-026"
                                          ],
@@ -450,7 +475,8 @@
                                                     "On drift: sets bot to STANDBY and logs alert",
                                                     "Manual test script reproduces freeze/notify",
                                                     "Nightly summary shows zero drift on clean runs"
-                                                ]
+                                                ],
+                        "assignment_file":  ".deia/hive/tasks/2025-10-25-2200-000-004-ASSIGNMENT-Coordinator-MVP.md"
                     },
                     {
                         "id":  "BACKLOG-028",
@@ -510,15 +536,68 @@
                                                     "Tested with new drone onboarding (< 2 min read time)",
                                                     "Token count reduced by 50%+ vs current instructions"
                                                 ]
+                    },
+                    {
+                        "id":  "BACKLOG-030",
+                        "title":  "CLI Testing Suite - DEIA Commands",
+                        "description":  "Comprehensive end-to-end testing for all deia commands (slash, extract, list, view) with edge cases, error handling, output validation",
+                        "status":  "ASSIGNED",
+                        "assigned_to":  "BOT-00003",
+                        "assigned_at":  "2025-10-25T22:05:00Z",
+                        "priority":  "P2",
+                        "type":  "testing",
+                        "estimated_steps":  8,
+                        "estimated_time_seconds":  14400,
+                        "dependencies":  [
+                                             "BACKLOG-006",
+                                             "BACKLOG-009",
+                                             "BACKLOG-010",
+                                             "BACKLOG-011"
+                                         ],
+                        "assignment_file":  ".deia/hive/tasks/2025-10-25-2205-000-003-ASSIGNMENT-CLI-Testing-Suite.md",
+                        "acceptance_criteria":  [
+                                                    "All commands tested end-to-end",
+                                                    ">85% code coverage",
+                                                    "Edge cases covered",
+                                                    "Error scenarios handled",
+                                                    "Tests pass consistently"
+                                                ]
+                    },
+                    {
+                        "id":  "BACKLOG-031",
+                        "title":  "Service Integration Testing Suite",
+                        "description":  "End-to-end integration testing for coordinator, file mover, provenance tracker, and immune system services",
+                        "status":  "ASSIGNED",
+                        "assigned_to":  "BOT-00004",
+                        "assigned_at":  "2025-10-25T22:05:00Z",
+                        "priority":  "P2",
+                        "type":  "testing",
+                        "estimated_steps":  8,
+                        "estimated_time_seconds":  18000,
+                        "dependencies":  [
+                                             "BACKLOG-027",
+                                             "BACKLOG-018",
+                                             "BACKLOG-019",
+                                             "BACKLOG-020"
+                                         ],
+                        "assignment_file":  ".deia/hive/tasks/2025-10-25-2205-000-004-ASSIGNMENT-Service-Integration-Testing.md",
+                        "acceptance_criteria":  [
+                                                    "All services tested end-to-end",
+                                                    ">80% coverage",
+                                                    "Failure scenarios tested",
+                                                    "Safety tests (no data loss)",
+                                                    "Performance acceptable"
+                                                ]
                     }
                 ],
     "backlog_stats":  {
-                          "total_items":  29,
+                          "total_items":  31,
                           "done":  9,
-                          "in_progress":  null,
-                          "todo":  9,
+                          "in_progress":  1,
+                          "assigned":  13,
+                          "todo":  2,
                           "blocked":  0,
-                          "queued":  11
+                          "queued":  6
                       },
     "priority_definitions":  {
                                  "P0":  "Critical - Blocking other work",

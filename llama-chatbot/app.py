@@ -336,6 +336,28 @@ async def get_bots():
     return {"bots": bots}
 
 
+@app.get("/api/bots/status")
+async def get_bots_status():
+    """Get status of all active bots in list format"""
+    bots_list = []
+
+    with bot_lock:
+        for bot_id, bot_data in bot_registry.items():
+            # Check if process is still alive
+            process = bot_data.get("process")
+            running = process and process.poll() is None
+
+            bots_list.append({
+                "id": bot_id,
+                "port": bot_data.get("port"),
+                "running": running,
+                "status": "online" if running else "offline",
+                "pid": bot_data.get("pid")
+            })
+
+    return bots_list
+
+
 @app.get("/api/bot/{bot_id}/status")
 async def get_bot_status(bot_id: str):
     """Get status of a specific bot"""
@@ -386,27 +408,48 @@ async def send_task_to_bot(bot_id: str, request: BotTaskRequest):
     logger.info(f"Bot {bot_id} received task: {command}")
 
     try:
+        if not bot_port:
+            return {
+                "success": False,
+                "error": "Bot port not configured",
+                "bot_id": bot_id
+            }
+
         # Try to send task to bot's HTTP service on its port
-        if bot_port:
-            try:
-                import aiohttp
-                async with aiohttp.ClientSession() as session:
-                    async with session.post(
-                        f"http://127.0.0.1:{bot_port}/task",
-                        json={"command": command},
-                        timeout=aiohttp.ClientTimeout(total=10)
-                    ) as response:
-                        if response.status == 200:
-                            result = await response.json()
-                            response_text = result.get("response", "Task executed")
-                        else:
-                            response_text = f"Bot service returned status {response.status}"
-            except Exception as e:
-                # Bot service not responding, use fallback
-                logger.warning(f"Could not reach bot service on port {bot_port}: {e}")
-                response_text = f"[Offline] {command}"
-        else:
-            response_text = "Bot port not configured"
+        try:
+            import aiohttp
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    f"http://127.0.0.1:{bot_port}/task",
+                    json={"command": command},
+                    timeout=aiohttp.ClientTimeout(total=30)
+                ) as response:
+                    if response.status == 200:
+                        result = await response.json()
+                        response_text = result.get("response", "Task executed")
+                    else:
+                        return {
+                            "success": False,
+                            "error": f"Bot service returned status {response.status}",
+                            "bot_id": bot_id
+                        }
+        except asyncio.TimeoutError:
+            return {
+                "success": False,
+                "error": "Bot timeout (>30s)",
+                "bot_id": bot_id
+            }
+        except Exception as e:
+            logger.warning(f"Could not reach bot service on port {bot_port}: {e}")
+            return {
+                "success": False,
+                "error": f"Bot offline: {str(e)}",
+                "bot_id": bot_id
+            }
+
+        # Save to history
+        await save_message({"role": "user", "content": command}, bot_id)
+        await save_message({"role": "assistant", "content": response_text}, bot_id)
 
         with bot_lock:
             if bot_id in bot_registry:
@@ -429,7 +472,7 @@ async def send_task_to_bot(bot_id: str, request: BotTaskRequest):
         return {
             "success": False,
             "error": str(e),
-            "response": None
+            "bot_id": bot_id
         }
 
 
