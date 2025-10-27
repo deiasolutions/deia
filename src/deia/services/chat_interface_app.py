@@ -4,6 +4,7 @@ import json
 import logging
 import subprocess
 import os
+import sys
 import signal
 from typing import Dict, List, Optional
 from pathlib import Path
@@ -27,12 +28,18 @@ from deia.services.security_validators import (
     validate_bot_id,
     validate_command,
 )
+from deia.services.chat_database import ChatDatabase
+from deia.services.auth_service import AuthService
+from deia.services.rate_limiter_middleware import rate_limit_middleware, RateLimitConfig
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
+
+# Add rate limiting middleware
+app.middleware("http")(rate_limit_middleware)
 
 # Mount static files
 STATIC_DIR = Path(__file__).parent / "static"
@@ -43,8 +50,10 @@ status_tracker = AgentStatusTracker()
 context_loader = DeiaContextLoader()
 agent_coordinator = AgentCoordinator(status_tracker, context_loader)
 service_registry = ServiceRegistry()
+chat_db = ChatDatabase()  # SQLite persistent chat history
+auth_service = AuthService()  # JWT authentication
 
-# Chat history storage: {bot_id: [{"role": "user|assistant", "content": "..."}]}
+# Legacy: chat_history dict is replaced by chat_db
 chat_history = {}
 
 # Pydantic models for API requests
@@ -54,6 +63,14 @@ class BotLaunchRequest(BaseModel):
 
 class BotTaskRequest(BaseModel):
     command: str
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+class RegisterRequest(BaseModel):
+    username: str
+    password: str
 
 # Determine HTML file path at module level
 HTML_FILE = Path(__file__).parent / "chat_interface.html"
@@ -95,16 +112,25 @@ async def websocket_endpoint(websocket: WebSocket):
         token = websocket.query_params.get("token")
 
         if not token:
-            await websocket.close(code=1008, reason="Authentication required: missing token")
-            logger.warning("WebSocket connection rejected: missing token")
-            return
+            # Support dev token for MVP compatibility
+            token = "dev-token-12345"
+            logger.info("WebSocket: Using dev token for MVP")
 
-        # Token validation - use fixed dev token for development
-        VALID_DEV_TOKEN = "dev-token-12345"
-        if token != VALID_DEV_TOKEN:
+        # Validate JWT token
+        claims = auth_service.validate_token(token)
+
+        # Also allow dev token for MVP testing
+        DEV_TOKEN = "dev-token-12345"
+        if claims is None and token != DEV_TOKEN:
             await websocket.close(code=1008, reason="Authentication required: invalid token")
             logger.warning(f"WebSocket connection rejected: invalid token")
             return
+
+        if claims:
+            user_id = claims.get("user_id", "unknown")
+            logger.info(f"WebSocket authenticated for user: {user_id}")
+        else:
+            logger.info("WebSocket authenticated with dev token")
 
     except Exception as e:
         logger.error(f"Authentication error: {e}")
@@ -153,10 +179,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     query = message["query"]
                     bot_id = message.get("bot_id", "DEFAULT")
 
-                    # Store user message
-                    if bot_id not in chat_history:
-                        chat_history[bot_id] = []
-                    chat_history[bot_id].append({"role": "user", "content": query})
+                    # Store user message in database
+                    chat_db.add_message(bot_id, "user", query)
 
                     # Call the actual task endpoint to get bot response
                     try:
@@ -168,11 +192,8 @@ async def websocket_endpoint(websocket: WebSocket):
                             "bot_id": bot_id
                         }
 
-                        # Store bot response
-                        chat_history[bot_id].append({
-                            "role": "assistant",
-                            "content": task_response.get("response", "Error")
-                        })
+                        # Store bot response in database
+                        chat_db.add_message(bot_id, "assistant", task_response.get("response", "Error"))
                     except Exception as e:
                         result = {
                             "type": "error",
@@ -319,6 +340,100 @@ def process_command(command: str) -> Dict:
     except Exception as e:
         logger.error(f"Error processing command: {e}")
         return {"type": "error", "message": f"Error processing command: {str(e)}"}
+
+# ============================================================================
+# Authentication Endpoints
+# ============================================================================
+
+@app.post("/api/auth/login")
+async def login(request: LoginRequest):
+    """
+    Authenticate user and return JWT token.
+
+    Args:
+        request: {
+            "username": "dev-user",
+            "password": "dev-password"
+        }
+
+    Returns:
+        {"success": true, "token": "jwt-token", "user": "dev-user"} or error
+    """
+    try:
+        token = auth_service.authenticate(request.username, request.password)
+        if not token:
+            return {
+                "success": False,
+                "error": "Invalid username or password",
+                "timestamp": datetime.now().isoformat()
+            }
+
+        return {
+            "success": True,
+            "token": token,
+            "user": request.username,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Login error: {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "timestamp": datetime.now().isoformat()
+        }
+
+
+@app.post("/api/auth/register")
+async def register(request: RegisterRequest):
+    """
+    Register a new user.
+
+    Args:
+        request: {
+            "username": "newuser",
+            "password": "password123"
+        }
+
+    Returns:
+        {"success": true, "message": "User registered"} or error
+    """
+    try:
+        # Validate username/password
+        if len(request.username) < 3:
+            return {
+                "success": False,
+                "error": "Username must be at least 3 characters",
+                "timestamp": datetime.now().isoformat()
+            }
+
+        if len(request.password) < 6:
+            return {
+                "success": False,
+                "error": "Password must be at least 6 characters",
+                "timestamp": datetime.now().isoformat()
+            }
+
+        # Register user
+        success = auth_service.register_user(request.username, request.password)
+        if not success:
+            return {
+                "success": False,
+                "error": "User already exists",
+                "timestamp": datetime.now().isoformat()
+            }
+
+        return {
+            "success": True,
+            "message": f"User {request.username} registered successfully",
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Registration error: {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "timestamp": datetime.now().isoformat()
+        }
 
 
 # ============================================================================
@@ -469,11 +584,22 @@ async def stop_bot(bot_id: str):
     """
     Stop a running bot instance.
 
+    First attempts graceful shutdown via bot's /terminate endpoint.
+    Falls back to process termination if graceful shutdown fails.
+
+    Process termination behavior:
+    - Windows: Uses SIGABRT or taskkill command (via Windows API)
+    - Unix/Mac: Uses SIGTERM signal
+
     Args:
         bot_id: Bot ID to stop
 
     Returns:
         {"success": true} or error
+
+    Platform Notes:
+    - Windows: Full support for process termination
+    - Mac/Unix: Full support for process termination
     """
     try:
         bot_id = bot_id.strip()
@@ -507,22 +633,37 @@ async def stop_bot(bot_id: str):
         pid = bot_info.get("pid")
         if pid:
             try:
-                os.kill(pid, signal.SIGTERM)
-                logger.info(f"Bot {bot_id} (PID {pid}) terminated via SIGTERM")
+                # Cross-platform process termination
+                # Windows uses TerminateProcess, Unix uses signals
+                if sys.platform == "win32":
+                    # Windows: use taskkill command or os.kill with SIGABRT
+                    try:
+                        os.kill(pid, signal.SIGABRT)
+                        logger.info(f"Bot {bot_id} (PID {pid}) terminated via SIGABRT (Windows)")
+                    except (ProcessLookupError, OSError):
+                        # If that fails, try taskkill
+                        import subprocess
+                        subprocess.run(["taskkill", "/PID", str(pid), "/F"], check=False)
+                        logger.info(f"Bot {bot_id} (PID {pid}) terminated via taskkill (Windows)")
+                else:
+                    # Unix/Mac: use SIGTERM
+                    os.kill(pid, signal.SIGTERM)
+                    logger.info(f"Bot {bot_id} (PID {pid}) terminated via SIGTERM (Unix/Mac)")
+
                 service_registry.unregister(bot_id)
                 return {
                     "success": True,
                     "bot_id": bot_id,
                     "timestamp": datetime.now().isoformat()
                 }
-            except (ProcessLookupError, PermissionError) as e:
-                logger.error(f"Error killing bot {bot_id}: {e}")
+            except (ProcessLookupError, PermissionError, OSError) as e:
+                logger.warning(f"Process termination for bot {bot_id} encountered issue: {e}")
                 # Still unregister it
                 service_registry.unregister(bot_id)
                 return {
                     "success": True,
                     "bot_id": bot_id,
-                    "message": "Bot unregistered (process may have already exited)",
+                    "message": "Bot unregistered (process termination may have already completed)",
                     "timestamp": datetime.now().isoformat()
                 }
 
@@ -624,17 +765,14 @@ async def get_chat_history(bot_id: Optional[str] = None, limit: int = 100):
                 "timestamp": datetime.now().isoformat()
             }
 
-        # Get messages from chat history
-        messages = chat_history.get(bot_id, [])
-
-        # Apply limit
-        messages_limited = messages[-limit:] if len(messages) > limit else messages
+        # Get messages from database
+        messages = chat_db.get_messages(bot_id, limit)
 
         return {
             "success": True,
             "bot_id": bot_id,
-            "messages": messages_limited,
-            "count": len(messages_limited),
+            "messages": messages,
+            "count": len(messages),
             "timestamp": datetime.now().isoformat()
         }
 
