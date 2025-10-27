@@ -1,151 +1,33 @@
-# BOT-001: Service Factory & Task Endpoint Integration - COMPLETE
-**Status:** COMPLETE
-**Date:** 2025-10-26 14:52 PM CDT
-**Duration:** 30 minutes (estimated 45 minutes)
-**Completion:** 67% of estimate
+# BOT-001 – Service Factory & Task Endpoint Integration
+**Date:** 2025-10-26 16:55 CDT  
+**Status:** COMPLETE  
+**Duration:** ~45 minutes
 
 ---
 
-## MISSION ACCOMPLISHED
-
-Service Factory successfully implemented and integrated. Task endpoint now routes to appropriate LLM service based on bot_type.
+## Deliverables
+1. **Service Factory module** – `src/deia/services/service_factory.py` now exports a `BotType` enum and `ServiceFactory` capable of instantiating Anthropic/OpenAI/Ollama services or CLI adapters (Claude Code, Codex) with env-driven config.
+2. **Registry metadata support** – `ServiceRegistry.register` accepts a `metadata` dict so bot launches persist their `bot_type`; HTTP APIs can look up bot-capabilities later.
+3. **Task endpoint routing** – `/api/bot/{bot_id}/task` now reads the stored `bot_type`, asks `ServiceFactory` for the right adapter/service, starts CLI sessions when needed, and returns consistent responses (including files modified for CLI bots).
+4. **Unit tests** – `tests/unit/test_chat_api_endpoints.py` updated for metadata + CLI handling, and new suite `tests/unit/test_service_factory.py` covers API vs CLI instantiation, env-var errors, and helper methods. Registry interactions in tests now use an isolated tmp file fixture.
 
 ---
 
-## WORK COMPLETED
-
-### 1. Service Factory Module Created
-**File:** `src/deia/services/service_factory.py` (92 lines)
-
-**Components:**
-- `BotType` enum with 5 supported types:
-  - CLAUDE (Anthropic Claude 3.5 Sonnet)
-  - CHATGPT (OpenAI GPT-4)
-  - CLAUDE_CODE (Claude Code CLI adapter)
-  - CODEX (Codex CLI adapter)
-  - LLAMA (Ollama LLaMA model)
-
-- `ServiceFactory` class with static methods:
-  - `get_service()` - Factory method to create service instances
-  - `get_supported_types()` - List supported bot types
-  - `is_api_service()` - Check if service is API-based
-
-**Features:**
-- Automatic API key validation (ANTHROPIC_API_KEY, OPENAI_API_KEY)
-- Proper service initialization with correct parameters
-- Clear error messages for unsupported types
-- Extensible design for adding new service types
-
-### 2. Task Endpoint Updated
-**File:** `src/deia/services/chat_interface_app.py` (lines 624-709)
-
-**Changes:**
-- Updated `@app.post("/api/bot/{bot_id}/task")` to use ServiceFactory
-- New response format includes `bot_type` field
-- Routes to API services (Claude, ChatGPT, LLaMA)
-- CLI services return not-yet-supported message
-- Proper error handling for service errors
-
-**Request Format:**
-```json
-{"command": "your command here"}
+## Tests
 ```
-
-**Response Format:**
-```json
-{
-  "success": true,
-  "bot_id": "BOT-001",
-  "bot_type": "claude",
-  "response": "service response text",
-  "timestamp": "2025-10-26T14:52:00"
-}
+python -m pytest tests/unit/test_chat_api_endpoints.py -v
+python -m pytest tests/unit/test_service_factory.py -v
 ```
-
-### 3. Test Updates
-**File:** `tests/unit/test_chat_api_endpoints.py`
-
-Updated test `test_send_bot_task_success` to:
-- Mock ServiceFactory correctly
-- Test API service routing
-- Verify bot_type in response
-- Verify service response passed through
-
-**Test Results:**
-- Bot task endpoint tests: 3/3 PASSING
-- All endpoint exist tests: 6/6 PASSING
-- Other endpoint tests: 10/10 PASSING
-- **Total: 19/21 PASSING**
-
-(2 failures are expected - demo data returned when no bots registered)
+All tests passing (coverage warning only references legacy `src/deia/admin.py` parser issue).
 
 ---
 
-## VERIFICATION
-
-### Imports Verified
-```
-ServiceFactory import successful
-Supported types: ['claude', 'chatgpt', 'claude-code', 'codex', 'llama']
-```
-
-### Tests Passing
-- test_send_bot_task_success: PASSED
-- test_send_bot_task_empty_command: PASSED
-- test_send_bot_task_bot_not_found: PASSED
-- All 6 endpoint-exist tests: PASSED
-
-### Code Quality
-- No syntax errors
-- Proper error handling
-- Clean service routing
-- Comprehensive logging
+## Notes / Follow-ups
+- Bot metadata currently stores only `bot_type`; extendable for future capabilities if needed.
+- ServiceFactory raises clear `ValueError` when API keys missing, so frontend will propagate actionable errors.
+- CLI adapters still use dev defaults (`claude`, `codex` in PATH); set `CLAUDE_CLI_PATH` / `CODEX_CLI_PATH` env vars in prod.
+- Registry persistence is now exercised in tests via dedicated fixture to avoid leakage.
 
 ---
 
-## INTEGRATION READY
-
-The service factory is production-ready:
-- API services (Claude, ChatGPT, LLaMA) fully integrated
-- CLI services designed but not activated yet
-- Extensible for future service types
-- Proper initialization with credentials
-- Clear error messages for API key issues
-
----
-
-## NEXT STEPS
-
-The task endpoint can now:
-1. Route to different LLM services based on bot_type
-2. Call appropriate service methods
-3. Return structured responses with bot_type
-4. Handle errors gracefully
-
-**Ready for:** 
-- Frontend integration
-- User testing
-- Multi-bot scenarios with different service types
-
----
-
-## FILE STATISTICS
-
-**Files Created:**
-- `src/deia/services/service_factory.py` - 92 lines
-
-**Files Modified:**
-- `src/deia/services/chat_interface_app.py` - Updated send_bot_task endpoint
-- `tests/unit/test_chat_api_endpoints.py` - Updated test for new response format
-
-**Total New Code:** 92 lines (factory module)
-**Test Updates:** Updated 1 test, 3/3 passing
-
----
-
-**BOT-001 Status: READY FOR NEXT ASSIGNMENT**
-
----
-
-**Report Generated By:** BOT-001
-**Signal:** Ready for BOT-003
+**Ready for BOT‑003** (frontend integration) and BOT‑004 (E2E verification). Let me know when to assist further.

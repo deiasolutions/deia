@@ -961,3 +961,10 @@ From observations:
 [12:00 CDT] Documented service dependencies (status tracker, registry, coordinator) and ready to finalize backend endpoint report.
 [12:35 CDT] Completed backend API code review + tests (see bot-001-code-review-complete.md); ready for BOT-004 integration.
 [14:41 CDT] New task: build service_factory + route /api/bot/{id}/task by bot_type; reviewing claude CLI adapters now (0%).
+[16:56 CDT] ServiceFactory + task routing finished; tests (chat endpoints + service factory) passing; report posted for BOT-003 handoff.
+
+[17:15 CT] Checked system time (Get-Date) and completed BOT-001 bootcamp reread; autologging restarted with compliance focus (100%).
+[17:26 CT] Reviewed current task stack (.deia/hive/tasks/2025-10-26-FOCUSED-002-BOT-001-Backend-API-Endpoints.md, BOT-003/004 MVP docs) to prep fresh assignments for BOT-001/BOT-003/BOT-004; drafting instructions now (70%).
+[17:55 CT] Asked BOT-004 for location of its questions, captured reply at bot-004-response-to-q33n.md, and reviewed outstanding needs (persistence/auth/rate limits) to ensure BOT-001/BOT-003 queues cover them (90%).
+[17:58 CT] MVP push re-armed per user directive – re-tasking BOT-001 (P0 persistence/auth/rate limiting), BOT-003 (hive testing), BOT-004 (verification shadow).
+[19:45 CT] BOT-003 blocking on launch_bot (registry records but subprocess never spawns on Windows); need cross-platform process start fix before UAT continues.

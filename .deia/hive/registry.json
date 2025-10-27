@@ -23,7 +23,18 @@
       "status": "ready",
       "registered_at": "2025-10-26T13:57:58.486605",
       "last_heartbeat": "2025-10-26T13:57:58.486617"
+    },
+    "BOT-013": {
+      "port": 8213,
+      "pid": -1,
+      "repo": "BOT",
+      "status": "ready",
+      "registered_at": "2025-10-26T19:28:54.928183",
+      "last_heartbeat": "2025-10-26T19:28:54.928191",
+      "metadata": {
+        "bot_type": "llama"
+      }
     }
   },
-  "updated_at": "2025-10-26T13:57:58.486625"
+  "updated_at": "2025-10-26T19:28:54.928196"
 }

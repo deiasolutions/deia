@@ -9,7 +9,19 @@
       "Bash(python -m pytest:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git tag:*)"
+      "Bash(git tag:*)",
+      "Bash(python -m json.tool:*)",
+      "Bash(timeout 5 curl:*)",
+      "Bash(xargs ls:*)",
+      "Bash(python:*)",
+      "Bash(awk:*)",
+      "Bash(pip install:*)",
+      "Bash(tee:*)",
+      "Bash(timeout 30 python:*)",
+      "Bash(timeout 20 python:*)",
+      "Bash(timeout 60 python:*)",
+      "Bash(timeout 120 python:*)",
+      "Bash(timeout 90 python:*)"
     ],
     "deny": [],
     "ask": []

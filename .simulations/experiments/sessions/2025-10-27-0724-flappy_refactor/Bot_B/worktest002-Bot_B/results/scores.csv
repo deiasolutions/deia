@@ -1,0 +1,19 @@
+Metric,Value
+Timestamp,2025-10-27T10:58:21.697073
+Average Score,-417.2
+Max Score,-399.0
+Std Dev,26.460536653665965
+Training Time (min),26.232756016666666
+Method,PPO
+Episodes,10
+Individual Scores,
+Episode 1,-405.0
+Episode 2,-405.0
+Episode 3,-405.0
+Episode 4,-403.0
+Episode 5,-470.0
+Episode 6,-399.0
+Episode 7,-470.0
+Episode 8,-405.0
+Episode 9,-405.0
+Episode 10,-405.0

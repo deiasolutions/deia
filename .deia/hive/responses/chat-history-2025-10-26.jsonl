@@ -121,3 +121,84 @@
 {"timestamp": "2025-10-26T14:11:08.587094", "bot_id": "BOT-900", "role": "assistant", "content": "Connected to BOT-900. Ready for commands.", "session_id": null}
 {"timestamp": "2025-10-26T14:11:15.303331", "bot_id": "BOT-900", "role": "user", "content": "helloo", "session_id": null}
 {"timestamp": "2025-10-26T14:11:18.752396", "bot_id": "BOT-900", "role": "assistant", "content": "BOT-900: [Offline] helloo", "session_id": null}
+{"timestamp": "2025-10-26T16:50:27.262976", "bot_id": null, "role": "assistant", "content": "\u2713 Bot BOT-900 stopped", "session_id": null}
+{"timestamp": "2025-10-26T16:50:29.909846", "bot_id": null, "role": "assistant", "content": "\u2713 Bot TEST-CLAUDE stopped", "session_id": null}
+{"timestamp": "2025-10-26T16:50:33.080196", "bot_id": null, "role": "assistant", "content": "\u2713 Bot TEST-CHATGPT stopped", "session_id": null}
+{"timestamp": "2025-10-26T16:50:35.945790", "bot_id": null, "role": "assistant", "content": "\u2713 Bot TEST-CLAUDE-CODE stopped", "session_id": null}
+{"timestamp": "2025-10-26T16:50:38.769104", "bot_id": null, "role": "assistant", "content": "\u2713 Bot TEST-CODEX stopped", "session_id": null}
+{"timestamp": "2025-10-26T16:50:42.126458", "bot_id": null, "role": "assistant", "content": "\u2713 Bot TEST-LLAMA stopped", "session_id": null}
+{"timestamp": "2025-10-26T16:51:05.022416", "bot_id": null, "role": "assistant", "content": "\u2713 Bot bot-008 launched successfully", "session_id": null}
+{"timestamp": "2025-10-26T16:51:09.940201", "bot_id": "bot-008", "role": "assistant", "content": "Connected to bot-008. Ready for commands.", "session_id": null}
+{"timestamp": "2025-10-26T16:51:16.576567", "bot_id": "bot-008", "role": "user", "content": "helloo0", "session_id": null}
+{"timestamp": "2025-10-26T16:51:19.025010", "bot_id": "bot-008", "role": "assistant", "content": "bot-008: [Offline] helloo0", "session_id": null}
+{"timestamp": "2025-10-26T16:51:35.214677", "bot_id": "bot-008", "role": "assistant", "content": "\u2713 Bot bot-008 stopped", "session_id": null}
+{"timestamp": "2025-10-26T18:18:13.140924", "bot_id": "bot-msg-test", "role": "user", "content": "Test message", "session_id": "3dafcbee-ed98-4489-ac04-46c7bc7c0a2a"}
+{"timestamp": "2025-10-26T18:18:13.186247", "bot_id": "bot-test", "role": "user", "content": "Message in Session 1", "session_id": "68e720d4-72de-4a99-8474-9f1cc04d40b1"}
+{"timestamp": "2025-10-26T18:18:13.199153", "bot_id": "bot-test", "role": "user", "content": "Message in Session 2", "session_id": "beb65a29-351b-4b4c-986f-0328234e1619"}
+{"timestamp": "2025-10-26T18:18:13.242368", "bot_id": "bot-16a7cd1b-acbf-4188-8c65-2cf96a19dad4", "role": "user", "content": "Bot-specific message", "session_id": null}
+{"timestamp": "2025-10-26T18:18:13.305546", "bot_id": "bot-dual-test", "role": "user", "content": "Dual-filter message", "session_id": "7ec86917-6fc1-4b54-910c-a6b8bc3b671d"}
+{"timestamp": "2025-10-26T18:18:13.382865", "bot_id": "bot-integration", "role": "user", "content": "Message 0", "session_id": "50fb76c2-ab3a-4f86-8b91-3415e3b8bd9e"}
+{"timestamp": "2025-10-26T18:18:13.394379", "bot_id": "bot-integration", "role": "assistant", "content": "Message 1", "session_id": "50fb76c2-ab3a-4f86-8b91-3415e3b8bd9e"}
+{"timestamp": "2025-10-26T18:18:13.404930", "bot_id": "bot-integration", "role": "user", "content": "Message 2", "session_id": "50fb76c2-ab3a-4f86-8b91-3415e3b8bd9e"}
+{"timestamp": "2025-10-26T18:18:13.807098", "bot_id": "bot-isolation", "role": "user", "content": "Unique message for session 0", "session_id": "9616f821-f03f-41e8-a0de-13b3ab7db6d5"}
+{"timestamp": "2025-10-26T18:18:13.899168", "bot_id": "bot-isolation", "role": "user", "content": "Unique message for session 1", "session_id": "a41f1011-532c-4bac-b471-6eec1c975332"}
+{"timestamp": "2025-10-26T18:18:13.920052", "bot_id": "bot-isolation", "role": "user", "content": "Unique message for session 2", "session_id": "f2a9426f-2071-4d95-b01d-002e661cb62d"}
+{"timestamp": "2025-10-26T18:18:14.008945", "bot_id": "bot-no-session", "role": "user", "content": "Message without session", "session_id": null}
+{"timestamp": "2025-10-26T18:18:14.045657", "bot_id": null, "role": "user", "content": "Message 0", "session_id": "a6f6150f-ebc0-476e-8087-f8af9ddecd41"}
+{"timestamp": "2025-10-26T18:18:14.061987", "bot_id": null, "role": "assistant", "content": "Message 1", "session_id": "a6f6150f-ebc0-476e-8087-f8af9ddecd41"}
+{"timestamp": "2025-10-26T18:18:14.098669", "bot_id": null, "role": "user", "content": "Message 2", "session_id": "a6f6150f-ebc0-476e-8087-f8af9ddecd41"}
+{"timestamp": "2025-10-26T18:18:14.125413", "bot_id": null, "role": "assistant", "content": "Message 3", "session_id": "a6f6150f-ebc0-476e-8087-f8af9ddecd41"}
+{"timestamp": "2025-10-26T18:18:14.170400", "bot_id": null, "role": "user", "content": "Message 4", "session_id": "a6f6150f-ebc0-476e-8087-f8af9ddecd41"}
+{"timestamp": "2025-10-26T18:18:14.196337", "bot_id": null, "role": "assistant", "content": "Message 5", "session_id": "a6f6150f-ebc0-476e-8087-f8af9ddecd41"}
+{"timestamp": "2025-10-26T18:18:14.247700", "bot_id": null, "role": "user", "content": "Message 6", "session_id": "a6f6150f-ebc0-476e-8087-f8af9ddecd41"}
+{"timestamp": "2025-10-26T18:18:14.260463", "bot_id": null, "role": "assistant", "content": "Message 7", "session_id": "a6f6150f-ebc0-476e-8087-f8af9ddecd41"}
+{"timestamp": "2025-10-26T18:18:14.272574", "bot_id": null, "role": "user", "content": "Message 8", "session_id": "a6f6150f-ebc0-476e-8087-f8af9ddecd41"}
+{"timestamp": "2025-10-26T18:18:14.283302", "bot_id": null, "role": "assistant", "content": "Message 9", "session_id": "a6f6150f-ebc0-476e-8087-f8af9ddecd41"}
+{"timestamp": "2025-10-26T18:18:14.301160", "bot_id": null, "role": "user", "content": "Message 10", "session_id": "a6f6150f-ebc0-476e-8087-f8af9ddecd41"}
+{"timestamp": "2025-10-26T18:18:14.317363", "bot_id": null, "role": "assistant", "content": "Message 11", "session_id": "a6f6150f-ebc0-476e-8087-f8af9ddecd41"}
+{"timestamp": "2025-10-26T18:18:14.342042", "bot_id": null, "role": "user", "content": "Message 12", "session_id": "a6f6150f-ebc0-476e-8087-f8af9ddecd41"}
+{"timestamp": "2025-10-26T18:18:14.379700", "bot_id": null, "role": "assistant", "content": "Message 13", "session_id": "a6f6150f-ebc0-476e-8087-f8af9ddecd41"}
+{"timestamp": "2025-10-26T18:18:14.411670", "bot_id": null, "role": "user", "content": "Message 14", "session_id": "a6f6150f-ebc0-476e-8087-f8af9ddecd41"}
+{"timestamp": "2025-10-26T18:21:42.168077", "bot_id": "bot-msg-test", "role": "user", "content": "Test message", "session_id": "c41a0079-eede-4ada-94a8-389b5dab0ac6"}
+{"timestamp": "2025-10-26T18:21:42.208434", "bot_id": "bot-test", "role": "user", "content": "Message in Session 1", "session_id": "8784b8c5-9a89-46b6-be97-87661053a5c1"}
+{"timestamp": "2025-10-26T18:21:42.219534", "bot_id": "bot-test", "role": "user", "content": "Message in Session 2", "session_id": "00289793-feb2-4c05-998d-f7666eea5835"}
+{"timestamp": "2025-10-26T18:21:42.272144", "bot_id": "bot-fcd1239b-8969-44f1-a720-a2992bf95da7", "role": "user", "content": "Bot-specific message", "session_id": null}
+{"timestamp": "2025-10-26T18:21:42.401227", "bot_id": "bot-dual-test", "role": "user", "content": "Dual-filter message", "session_id": "2cc5eb7d-8880-4198-ae74-f93cd8fb10a5"}
+{"timestamp": "2025-10-26T18:21:42.519386", "bot_id": "bot-integration", "role": "user", "content": "Message 0", "session_id": "e52ed8cf-fbaf-4b11-839e-340a800fad51"}
+{"timestamp": "2025-10-26T18:21:42.532139", "bot_id": "bot-integration", "role": "assistant", "content": "Message 1", "session_id": "e52ed8cf-fbaf-4b11-839e-340a800fad51"}
+{"timestamp": "2025-10-26T18:21:42.542706", "bot_id": "bot-integration", "role": "user", "content": "Message 2", "session_id": "e52ed8cf-fbaf-4b11-839e-340a800fad51"}
+{"timestamp": "2025-10-26T18:21:42.644161", "bot_id": "bot-isolation", "role": "user", "content": "Unique message for session 0", "session_id": "c09fda9b-437a-4430-b8ec-8d19e6c7f53a"}
+{"timestamp": "2025-10-26T18:21:42.654689", "bot_id": "bot-isolation", "role": "user", "content": "Unique message for session 1", "session_id": "7376f481-c290-4b53-9d5d-539492b248ae"}
+{"timestamp": "2025-10-26T18:21:42.666442", "bot_id": "bot-isolation", "role": "user", "content": "Unique message for session 2", "session_id": "6d5ead28-5f8c-47fa-bed3-9f484b0182a0"}
+{"timestamp": "2025-10-26T18:21:42.801969", "bot_id": "bot-no-session", "role": "user", "content": "Message without session", "session_id": null}
+{"timestamp": "2025-10-26T18:21:42.855474", "bot_id": null, "role": "user", "content": "Message 0", "session_id": "1a4df729-a4cb-4596-b154-88a82097286f"}
+{"timestamp": "2025-10-26T18:21:42.871626", "bot_id": null, "role": "assistant", "content": "Message 1", "session_id": "1a4df729-a4cb-4596-b154-88a82097286f"}
+{"timestamp": "2025-10-26T18:21:42.887767", "bot_id": null, "role": "user", "content": "Message 2", "session_id": "1a4df729-a4cb-4596-b154-88a82097286f"}
+{"timestamp": "2025-10-26T18:21:42.896674", "bot_id": null, "role": "assistant", "content": "Message 3", "session_id": "1a4df729-a4cb-4596-b154-88a82097286f"}
+{"timestamp": "2025-10-26T18:21:42.910149", "bot_id": null, "role": "user", "content": "Message 4", "session_id": "1a4df729-a4cb-4596-b154-88a82097286f"}
+{"timestamp": "2025-10-26T18:21:42.923371", "bot_id": null, "role": "assistant", "content": "Message 5", "session_id": "1a4df729-a4cb-4596-b154-88a82097286f"}
+{"timestamp": "2025-10-26T18:21:42.960591", "bot_id": null, "role": "user", "content": "Message 6", "session_id": "1a4df729-a4cb-4596-b154-88a82097286f"}
+{"timestamp": "2025-10-26T18:21:42.983740", "bot_id": null, "role": "assistant", "content": "Message 7", "session_id": "1a4df729-a4cb-4596-b154-88a82097286f"}
+{"timestamp": "2025-10-26T18:21:43.000235", "bot_id": null, "role": "user", "content": "Message 8", "session_id": "1a4df729-a4cb-4596-b154-88a82097286f"}
+{"timestamp": "2025-10-26T18:21:43.013555", "bot_id": null, "role": "assistant", "content": "Message 9", "session_id": "1a4df729-a4cb-4596-b154-88a82097286f"}
+{"timestamp": "2025-10-26T18:21:43.026687", "bot_id": null, "role": "user", "content": "Message 10", "session_id": "1a4df729-a4cb-4596-b154-88a82097286f"}
+{"timestamp": "2025-10-26T18:21:43.041663", "bot_id": null, "role": "assistant", "content": "Message 11", "session_id": "1a4df729-a4cb-4596-b154-88a82097286f"}
+{"timestamp": "2025-10-26T18:21:43.060773", "bot_id": null, "role": "user", "content": "Message 12", "session_id": "1a4df729-a4cb-4596-b154-88a82097286f"}
+{"timestamp": "2025-10-26T18:21:43.073248", "bot_id": null, "role": "assistant", "content": "Message 13", "session_id": "1a4df729-a4cb-4596-b154-88a82097286f"}
+{"timestamp": "2025-10-26T18:21:43.104801", "bot_id": null, "role": "user", "content": "Message 14", "session_id": "1a4df729-a4cb-4596-b154-88a82097286f"}
+{"timestamp": "2025-10-26T18:39:31.789133", "bot_id": null, "role": "assistant", "content": "\u2713 Bot BOT-005 launched successfully", "session_id": null}
+{"timestamp": "2025-10-26T18:39:35.258249", "bot_id": "BOT-005", "role": "assistant", "content": "Connected to BOT-005. Ready for commands.", "session_id": null}
+{"timestamp": "2025-10-26T18:39:40.602107", "bot_id": "BOT-005", "role": "user", "content": "heloo", "session_id": null}
+{"timestamp": "2025-10-26T18:39:42.706395", "bot_id": "BOT-005", "role": "assistant", "content": "BOT-005: [Offline] heloo", "session_id": null}
+{"timestamp": "2025-10-26T18:39:47.144971", "bot_id": "BOT-005", "role": "assistant", "content": "\u2713 Bot UAT-TEST stopped", "session_id": null}
+{"timestamp": "2025-10-26T18:39:50.264301", "bot_id": "BOT-005", "role": "assistant", "content": "\u2713 Bot BOT-005 stopped", "session_id": null}
+{"timestamp": "2025-10-26T18:41:29.715848", "bot_id": null, "role": "assistant", "content": "\u2713 Bot BOT-005 launched successfully", "session_id": null}
+{"timestamp": "2025-10-26T18:41:34.312217", "bot_id": "BOT-005", "role": "assistant", "content": "Connected to BOT-005. Ready for commands.", "session_id": null}
+{"timestamp": "2025-10-26T18:41:39.540980", "bot_id": "BOT-005", "role": "user", "content": "hekoo", "session_id": null}
+{"timestamp": "2025-10-26T18:41:41.578820", "bot_id": "BOT-005", "role": "assistant", "content": "BOT-005: [Offline] hekoo", "session_id": null}
+{"timestamp": "2025-10-26T18:41:45.661487", "bot_id": "BOT-005", "role": "assistant", "content": "\u2713 Bot BOT-005 stopped", "session_id": null}
+{"timestamp": "2025-10-26T18:45:48.824643", "bot_id": null, "role": "assistant", "content": "\u2713 Bot BOT-444 launched successfully", "session_id": null}
+{"timestamp": "2025-10-26T18:45:54.242040", "bot_id": "BOT-444", "role": "assistant", "content": "Connected to BOT-444. Ready for commands.", "session_id": null}
+{"timestamp": "2025-10-26T18:46:02.829366", "bot_id": "BOT-444", "role": "user", "content": "Help!!!", "session_id": null}
+{"timestamp": "2025-10-26T18:46:04.929887", "bot_id": "BOT-444", "role": "assistant", "content": "BOT-444: [Offline] Help!!!", "session_id": null}
+{"timestamp": "2025-10-26T18:46:12.940082", "bot_id": "BOT-444", "role": "assistant", "content": "\u2713 Bot BOT-444 stopped", "session_id": null}

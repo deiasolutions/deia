@@ -1,0 +1,30 @@
+{
+  "agent_type": "DQN",
+  "description": "Deep Q-Network optimized for 1-hour training session",
+  "training_parameters": {
+    "total_timesteps": 100000,
+    "learning_rate": 0.001,
+    "buffer_size": 100000,
+    "batch_size": 64,
+    "gamma": 0.99,
+    "tau": 1.0,
+    "learning_starts": 1000,
+    "train_freq": 4,
+    "gradient_steps": 1,
+    "target_update_interval": 1000,
+    "exploration_initial_eps": 1.0,
+    "exploration_final_eps": 0.01,
+    "exploration_fraction": 0.1
+  },
+  "network": {
+    "type": "MlpPolicy",
+    "architecture": [128, 64]
+  },
+  "evaluation": {
+    "n_episodes": 10,
+    "eval_freq": 10000,
+    "deterministic": true
+  },
+  "device": "auto",
+  "notes": "Optimized configuration for achieving training in ~40 minutes with strong performance target (score > 50)"
+}

@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/.sandbox/**)",
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/.deia/sessions/**)",
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/.deia/hive/responses/deiasolutions/**)",
+      "Bash(cat:*)",
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/**)",
+      "Bash(python training/train_dqn_optimized.py:*)",
+      "Bash(xargs:*)",
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/.sandbox/flappy-bird-ai/**)",
+      "Bash(python train_ppo.py:*)",
+      "Bash(python:*)",
+      "Bash(python -c:*)",
+      "Bash(timeout 30 python:*)",
+      "Bash(if [ -f \"Bot_B/worktest002-Bot_B/training/training_output.log\" ])",
+      "Bash(then tail -30 \"Bot_B/worktest002-Bot_B/training/training_output.log\")",
+      "Bash(else echo \"Log not yet available\")",
+      "Bash(fi)",
+      "Bash(while [ ! -f \"Bot_B/worktest002-Bot_B/results/scores.csv\" ])",
+      "Bash(do sleep 30)",
+      "Bash(done)",
+      "Bash(if [ -f \"Bot_B/worktest002-Bot_B/results/scores.csv\" ])",
+      "Bash(then echo \"COMPLETE!\")",
+      "Bash(else echo \"Still training...\")",
+      "Bash(ls:*)",
+      "Bash(timeout 1200 python train_ppo_optimized.py)",
+      "Bash(tee:*)",
+      "Bash(timeout 300 python:*)",
+      "Bash(python3:*)",
+      "Bash(dir:*)",
+      "Bash(rm:*)",
+      "Bash(timeout 3600 python:*)",
+      "Bash(tree:*)",
+      "Bash(test:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

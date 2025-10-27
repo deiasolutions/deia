@@ -1,91 +1,90 @@
 """
-Service Factory - Creates appropriate service instances based on bot type
+Service Factory - Create LLM service instances by type.
 
-This factory handles creating LLM services (API-based) and CLI adapters based on the
-specified bot_type. It centralizes service creation logic.
+Maps bot_type to service class/adapter and handles initialization.
 """
 
-import logging
+from __future__ import annotations
+
+import os
+from enum import Enum
 from pathlib import Path
 from typing import Optional, Union
 
-logger = logging.getLogger(__name__)
+from deia.services.llm_service import AnthropicService, OpenAIService, OllamaService
+from deia.adapters.claude_code_cli_adapter import ClaudeCodeCLIAdapter
+from deia.adapters.codex_cli_adapter import CodexCLIAdapter
+
+
+class BotType(str, Enum):
+    CLAUDE = "claude"
+    CHATGPT = "chatgpt"
+    CLAUDE_CODE = "claude-code"
+    CODEX = "codex"
+    LLAMA = "llama"
+
+
+ServiceReturnType = Union[
+    AnthropicService,
+    OpenAIService,
+    OllamaService,
+    ClaudeCodeCLIAdapter,
+    CodexCLIAdapter,
+]
 
 
 class ServiceFactory:
-    """Factory for creating LLM services and CLI adapters."""
-
-    # CLI service types
-    CLI_SERVICES = {'claude-code', 'codex'}
-    
-    # API service types
-    API_SERVICES = {'claude', 'chatgpt', 'llama', 'deepseek', 'ollama'}
-    
-    ALL_SERVICES = CLI_SERVICES | API_SERVICES
+    """Factory for creating bot services/adapters."""
 
     @staticmethod
-    def get_supported_types():
-        """Get list of supported bot types."""
-        return sorted(list(ServiceFactory.ALL_SERVICES))
+    def get_service(
+        bot_type: str,
+        bot_id: str,
+        work_dir: Optional[Path] = None,
+    ) -> ServiceReturnType:
+        bot_type = bot_type.lower().strip()
+
+        if bot_type == BotType.CLAUDE:
+            api_key = os.getenv("ANTHROPIC_API_KEY")
+            if not api_key:
+                raise ValueError("ANTHROPIC_API_KEY not set for claude bot type")
+            return AnthropicService(api_key=api_key)
+
+        if bot_type == BotType.CHATGPT:
+            api_key = os.getenv("OPENAI_API_KEY")
+            if not api_key:
+                raise ValueError("OPENAI_API_KEY not set for chatgpt bot type")
+            return OpenAIService(api_key=api_key)
+
+        if bot_type == BotType.LLAMA:
+            return OllamaService(model="qwen2.5-coder:7b")
+
+        if bot_type == BotType.CLAUDE_CODE:
+            base_dir = work_dir or Path.cwd()
+            return ClaudeCodeCLIAdapter(
+                bot_id=bot_id,
+                work_dir=base_dir,
+                claude_cli_path=os.getenv("CLAUDE_CLI_PATH", "claude"),
+            )
+
+        if bot_type == BotType.CODEX:
+            base_dir = work_dir or Path.cwd()
+            return CodexCLIAdapter(
+                bot_id=bot_id,
+                work_dir=base_dir,
+                codex_cli_path=os.getenv("CODEX_CLI_PATH", "codex"),
+            )
+
+        raise ValueError(
+            f"Unknown bot_type '{bot_type}'. "
+            f"Supported: {', '.join(t.value for t in BotType)}"
+        )
 
     @staticmethod
     def is_cli_service(bot_type: str) -> bool:
-        """Check if bot type is a CLI service."""
-        return bot_type in ServiceFactory.CLI_SERVICES
+        bot_type = bot_type.lower().strip()
+        return bot_type in {BotType.CLAUDE_CODE, BotType.CODEX}
 
     @staticmethod
-    def is_api_service(bot_type: str) -> bool:
-        """Check if bot type is an API service."""
-        return bot_type in ServiceFactory.API_SERVICES
-
-    @staticmethod
-    def get_service(bot_type: str, bot_id: str, work_dir: Optional[Union[str, Path]] = None):
-        """
-        Create and return appropriate service for bot type.
-        
-        Args:
-            bot_type: Type of bot ('claude', 'chatgpt', 'claude-code', 'codex', 'llama')
-            bot_id: ID of the bot instance
-            work_dir: Working directory (required for CLI services)
-            
-        Returns:
-            Service instance (LLM service or CLI adapter)
-            
-        Raises:
-            ValueError: If bot_type is not supported
-        """
-        if bot_type not in ServiceFactory.ALL_SERVICES:
-            raise ValueError(f"Unsupported bot type: {bot_type}")
-
-        # CLI Services
-        if bot_type == 'claude-code':
-            from deia.adapters.claude_code_cli_adapter import ClaudeCodeCLIAdapter
-            if work_dir is None:
-                work_dir = Path.cwd()
-            return ClaudeCodeCLIAdapter(bot_id=bot_id, work_dir=Path(work_dir))
-        
-        elif bot_type == 'codex':
-            from deia.adapters.codex_cli_adapter import CodexCLIAdapter
-            if work_dir is None:
-                work_dir = Path.cwd()
-            return CodexCLIAdapter(bot_id=bot_id, work_dir=Path(work_dir))
-        
-        # API Services
-        elif bot_type == 'claude':
-            from deia.services.llm_service import AnthropicService
-            return AnthropicService()
-        
-        elif bot_type == 'chatgpt':
-            from deia.services.llm_service import OpenAIService
-            return OpenAIService()
-        
-        elif bot_type in ('llama', 'ollama'):
-            from deia.services.llm_service import OllamaService
-            return OllamaService()
-        
-        elif bot_type == 'deepseek':
-            from deia.services.llm_service import DeepSeekService
-            return DeepSeekService()
-        
-        else:
-            raise ValueError(f"No implementation for bot type: {bot_type}")
+    def get_supported_types() -> list[str]:
+        return [t.value for t in BotType]

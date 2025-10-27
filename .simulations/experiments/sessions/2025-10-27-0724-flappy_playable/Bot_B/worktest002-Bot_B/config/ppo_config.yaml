@@ -1,0 +1,74 @@
+# PPO Configuration for Flappy Bird
+# Designed by: Bot B1 (Architect)
+# Date: 2025-10-27
+# Based on: ARCHITECTURE.md
+
+# Algorithm: Proximal Policy Optimization (PPO)
+# Goal: Balance convergence speed and final performance for 1-hour training session
+
+algorithm: "PPO"
+env_name: "FlappyBird-v0"
+
+# ==================== CORE HYPERPARAMETERS ====================
+
+# Learning rate for policy and value function optimization
+learning_rate: 0.0008  # IMPROVED: Was 0.0003 - more aggressive learning
+
+# Number of steps to collect before performing updates
+n_steps: 2048
+
+# Mini-batch size for gradient updates
+batch_size: 64
+
+# Number of epochs to perform on collected data
+n_epochs: 15  # IMPROVED: Was 10 - more iterations per batch
+
+# Discount factor (gamma) - emphasize long-term rewards
+gamma: 0.995  # IMPROVED: Was 0.99 - slightly longer horizon
+
+# GAE (Generalized Advantage Estimation) lambda parameter
+gae_lambda: 0.95
+
+# PPO clipping parameter - controls policy update magnitude
+clip_range: 0.3  # IMPROVED: Was 0.2 - allow more aggressive updates
+
+# ==================== LOSS WEIGHTS ====================
+
+# Weight for value function loss (critic)
+vf_coef: 0.5
+
+# Entropy coefficient (exploration bonus)
+ent_coef: 0.05  # IMPROVED: Was 0.01 - more exploration
+
+# ==================== TRAINING ====================
+
+# Total timesteps to train
+total_timesteps: 500000
+
+# Checkpoint frequency (save model every N steps)
+checkpoint_interval: 50000
+
+# Number of evaluation episodes
+n_eval_episodes: 10
+
+# Random seed for reproducibility
+seed: 42
+
+# ==================== NOTES ====================
+
+# These hyperparameters are tuned for:
+# 1. Fast convergence (500k steps ~ 20-30 min training time)
+# 2. Stable policy updates (conservative clip_range)
+# 3. Exploration-exploitation balance (ent_coef for exploration)
+
+# B2: Feel free to adjust these values if you discover:
+# - Training converging too slowly (increase learning_rate slightly)
+# - Training unstable (decrease learning_rate or clip_range)
+# - Agent not exploring enough (increase ent_coef)
+# - Training plateauing (reduce learning_rate, increase n_epochs)
+
+# Key decision rationale from B1:
+# - learning_rate 0.0003: Conservative to prevent overshooting
+# - clip_range 0.2: PPO's core stability mechanism
+# - gamma 0.99: Long-horizon perspective (good for game skill development)
+# - n_steps 2048: Good GPU/CPU balance for this environment size

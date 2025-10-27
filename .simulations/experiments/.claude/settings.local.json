@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/.deia/hive/tasks/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

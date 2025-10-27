@@ -78,9 +78,61 @@ if not HTML_FILE.exists():
     # Fallback to looking in current directory
     HTML_FILE = Path("chat_interface.html")
 
+def spawn_bot_process(bot_id: str, adapter_type: str = "api") -> Optional[int]:
+    """
+    Spawn a bot process using run_single_bot.py.
+
+    Args:
+        bot_id: Bot ID to spawn
+        adapter_type: Adapter type (api, cli, sdk, mock)
+
+    Returns:
+        PID of spawned process, or None if spawn failed
+    """
+    try:
+        # Get the project root directory
+        project_root = Path(__file__).parent.parent.parent  # From src/deia/services/ to root
+        script_path = project_root / "run_single_bot.py"
+
+        if not script_path.exists():
+            logger.error(f"run_single_bot.py not found at {script_path}")
+            return None
+
+        # Prepare command
+        cmd = [sys.executable, str(script_path), bot_id, "--adapter-type", adapter_type]
+
+        logger.info(f"Spawning bot process: {' '.join(cmd)}")
+
+        # Spawn process with platform-specific options
+        if sys.platform == "win32":
+            # Windows: Use CREATE_NEW_PROCESS_GROUP for proper isolation
+            process = subprocess.Popen(
+                cmd,
+                creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+        else:
+            # Unix/macOS: Standard Popen
+            process = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+
+        pid = process.pid
+        logger.info(f"Bot process spawned for {bot_id}: PID {pid}")
+        return pid
+
+    except Exception as e:
+        logger.error(f"Failed to spawn bot process for {bot_id}: {e}")
+        return None
+
 async def call_bot_task(bot_id: str, command: str) -> Dict:
     """
-    Call the bot's task endpoint by making an HTTP request.
+    Call the bot's task endpoint by making an HTTP request to its assigned port.
 
     Args:
         bot_id: Bot ID to send task to
@@ -90,8 +142,15 @@ async def call_bot_task(bot_id: str, command: str) -> Dict:
         Response from task endpoint
     """
     try:
-        # Call the task endpoint via HTTP
-        url = f"http://localhost:8000/api/bot/{bot_id}/task"
+        # Get bot info to find its assigned port
+        bot_info = service_registry.get_bot(bot_id)
+        if not bot_info:
+            return {"success": False, "error": f"Bot {bot_id} not found in registry"}
+
+        bot_port = bot_info.get("port", 8000)
+
+        # Call the task endpoint via HTTP on the bot's assigned port
+        url = f"http://localhost:{bot_port}/api/bot/{bot_id}/task"
         response = requests.post(
             url,
             json={"command": command},
@@ -99,7 +158,7 @@ async def call_bot_task(bot_id: str, command: str) -> Dict:
         )
         return response.json()
     except Exception as e:
-        logger.error(f"Error calling bot task: {e}")
+        logger.error(f"Error calling bot task on {bot_id}: {e}")
         return {"success": False, "error": str(e)}
 
 @app.websocket("/ws")
@@ -549,24 +608,91 @@ async def launch_bot(request: BotLaunchRequest):
         # Assign port
         port = service_registry.assign_port(bot_id)
 
-        # Register bot in registry with type metadata
-        # Stores bot_type in metadata for later service selection
+        # Spawn the bot process using run_single_bot.py
+        # Map bot_type to adapter_type (use api for API-based services, cli for CLI adapters)
+        adapter_type_map = {
+            "claude": "api",
+            "chatgpt": "api",
+            "claude-code": "cli",
+            "codex": "cli",
+            "llama": "api"
+        }
+        adapter_type = adapter_type_map.get(bot_type, "api")
+
+        logger.info(f"Spawning bot process for {bot_id} ({bot_type}) on port {port}...")
+        pid = spawn_bot_process(bot_id, adapter_type)
+
+        if pid is None:
+            # Failed to spawn process
+            return {
+                "success": False,
+                "error": f"Failed to spawn bot process for {bot_id}",
+                "timestamp": datetime.now().isoformat()
+            }
+
+        # Register bot in registry with type metadata and PID
         service_registry.register(
             bot_id,
             port,
-            status="ready",
-            pid=-1,  # -1 indicates mock/managed bot
-            metadata={"bot_type": bot_type}
+            status="starting",
+            pid=pid,
+            metadata={"bot_type": bot_type, "adapter_type": adapter_type}
         )
 
-        logger.info(f"Bot {bot_id} ({bot_type}) registered on port {port}")
+        logger.info(f"Bot {bot_id} ({bot_type}) spawned with PID {pid} on port {port}")
+
+        # Poll for health check (wait a few seconds for bot to be ready)
+        max_retries = 10
+        for attempt in range(max_retries):
+            try:
+                import asyncio
+                await asyncio.sleep(0.5)  # Wait 500ms before checking
+
+                health_url = f"http://localhost:{port}/health"
+                response = requests.get(health_url, timeout=2)
+
+                if response.status_code == 200:
+                    # Bot is healthy and running
+                    service_registry.register(
+                        bot_id,
+                        port,
+                        status="ready",
+                        pid=pid,
+                        metadata={"bot_type": bot_type, "adapter_type": adapter_type}
+                    )
+                    logger.info(f"Bot {bot_id} health check passed (attempt {attempt + 1}/{max_retries})")
+
+                    return {
+                        "success": True,
+                        "bot_id": bot_id,
+                        "bot_type": bot_type,
+                        "port": port,
+                        "pid": pid,
+                        "message": f"Bot {bot_type} launched and ready",
+                        "timestamp": datetime.now().isoformat()
+                    }
+            except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+                if attempt < max_retries - 1:
+                    continue
+                # Last attempt, timeout
+
+        # Health check failed after retries
+        logger.warning(f"Bot {bot_id} health check failed after {max_retries} attempts")
+        # Keep the bot registered but mark as degraded
+        service_registry.register(
+            bot_id,
+            port,
+            status="unhealthy",
+            pid=pid,
+            metadata={"bot_type": bot_type, "adapter_type": adapter_type}
+        )
 
         return {
-            "success": True,
+            "success": False,
+            "error": f"Bot {bot_id} spawned but failed health check",
             "bot_id": bot_id,
-            "bot_type": bot_type,
             "port": port,
-            "message": f"Bot {bot_type} launched and ready",
+            "pid": pid,
             "timestamp": datetime.now().isoformat()
         }
 

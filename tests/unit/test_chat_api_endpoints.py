@@ -63,17 +63,19 @@ class TestLaunchBotEndpoint:
         with patch.object(service_registry, 'check_duplicate_bot', return_value=False):
             with patch.object(service_registry, 'assign_port', return_value=8001):
                 with patch.object(service_registry, 'register', return_value=True):
-                    with patch('subprocess.Popen') as mock_popen:
-                        mock_process = MagicMock()
-                        mock_process.pid = 12345
-                        mock_popen.return_value = mock_process
+                    with patch('deia.services.chat_interface_app.spawn_bot_process', return_value=12345):
+                        with patch('requests.get') as mock_get:
+                            mock_response = MagicMock()
+                            mock_response.status_code = 200
+                            mock_get.return_value = mock_response
 
-                        response = client.post("/api/bot/launch", json=request_data)
-                        assert response.status_code == 200
-                        data = response.json()
-                        assert data["success"] is True
-                        assert data["bot_id"] == "BOT-001"
-                        assert data["port"] == 8001
+                            response = client.post("/api/bot/launch", json=request_data)
+                            assert response.status_code == 200
+                            data = response.json()
+                            assert data["success"] is True
+                            assert data["bot_id"] == "BOT-001"
+                            assert data["port"] == 8001
+                            assert data["pid"] == 12345
 
     def test_launch_bot_duplicate(self):
         """Test launching a bot that's already running"""

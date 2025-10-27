@@ -1,0 +1,44 @@
+{
+  "training_config": {
+    "total_timesteps": 100000,
+    "learning_rate": 0.001,
+    "buffer_size": 100000,
+    "batch_size": 64,
+    "gamma": 0.99,
+    "tau": 1.0,
+    "learning_starts": 1000,
+    "train_freq": 4,
+    "gradient_steps": 1,
+    "target_update_interval": 1000,
+    "exploration_fraction": 0.1,
+    "exploration_initial_eps": 1.0,
+    "exploration_final_eps": 0.01,
+    "network_architecture": [
+      128,
+      64
+    ],
+    "eval_episodes": 10,
+    "eval_freq": 10000,
+    "device": "cpu"
+  },
+  "evaluation_stats": {
+    "n_episodes": 10,
+    "mean_score": 0.0,
+    "std_score": 0.0,
+    "max_score": 0.0,
+    "min_score": 0.0,
+    "scores": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "timestamp": "2025-10-27T13:46:38"
+}

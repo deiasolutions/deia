@@ -119,6 +119,18 @@ When using DEIA patterns:
 - Share back: Improvements and learnings
 - Respect: Licenses and legal boundaries
 
+### Platform Compliance
+
+We build for everyone, not just whatever box happens to be on our desk.
+
+**We commit to:**
+- Treating Windows, macOS, and Linux/Unix as first-class targets for every feature.
+- Designing automation (process launches, signal handling, file ops) with cross-platform abstractions from the start.
+- Verifying behavior on each OS before we call work “done”; if verification truly isn’t possible, we log that explicitly and escalate.
+- Avoiding OS-specific hacks unless guarded with clear fallbacks.
+
+**Why:** Real users run DEIA on PCs, Macs, and servers. Shipping code that only works on one platform just hands them blockers and undermines trust.
+
 ---
 
 ## Boundaries

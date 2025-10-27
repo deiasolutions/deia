@@ -11,3 +11,6 @@
 {"timestamp": "2025-10-26T13:49:54.846226", "action": "registered", "bot_id": "BOT-001", "details": {"port": 8025, "pid": -1}}
 {"timestamp": "2025-10-26T13:51:35.079610", "action": "registered", "bot_id": "BOT-002", "details": {"port": 8217, "pid": -1}}
 {"timestamp": "2025-10-26T13:57:58.488184", "action": "registered", "bot_id": "BOT-999", "details": {"port": 8118, "pid": -1}}
+{"timestamp": "2025-10-26T19:03:27.823533", "action": "registered", "bot_id": "BOT-067", "details": {"port": 8891, "pid": -1}}
+{"timestamp": "2025-10-26T19:17:56.227633", "action": "unregistered", "bot_id": "BOT-067", "details": {"port": 8891}}
+{"timestamp": "2025-10-26T19:28:54.928959", "action": "registered", "bot_id": "BOT-013", "details": {"port": 8213, "pid": -1}}
