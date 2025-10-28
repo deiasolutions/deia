@@ -1,0 +1,12 @@
+{
+  "bot_id": "BOT-TEST-CLI",
+  "start_time": "2025-10-27T20:50:24.998229",
+  "events_logged": 1,
+  "tasks_received": 0,
+  "tasks_completed": 0,
+  "tasks_failed": 0,
+  "total_task_duration": 0.0,
+  "errors": 0,
+  "warnings": 0,
+  "last_updated": "2025-10-27T20:50:32.667781"
+}

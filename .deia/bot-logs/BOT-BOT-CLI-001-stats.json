@@ -1,0 +1,12 @@
+{
+  "bot_id": "BOT-CLI-001",
+  "start_time": "2025-10-27T20:36:57.401510",
+  "events_logged": 1,
+  "tasks_received": 0,
+  "tasks_completed": 0,
+  "tasks_failed": 0,
+  "total_task_duration": 0.0,
+  "errors": 0,
+  "warnings": 0,
+  "last_updated": "2025-10-27T20:37:11.517006"
+}

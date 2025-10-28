@@ -41,7 +41,16 @@
       "Bash(netstat:*)",
       "Bash(ss:*)",
       "Bash(tasklist:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(taskkill /PID 22896 /F)",
+      "Bash(taskkill /PID 4900 /F)",
+      "Bash(taskkill:*)",
+      "Bash(wmic process where name=\"python.exe\" delete /nointeractive)",
+      "Bash(for pid in 24964 22896 4900 50000 53856)",
+      "Bash(do kill -9 $pid)",
+      "Bash(powershell:*)",
+      "Bash(timeout 10 python:*)"
     ],
     "deny": [],
     "ask": []
