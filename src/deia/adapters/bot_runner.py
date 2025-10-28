@@ -10,15 +10,21 @@ from pathlib import Path
 from datetime import datetime
 import time
 import json
+import asyncio
+import threading
+import logging
 
 from .claude_code_adapter import ClaudeCodeAdapter, parse_task_file, write_response_file
 from .claude_code_cli_adapter import ClaudeCodeCLIAdapter
 from .claude_sdk_adapter import ClaudeSDKAdapter
 from .mock_bot_adapter import MockBotAdapter
+from .bot_http_server import create_bot_http_server
 from ..services.bot_service import BotService
 from ..services.registry import ServiceRegistry
 from ..services.bot_activity_logger import BotActivityLogger, EventType
 from ..services.bot_shutdown_handler import GracefulShutdownHandler
+
+logger = logging.getLogger(__name__)
 
 
 class BotRunner:
@@ -45,7 +51,8 @@ class BotRunner:
         adapter_type: str = "api",
         platform_config: Optional[Dict[str, Any]] = None,
         task_cooldown_seconds: int = 10,
-        comm_mode: str = "cli-only"
+        comm_mode: str = "cli-only",
+        port: Optional[int] = None
     ):
         """
         Initialize bot runner.
@@ -114,6 +121,7 @@ class BotRunner:
         # Initialize service layer
         self.registry = ServiceRegistry()
         self.port = self.registry.assign_port(bot_id)
+        self.http_port = port  # Store provided HTTP port (separate from bot service port)
         self.service = BotService(bot_id=bot_id, port=self.port, work_dir=work_dir)
         self.service_started = False
 
@@ -127,6 +135,12 @@ class BotRunner:
         )
         # Register callback to clean up on shutdown
         self.shutdown_handler.register_shutdown_callback(self.stop)
+
+        # Initialize HTTP server for WebSocket/API support
+        self.http_server = None
+        self.http_server_thread = None
+        self.websocket_queue = asyncio.Queue(maxsize=100)
+        self.http_server_instance = None
 
     def start(self) -> bool:
         """
@@ -153,7 +167,13 @@ class BotRunner:
             # Register in service registry
             self.registry.register(self.bot_id, self.port)
 
+            # Start HTTP server if port provided
+            if self.http_port:
+                self._start_http_server()
+
             self._log(f"Bot runner started: {self.bot_id} ({self.adapter_type}) on port {self.port}")
+            if self.http_port:
+                self._log(f"HTTP server listening on port {self.http_port}")
 
             # Log startup event
             self.activity_logger.log_startup(self.adapter_type)
@@ -222,34 +242,59 @@ class BotRunner:
         if self.service_started:
             self.service.update_status("idle")
 
-        # Find next task
-        task_file = self._find_next_task()
-
-        if not task_file:
-            return {
-                "task_found": False,
-                "task_executed": False,
-                "task_id": None,
-                "success": None,
-                "error": None
-            }
-
-        # Parse task
+        # Check WebSocket queue FIRST (priority) - non-blocking
+        websocket_task = None
         try:
-            task = parse_task_file(task_file)
-        except Exception as e:
-            self._log(f"Failed to parse task {task_file.name}: {e}")
-            self.activity_logger.log_task_failed(
-                task_id=task_file.stem,
-                error_message=f"Task parse error: {str(e)}"
-            )
-            return {
-                "task_found": True,
-                "task_executed": False,
-                "task_id": task_file.stem,
-                "success": False,
-                "error": f"Task parse error: {str(e)}"
+            websocket_task = self.http_server_instance.get_next_websocket_task() if self.http_server_instance else None
+        except:
+            websocket_task = None
+
+        task_file = None
+        source = "file"  # Default source tag
+
+        if websocket_task:
+            # WebSocket task has priority
+            task_id = websocket_task.get("task_id")
+            content = websocket_task.get("command")
+            source = "websocket"
+            self._log(f"Found WebSocket task: {task_id}")
+
+            # Create a minimal task dict
+            task = {
+                "task_id": task_id,
+                "content": content,
+                "from": "user",
+                "priority": "P0"
             }
+        else:
+            # Fall back to file queue
+            task_file = self._find_next_task()
+
+            if not task_file:
+                return {
+                    "task_found": False,
+                    "task_executed": False,
+                    "task_id": None,
+                    "success": None,
+                    "error": None
+                }
+
+            # Parse file task
+            try:
+                task = parse_task_file(task_file)
+            except Exception as e:
+                self._log(f"Failed to parse task {task_file.name}: {e}")
+                self.activity_logger.log_task_failed(
+                    task_id=task_file.stem,
+                    error_message=f"Task parse error: {str(e)}"
+                )
+                return {
+                    "task_found": True,
+                    "task_executed": False,
+                    "task_id": task_file.stem,
+                    "success": False,
+                    "error": f"Task parse error: {str(e)}"
+                }
 
         # Log task started
         task_id = task["task_id"]
@@ -267,14 +312,19 @@ class BotRunner:
         result = self.adapter.send_task(task["content"])
         duration = time.time() - start_time
 
-        # Write response
+        # Write response with tagging (source + timestamp)
         try:
+            # Add source and timestamp tags to result
+            tagged_result = dict(result)  # Copy result
+            tagged_result["source"] = source  # Add source tag (file or websocket)
+            tagged_result["timestamp"] = datetime.utcnow().isoformat() + "Z"  # Add ISO timestamp
+
             response_file = write_response_file(
                 response_dir=self.response_dir,
                 from_bot=self.bot_id,
                 to_bot=task["from"],
                 task_id=task_id,
-                result=result
+                result=tagged_result
             )
             self._log(f"Response written: {response_file.name}")
 
@@ -369,6 +419,12 @@ class BotRunner:
         if self.session_started:
             self.adapter.stop_session()
             self.session_started = False
+
+        # Stop HTTP server if running
+        if self.http_server_thread and self.http_server_thread.is_alive():
+            self._log("Stopping HTTP server...")
+            # HTTP server will be cleaned up when thread terminates
+            # (daemon thread will be killed when main process exits)
 
         # Stop HTTP service and unregister from registry
         if self.service_started:
@@ -468,6 +524,49 @@ class BotRunner:
             time.sleep(1)
 
         print(f"[{self.bot_id}] Proceeding to next task" + " " * 20)
+
+    def _start_http_server(self) -> bool:
+        """
+        Start HTTP server in background thread.
+
+        Returns:
+            True if started successfully
+        """
+        try:
+            import uvicorn
+
+            # Create FastAPI app and server instance
+            self.http_server, self.http_server_instance = create_bot_http_server(
+                bot_id=self.bot_id,
+                port=self.http_port,
+                bot_runner=self
+            )
+
+            # Create async function to run server
+            async def run_server():
+                config = uvicorn.Config(
+                    app=self.http_server,
+                    host="0.0.0.0",
+                    port=self.http_port,
+                    log_level="info"
+                )
+                server = uvicorn.Server(config)
+                await server.serve()
+
+            # Run server in background thread
+            def thread_target():
+                asyncio.run(run_server())
+
+            self.http_server_thread = threading.Thread(target=thread_target, daemon=True)
+            self.http_server_thread.start()
+
+            self._log(f"HTTP server started on port {self.http_port}")
+            return True
+
+        except Exception as e:
+            self._log(f"Failed to start HTTP server: {e}")
+            logger.error(f"HTTP server startup failed: {e}", exc_info=True)
+            return False
 
     def _log(self, message: str) -> None:
         """

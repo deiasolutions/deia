@@ -56,6 +56,12 @@ def main():
         choices=["cli-only", "websocket-only", "hybrid"],
         help="Communication mode: cli-only (file queue), websocket-only (chat), hybrid (both) (default: cli-only)"
     )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=None,
+        help="HTTP server port for WebSocket/API (optional, e.g., 8002)"
+    )
 
     args = parser.parse_args()
 
@@ -74,6 +80,8 @@ def main():
     print(f"[{args.bot_id}] Adapter: {args.adapter_type}")
     print(f"[{args.bot_id}] Cooldown: {args.cooldown}s")
     print(f"[{args.bot_id}] Health check interval: {args.health_check_interval}s")
+    if args.port:
+        print(f"[{args.bot_id}] HTTP server port: {args.port}")
 
     # Initialize health monitor
     health_monitor = BotHealthMonitor(
@@ -90,7 +98,8 @@ def main():
         response_dir=response_dir,
         adapter_type=args.adapter_type,
         task_cooldown_seconds=args.cooldown,
-        comm_mode=args.mode
+        comm_mode=args.mode,
+        port=args.port
     )
 
     # Start bot session
