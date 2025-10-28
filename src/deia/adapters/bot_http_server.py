@@ -9,13 +9,15 @@ Provides REST API and WebSocket endpoints for:
 """
 
 from fastapi import FastAPI, WebSocket, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 import asyncio
 import json
 import logging
 from datetime import datetime
 from typing import Optional, Dict, Any
 import uuid
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +39,16 @@ class BotHTTPServer:
 
     def _setup_routes(self):
         """Setup FastAPI routes."""
+
+        @self.app.get("/")
+        async def get_dashboard():
+            """Serve dashboard HTML"""
+            dashboard_file = Path(__file__).parent / "bot_dashboard.html"
+            if not dashboard_file.exists():
+                return HTMLResponse("<h1>Dashboard not found</h1>", status_code=404)
+
+            with open(dashboard_file, 'r') as f:
+                return HTMLResponse(f.read())
 
         @self.app.get("/status")
         async def get_status():
