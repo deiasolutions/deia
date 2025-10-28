@@ -165,6 +165,18 @@ class BotHTTPServer:
         except asyncio.TimeoutError:
             return None
 
+    def get_next_websocket_task_sync(self) -> Optional[Dict[str, Any]]:
+        """Get next task from WebSocket queue (non-blocking, synchronous).
+
+        This is a synchronous wrapper for calling from sync code.
+        Uses get_nowait() for true non-blocking behavior.
+        """
+        try:
+            task = self.websocket_queue.get_nowait()
+            return task
+        except asyncio.QueueEmpty:
+            return None
+
 
 def create_bot_http_server(bot_id: str, port: int, bot_runner=None):
     """Create FastAPI app for bot HTTP server."""

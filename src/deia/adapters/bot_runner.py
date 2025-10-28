@@ -245,7 +245,7 @@ class BotRunner:
         # Check WebSocket queue FIRST (priority) - non-blocking
         websocket_task = None
         try:
-            websocket_task = self.http_server_instance.get_next_websocket_task() if self.http_server_instance else None
+            websocket_task = self.http_server_instance.get_next_websocket_task_sync() if self.http_server_instance else None
         except:
             websocket_task = None
 
