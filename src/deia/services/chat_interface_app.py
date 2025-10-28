@@ -46,12 +46,50 @@ STATIC_DIR = Path(__file__).parent / "static"
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
-status_tracker = AgentStatusTracker()
-context_loader = DeiaContextLoader()
-agent_coordinator = AgentCoordinator(status_tracker, context_loader)
-service_registry = ServiceRegistry()
-chat_db = ChatDatabase()  # SQLite persistent chat history
-auth_service = AuthService()  # JWT authentication
+# Initialize services with error handling
+try:
+    logger.info("Initializing status tracker...")
+    status_tracker = AgentStatusTracker()
+except Exception as e:
+    logger.error(f"Failed to initialize AgentStatusTracker: {e}")
+    status_tracker = None
+
+try:
+    logger.info("Initializing context loader...")
+    context_loader = DeiaContextLoader()
+except Exception as e:
+    logger.error(f"Failed to initialize DeiaContextLoader: {e}")
+    context_loader = None
+
+try:
+    logger.info("Initializing agent coordinator...")
+    agent_coordinator = AgentCoordinator(status_tracker, context_loader) if status_tracker and context_loader else None
+except Exception as e:
+    logger.error(f"Failed to initialize AgentCoordinator: {e}")
+    agent_coordinator = None
+
+try:
+    logger.info("Initializing service registry...")
+    service_registry = ServiceRegistry()
+except Exception as e:
+    logger.error(f"Failed to initialize ServiceRegistry: {e}")
+    service_registry = None
+
+try:
+    logger.info("Initializing chat database...")
+    chat_db = ChatDatabase()  # SQLite persistent chat history
+except Exception as e:
+    logger.error(f"Failed to initialize ChatDatabase: {e}")
+    chat_db = None
+
+try:
+    logger.info("Initializing auth service...")
+    auth_service = AuthService()  # JWT authentication
+except Exception as e:
+    logger.error(f"Failed to initialize AuthService: {e}")
+    auth_service = None
+
+logger.info("Commander service initialization complete")
 
 # Legacy: chat_history dict is replaced by chat_db
 chat_history = {}
@@ -1058,6 +1096,12 @@ async def send_bot_task(bot_id: str, request: BotTaskRequest):
             "error": str(e),
             "timestamp": datetime.now().isoformat()
         }
+
+
+@app.get("/health")
+async def health():
+    """Quick health check endpoint"""
+    return {"status": "ok", "timestamp": datetime.now().isoformat()}
 
 
 @app.get("/")
