@@ -158,17 +158,19 @@ class ClaudeCodeProcess:
             # Start background threads for stream capture
             self._start_capture_threads()
 
-            # Wait for ready signal (10 second timeout)
-            ready = self._wait_for_ready(timeout=10)
-
-            if ready:
-                self.state = ProcessState.READY
-                return True
-            else:
-                self._append_error("Process did not reach ready state")
-                self.terminate(force=True)
+            # Give process brief moment to fail if there's an issue
+            time.sleep(0.2)
+            if self.process.poll() is not None:
+                # Process exited immediately - get error
+                self._append_error("Claude CLI process exited immediately after spawn")
                 self.state = ProcessState.ERROR
                 return False
+
+            # Process is alive - Claude Code CLI doesn't output ready signal
+            # It just waits for stdin input, so mark as ready now
+            self.state = ProcessState.READY
+            self._append_error("[INFO] Claude Code CLI process started and alive")
+            return True
 
         except FileNotFoundError:
             self._append_error(f"Claude CLI not found at: {self.claude_cli_path}")

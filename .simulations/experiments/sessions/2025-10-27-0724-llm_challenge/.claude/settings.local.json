@@ -50,7 +50,10 @@
       "Bash(for pid in 24964 22896 4900 50000 53856)",
       "Bash(do kill -9 $pid)",
       "Bash(powershell:*)",
-      "Bash(timeout 10 python:*)"
+      "Bash(timeout 10 python:*)",
+      "Bash(timeout 3 /c/Users/davee/AppData/Roaming/npm/claude:*)",
+      "Read(//c/Users/davee/**)",
+      "Bash(timeout 3:*)"
     ],
     "deny": [],
     "ask": []

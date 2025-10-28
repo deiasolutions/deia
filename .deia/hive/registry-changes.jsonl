@@ -61,3 +61,4 @@
 {"timestamp": "2025-10-27T18:39:29.783674", "action": "unregistered", "bot_id": "CLAUDE-CODE-003", "details": {"port": 8934}}
 {"timestamp": "2025-10-27T18:39:29.785946", "action": "registered", "bot_id": "LLAMA-BOT-001", "details": {"port": 8090, "pid": -1}}
 {"timestamp": "2025-10-27T18:39:29.788201", "action": "registered", "bot_id": "LLAMA-BOT-002", "details": {"port": 8666, "pid": -1}}
+{"timestamp": "2025-10-28T08:19:39.107918", "action": "unregistered", "bot_id": "BOT-001", "details": {"port": 8025}}
