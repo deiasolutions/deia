@@ -33,7 +33,15 @@
       "Bash(timeout 3600 python:*)",
       "Bash(tree:*)",
       "Bash(test:*)",
-      "Bash(copy:*)"
+      "Bash(copy:*)",
+      "Bash(findstr:*)",
+      "Bash(curl:*)",
+      "Bash(lsof:*)",
+      "Bash(awk:*)",
+      "Bash(netstat:*)",
+      "Bash(ss:*)",
+      "Bash(tasklist:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

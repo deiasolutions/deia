@@ -142,6 +142,8 @@ async def call_bot_task(bot_id: str, command: str) -> Dict:
         Response from task endpoint
     """
     try:
+        import httpx
+
         # Get bot info to find its assigned port
         bot_info = service_registry.get_bot(bot_id)
         if not bot_info:
@@ -149,13 +151,13 @@ async def call_bot_task(bot_id: str, command: str) -> Dict:
 
         bot_port = bot_info.get("port", 8000)
 
-        # Call the task endpoint via HTTP on the bot's assigned port
+        # Call the task endpoint via HTTP on the bot's assigned port using async httpx
         url = f"http://localhost:{bot_port}/api/bot/{bot_id}/task"
-        response = requests.post(
-            url,
-            json={"command": command},
-            timeout=30
-        )
+        async with httpx.AsyncClient(timeout=30) as client:
+            response = await client.post(
+                url,
+                json={"command": command}
+            )
         return response.json()
     except Exception as e:
         logger.error(f"Error calling bot task on {bot_id}: {e}")
@@ -243,17 +245,84 @@ async def websocket_endpoint(websocket: WebSocket):
 
                     # Call the actual task endpoint to get bot response
                     try:
-                        task_response = await call_bot_task(bot_id, query)
-                        result = {
-                            "type": "response",
-                            "content": task_response.get("response", "No response"),
-                            "success": task_response.get("success", False),
-                            "bot_id": bot_id
-                        }
+                        # Get bot info from registry
+                        bot_info = service_registry.get_bot(bot_id)
+                        if not bot_info:
+                            result = {
+                                "type": "error",
+                                "message": f"Bot {bot_id} not found in registry"
+                            }
+                        else:
+                            # Use ServiceFactory like the REST API does
+                            metadata = bot_info.get("metadata", {}) or {}
+                            bot_type = metadata.get("bot_type", "claude")
+                            work_dir = bot_info.get("work_dir")
+                            work_dir_path = Path(work_dir) if work_dir else Path.cwd()
 
-                        # Store bot response in database
-                        chat_db.add_message(bot_id, "assistant", task_response.get("response", "Error"))
+                            logger.info(f"[WS] Calling bot {bot_id} ({bot_type}): {query[:50]}...")
+
+                            try:
+                                service = ServiceFactory.get_service(
+                                    bot_type=bot_type,
+                                    bot_id=bot_id,
+                                    work_dir=work_dir_path
+                                )
+                            except ValueError as factory_error:
+                                result = {
+                                    "type": "error",
+                                    "message": f"Failed to get service for {bot_type}: {str(factory_error)}"
+                                }
+                            else:
+                                # Handle CLI services
+                                if ServiceFactory.is_cli_service(bot_type):
+                                    if not getattr(service, "session_active", False):
+                                        session_started = service.start_session()
+                                        if session_started is False:
+                                            result = {
+                                                "type": "error",
+                                                "message": f"Failed to start {bot_type} session"
+                                            }
+                                        else:
+                                            task_result = service.send_task(query, timeout=30)
+                                            response_text = task_result.get("output") or task_result.get("response", "")
+                                            result = {
+                                                "type": "response",
+                                                "content": response_text,
+                                                "success": task_result.get("success", False),
+                                                "bot_id": bot_id
+                                            }
+                                    else:
+                                        task_result = service.send_task(query, timeout=30)
+                                        response_text = task_result.get("output") or task_result.get("response", "")
+                                        result = {
+                                            "type": "response",
+                                            "content": response_text,
+                                            "success": task_result.get("success", False),
+                                            "bot_id": bot_id
+                                        }
+                                else:
+                                    # API-based service
+                                    response = service.chat(query)
+                                    if isinstance(response, dict):
+                                        response_payload = response.get("content", response)
+                                        success_flag = response.get("success", True)
+                                    else:
+                                        response_payload = response
+                                        success_flag = True
+
+                                    result = {
+                                        "type": "response",
+                                        "content": response_payload,
+                                        "success": success_flag,
+                                        "bot_id": bot_id
+                                    }
+
+                        # Store bot response in database if successful
+                        if result.get("type") == "response":
+                            chat_db.add_message(bot_id, "assistant", result.get("content", "Error"))
+
                     except Exception as e:
+                        logger.error(f"[WS] Error calling bot: {e}")
                         result = {
                             "type": "error",
                             "message": f"Failed to call bot: {str(e)}"

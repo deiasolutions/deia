@@ -8,33 +8,32 @@
       "registered_at": "2025-10-26T13:49:54.843601",
       "last_heartbeat": "2025-10-26T13:49:54.843615"
     },
-    "BOT-002": {
-      "port": 8217,
+    "LLAMA-BOT-001": {
+      "port": 8090,
       "pid": -1,
-      "repo": "BOT",
+      "repo": "LLAMA",
       "status": "ready",
-      "registered_at": "2025-10-26T13:51:35.069808",
-      "last_heartbeat": "2025-10-26T13:51:35.069814"
-    },
-    "BOT-999": {
-      "port": 8118,
-      "pid": -1,
-      "repo": "BOT",
-      "status": "ready",
-      "registered_at": "2025-10-26T13:57:58.486605",
-      "last_heartbeat": "2025-10-26T13:57:58.486617"
-    },
-    "BOT-013": {
-      "port": 8213,
-      "pid": -1,
-      "repo": "BOT",
-      "status": "ready",
-      "registered_at": "2025-10-26T19:28:54.928183",
-      "last_heartbeat": "2025-10-26T19:28:54.928191",
+      "registered_at": "2025-10-27T18:39:29.784938",
+      "last_heartbeat": "2025-10-27T18:39:29.784944",
       "metadata": {
-        "bot_type": "llama"
+        "bot_type": "llama",
+        "adapter": "llama",
+        "description": "Local Llama model"
+      }
+    },
+    "LLAMA-BOT-002": {
+      "port": 8666,
+      "pid": -1,
+      "repo": "LLAMA",
+      "status": "ready",
+      "registered_at": "2025-10-27T18:39:29.787388",
+      "last_heartbeat": "2025-10-27T18:39:29.787395",
+      "metadata": {
+        "bot_type": "llama",
+        "adapter": "llama",
+        "description": "Local Llama model"
       }
     }
   },
-  "updated_at": "2025-10-26T19:28:54.928196"
+  "updated_at": "2025-10-27T18:39:29.787399"
 }

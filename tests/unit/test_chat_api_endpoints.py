@@ -8,6 +8,7 @@ from pathlib import Path
 
 from deia.services.chat_interface_app import app, service_registry
 from deia.services.registry import ServiceRegistry
+from deia.services.chat_database import ChatDatabase
 
 
 client = TestClient(app)
@@ -15,12 +16,18 @@ client = TestClient(app)
 
 @pytest.fixture(autouse=True)
 def isolated_registry(tmp_path, monkeypatch):
-    """Ensure registry persistence does not leak across tests."""
+    """Ensure registry and chat database persistence do not leak across tests."""
+    # Isolate registry
     registry_file = tmp_path / "registry.json"
     registry_file.write_text(json.dumps({"bots": {}, "updated_at": "1970-01-01T00:00:00"}))
     monkeypatch.setattr(service_registry, "registry_path", registry_file)
     monkeypatch.setattr(service_registry, "audit_log_path", tmp_path / "registry-changes.jsonl")
     service_registry._save({"bots": {}, "updated_at": "1970-01-01T00:00:00"})
+
+    # Isolate ChatDatabase - use temporary database per test
+    chat_db_path = tmp_path / "chat_history.db"
+    from deia.services import chat_interface_app
+    monkeypatch.setattr(chat_interface_app, "chat_db", ChatDatabase(str(chat_db_path)))
 class TestGetBotsEndpoint:
     """Test GET /api/bots endpoint"""
 

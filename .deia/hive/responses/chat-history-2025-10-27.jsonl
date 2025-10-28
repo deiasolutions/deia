@@ -1,0 +1,4 @@
+{"timestamp": "2025-10-27T18:29:32.439971", "bot_id": null, "role": "assistant", "content": "\u2713 Bot hvjhhvv launched successfully", "session_id": null}
+{"timestamp": "2025-10-27T18:29:49.539127", "bot_id": "hvjhhvv", "role": "assistant", "content": "Connected to hvjhhvv. Ready for commands.", "session_id": null}
+{"timestamp": "2025-10-27T18:29:54.975609", "bot_id": "hvjhhvv", "role": "user", "content": "helloo", "session_id": null}
+{"timestamp": "2025-10-27T18:29:57.078468", "bot_id": "hvjhhvv", "role": "assistant", "content": "hvjhhvv: [Offline] helloo", "session_id": null}

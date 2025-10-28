@@ -14,3 +14,50 @@
 {"timestamp": "2025-10-26T19:03:27.823533", "action": "registered", "bot_id": "BOT-067", "details": {"port": 8891, "pid": -1}}
 {"timestamp": "2025-10-26T19:17:56.227633", "action": "unregistered", "bot_id": "BOT-067", "details": {"port": 8891}}
 {"timestamp": "2025-10-26T19:28:54.928959", "action": "registered", "bot_id": "BOT-013", "details": {"port": 8213, "pid": -1}}
+{"timestamp": "2025-10-27T17:57:59.089225", "action": "registered", "bot_id": "CLAUDE-CODE-001", "details": {"port": 8090, "pid": 24164}}
+{"timestamp": "2025-10-27T17:59:30.535872", "action": "registered", "bot_id": "CLAUDE-CODE-002", "details": {"port": 8666, "pid": 47596}}
+{"timestamp": "2025-10-27T17:59:31.171672", "action": "registered", "bot_id": "CLAUDE-CODE-003", "details": {"port": 8934, "pid": 3124}}
+{"timestamp": "2025-10-27T18:04:16.126050", "action": "stale_entry_removed", "bot_id": "CLAUDE-CODE-001", "details": {"port": 8090, "pid": 24164, "repo": "CLAUDE", "status": "starting", "registered_at": "2025-10-27T17:57:59.086865", "last_heartbeat": "2025-10-27T17:57:59.086878", "metadata": {}}}
+{"timestamp": "2025-10-27T18:05:50.237750", "action": "stale_entry_removed", "bot_id": "CLAUDE-CODE-002", "details": {"port": 8666, "pid": 47596, "repo": "CLAUDE", "status": "starting", "registered_at": "2025-10-27T17:59:30.534583", "last_heartbeat": "2025-10-27T17:59:30.534592", "metadata": {}}}
+{"timestamp": "2025-10-27T18:05:50.238717", "action": "stale_entry_removed", "bot_id": "CLAUDE-CODE-003", "details": {"port": 8934, "pid": 3124, "repo": "CLAUDE", "status": "starting", "registered_at": "2025-10-27T17:59:31.169872", "last_heartbeat": "2025-10-27T17:59:31.169897", "metadata": {}}}
+{"timestamp": "2025-10-27T18:13:42.306779", "action": "unregistered", "bot_id": "BOT-013", "details": {"port": 8213}}
+{"timestamp": "2025-10-27T18:13:47.071339", "action": "unregistered", "bot_id": "BOT-999", "details": {"port": 8118}}
+{"timestamp": "2025-10-27T18:13:59.968219", "action": "unregistered", "bot_id": "BOT-002", "details": {"port": 8217}}
+{"timestamp": "2025-10-27T18:16:15.878430", "action": "registered", "bot_id": "CLAUDE-CODE-001", "details": {"port": 8090, "pid": -1}}
+{"timestamp": "2025-10-27T18:16:25.464839", "action": "registered", "bot_id": "CLAUDE-CODE-002", "details": {"port": 8666, "pid": -1}}
+{"timestamp": "2025-10-27T18:16:25.467214", "action": "registered", "bot_id": "CLAUDE-CODE-003", "details": {"port": 8934, "pid": -1}}
+{"timestamp": "2025-10-27T18:17:33.835492", "action": "unregistered", "bot_id": "CLAUDE-CODE-001", "details": {"port": 8090}}
+{"timestamp": "2025-10-27T18:17:33.838301", "action": "unregistered", "bot_id": "CLAUDE-CODE-002", "details": {"port": 8666}}
+{"timestamp": "2025-10-27T18:17:33.840905", "action": "unregistered", "bot_id": "CLAUDE-CODE-003", "details": {"port": 8934}}
+{"timestamp": "2025-10-27T18:17:33.843530", "action": "registered", "bot_id": "CLAUDE-CODE-001", "details": {"port": 8090, "pid": -1}}
+{"timestamp": "2025-10-27T18:17:33.846732", "action": "registered", "bot_id": "CLAUDE-CODE-002", "details": {"port": 8666, "pid": -1}}
+{"timestamp": "2025-10-27T18:17:33.850315", "action": "registered", "bot_id": "CLAUDE-CODE-003", "details": {"port": 8934, "pid": -1}}
+{"timestamp": "2025-10-27T18:19:28.239149", "action": "unregistered", "bot_id": "CLAUDE-CODE-001", "details": {"port": 8090}}
+{"timestamp": "2025-10-27T18:19:28.242364", "action": "unregistered", "bot_id": "CLAUDE-CODE-002", "details": {"port": 8666}}
+{"timestamp": "2025-10-27T18:19:28.244571", "action": "unregistered", "bot_id": "CLAUDE-CODE-003", "details": {"port": 8934}}
+{"timestamp": "2025-10-27T18:19:28.248370", "action": "registered", "bot_id": "CLAUDE-CODE-001", "details": {"port": 8090, "pid": -1}}
+{"timestamp": "2025-10-27T18:19:28.250877", "action": "registered", "bot_id": "CLAUDE-CODE-002", "details": {"port": 8666, "pid": -1}}
+{"timestamp": "2025-10-27T18:19:28.254762", "action": "registered", "bot_id": "CLAUDE-CODE-003", "details": {"port": 8934, "pid": -1}}
+{"timestamp": "2025-10-27T18:21:52.281107", "action": "unregistered", "bot_id": "CLAUDE-CODE-001", "details": {"port": 8090}}
+{"timestamp": "2025-10-27T18:21:52.283035", "action": "unregistered", "bot_id": "CLAUDE-CODE-002", "details": {"port": 8666}}
+{"timestamp": "2025-10-27T18:21:52.285267", "action": "unregistered", "bot_id": "CLAUDE-CODE-003", "details": {"port": 8934}}
+{"timestamp": "2025-10-27T18:21:52.287644", "action": "registered", "bot_id": "CLAUDE-CODE-001", "details": {"port": 8090, "pid": -1}}
+{"timestamp": "2025-10-27T18:21:52.289874", "action": "registered", "bot_id": "CLAUDE-CODE-002", "details": {"port": 8666, "pid": -1}}
+{"timestamp": "2025-10-27T18:21:52.292361", "action": "registered", "bot_id": "CLAUDE-CODE-003", "details": {"port": 8934, "pid": -1}}
+{"timestamp": "2025-10-27T18:37:59.523290", "action": "unregistered", "bot_id": "CLAUDE-CODE-001", "details": {"port": 8090}}
+{"timestamp": "2025-10-27T18:37:59.526278", "action": "unregistered", "bot_id": "CLAUDE-CODE-002", "details": {"port": 8666}}
+{"timestamp": "2025-10-27T18:37:59.528859", "action": "unregistered", "bot_id": "CLAUDE-CODE-003", "details": {"port": 8934}}
+{"timestamp": "2025-10-27T18:37:59.531546", "action": "registered", "bot_id": "CLAUDE-CODE-001", "details": {"port": 8090, "pid": -1}}
+{"timestamp": "2025-10-27T18:37:59.534893", "action": "registered", "bot_id": "CLAUDE-CODE-002", "details": {"port": 8666, "pid": -1}}
+{"timestamp": "2025-10-27T18:37:59.537102", "action": "registered", "bot_id": "CLAUDE-CODE-003", "details": {"port": 8934, "pid": -1}}
+{"timestamp": "2025-10-27T18:38:20.357675", "action": "unregistered", "bot_id": "CLAUDE-CODE-001", "details": {"port": 8090}}
+{"timestamp": "2025-10-27T18:38:20.360697", "action": "unregistered", "bot_id": "CLAUDE-CODE-002", "details": {"port": 8666}}
+{"timestamp": "2025-10-27T18:38:20.363270", "action": "unregistered", "bot_id": "CLAUDE-CODE-003", "details": {"port": 8934}}
+{"timestamp": "2025-10-27T18:38:20.365889", "action": "registered", "bot_id": "CLAUDE-CODE-001", "details": {"port": 8090, "pid": -1}}
+{"timestamp": "2025-10-27T18:38:20.367732", "action": "registered", "bot_id": "CLAUDE-CODE-002", "details": {"port": 8666, "pid": -1}}
+{"timestamp": "2025-10-27T18:38:20.369802", "action": "registered", "bot_id": "CLAUDE-CODE-003", "details": {"port": 8934, "pid": -1}}
+{"timestamp": "2025-10-27T18:39:29.779923", "action": "unregistered", "bot_id": "CLAUDE-CODE-001", "details": {"port": 8090}}
+{"timestamp": "2025-10-27T18:39:29.781927", "action": "unregistered", "bot_id": "CLAUDE-CODE-002", "details": {"port": 8666}}
+{"timestamp": "2025-10-27T18:39:29.783674", "action": "unregistered", "bot_id": "CLAUDE-CODE-003", "details": {"port": 8934}}
+{"timestamp": "2025-10-27T18:39:29.785946", "action": "registered", "bot_id": "LLAMA-BOT-001", "details": {"port": 8090, "pid": -1}}
+{"timestamp": "2025-10-27T18:39:29.788201", "action": "registered", "bot_id": "LLAMA-BOT-002", "details": {"port": 8666, "pid": -1}}

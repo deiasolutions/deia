@@ -1,0 +1,2 @@
+{"timestamp": "2025-10-27T18:51:42.784848", "bot_id": "LLAMA-BOT-001", "event_type": "shutdown", "operation": "Bot shutdown", "result": "graceful", "duration_seconds": null, "error": null, "task_id": null, "context": {}}
+{"timestamp": "2025-10-27T18:53:00.837911", "bot_id": "LLAMA-BOT-001", "event_type": "startup", "operation": "Bot startup", "result": "initialized", "duration_seconds": null, "error": null, "task_id": null, "context": {"adapter_type": "mock"}}
