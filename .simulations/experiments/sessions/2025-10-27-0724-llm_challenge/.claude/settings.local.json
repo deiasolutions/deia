@@ -53,7 +53,8 @@
       "Bash(timeout 10 python:*)",
       "Bash(timeout 3 /c/Users/davee/AppData/Roaming/npm/claude:*)",
       "Read(//c/Users/davee/**)",
-      "Bash(timeout 3:*)"
+      "Bash(timeout 3:*)",
+      "Bash(for i in {1..12})"
     ],
     "deny": [],
     "ask": []

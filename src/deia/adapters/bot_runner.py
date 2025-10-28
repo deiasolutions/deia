@@ -44,7 +44,8 @@ class BotRunner:
         response_dir: Path,
         adapter_type: str = "api",
         platform_config: Optional[Dict[str, Any]] = None,
-        task_cooldown_seconds: int = 10
+        task_cooldown_seconds: int = 10,
+        comm_mode: str = "cli-only"
     ):
         """
         Initialize bot runner.
@@ -105,6 +106,7 @@ class BotRunner:
             raise ValueError(f"Unknown adapter_type: {adapter_type}")
 
         self.adapter_type = adapter_type
+        self.comm_mode = comm_mode
         self.running = False
         self.session_started = False
         self.processed_tasks = set()

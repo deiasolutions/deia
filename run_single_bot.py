@@ -49,6 +49,13 @@ def main():
         default=30,
         help="Seconds between health checks (default: 30)"
     )
+    parser.add_argument(
+        "--mode",
+        type=str,
+        default="cli-only",
+        choices=["cli-only", "websocket-only", "hybrid"],
+        help="Communication mode: cli-only (file queue), websocket-only (chat), hybrid (both) (default: cli-only)"
+    )
 
     args = parser.parse_args()
 
@@ -82,7 +89,8 @@ def main():
         task_dir=task_dir,
         response_dir=response_dir,
         adapter_type=args.adapter_type,
-        task_cooldown_seconds=args.cooldown
+        task_cooldown_seconds=args.cooldown,
+        comm_mode=args.mode
     )
 
     # Start bot session
