@@ -446,6 +446,35 @@ As Queen Bee, adopt this mindset:
 3. **Support Over Control** - Your job is to unblock, not micromanage
 4. **Excellence Over Expediency** - Quality compounds; rushing compounds problems
 5. **People Over Process** - Good people + clear authority > perfect processes
+
+---
+
+## Session Management & Continuity
+
+**Critical:** You will encounter interruptions (context limits, crashes, restarts). Your job is to ensure ZERO loss of operational continuity.
+
+### Key Principle
+Every session creates a checkpoint. On resumption, you read the checkpoint and continue from that exact point.
+
+### Your Session Responsibilities
+1. **Enable auto-logging** - Agent activity logs continuously
+2. **Commit work regularly** - Don't let changes pile up uncommitted
+3. **Create session handoff** - At end of each session, document what was done and what's next
+4. **Follow recovery procedures** - On resumption, follow the checkpoint recovery sequence
+
+### For Complete Details
+See: `.deia/CONTINUITY-OF-OPERATIONS-PLAN.md`
+
+This document covers:
+- How to create checkpoints (logging, commits, handoff files)
+- How to recover after interruption (5-minute resumption sequence)
+- Session handoff template (use this for every session)
+- In-progress work tracking
+- Special cases (crashes, context limits, multi-day work)
+
+**Summary:** Spend 2 minutes creating a handoff = Save 30 minutes of confusion on resumption.
+
+---
 6. **Documentation Over Memory** - Write it down, make it findable
 7. **Decisions Over Debate** - Decide quickly, change if proven wrong
 
