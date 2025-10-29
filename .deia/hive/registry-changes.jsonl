@@ -93,3 +93,6 @@
 {"timestamp": "2025-10-28T20:54:39.899939", "action": "registered", "bot_id": "BOT-001", "details": {"port": 8025, "pid": 25456}}
 {"timestamp": "2025-10-28T21:08:59.061408", "action": "stale_entry_removed", "bot_id": "BOT-001", "details": {"port": 8025, "pid": 25456, "repo": "BOT", "status": "starting", "registered_at": "2025-10-28T20:54:39.898812", "last_heartbeat": "2025-10-28T20:54:39.898823", "metadata": {"bot_type": "claude-code", "adapter_type": "cli"}}}
 {"timestamp": "2025-10-28T21:09:38.894123", "action": "registered", "bot_id": "BOT-001", "details": {"port": 8025, "pid": 50572}}
+{"timestamp": "2025-10-28T21:40:31.669657", "action": "stale_entry_removed", "bot_id": "BOT-001", "details": {"port": 8025, "pid": 50572, "repo": "BOT", "status": "starting", "registered_at": "2025-10-28T21:09:38.892532", "last_heartbeat": "2025-10-28T21:09:38.892545", "metadata": {"bot_type": "claude-code", "adapter_type": "cli"}}}
+{"timestamp": "2025-10-28T21:40:56.590660", "action": "registered", "bot_id": "BOT-444", "details": {"port": 8012, "pid": 15972}}
+{"timestamp": "2025-10-28T21:41:59.517207", "action": "unregistered", "bot_id": "BOT-444", "details": {"port": 8012}}

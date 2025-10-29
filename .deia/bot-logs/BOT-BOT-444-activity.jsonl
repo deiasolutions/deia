@@ -1,0 +1,3 @@
+{"timestamp": "2025-10-28T21:41:18.626109", "bot_id": "BOT-444", "event_type": "startup", "operation": "Bot startup", "result": "initialized", "duration_seconds": null, "error": null, "task_id": null, "context": {"adapter_type": "cli"}}
+{"timestamp": "2025-10-28T21:42:05.620205", "bot_id": "BOT-444", "event_type": "shutdown", "operation": "Bot shutdown", "result": "graceful", "duration_seconds": null, "error": null, "task_id": null, "context": {}}
+{"timestamp": "2025-10-28T21:42:10.665143", "bot_id": "BOT-444", "event_type": "shutdown", "operation": "Bot shutdown", "result": "graceful", "duration_seconds": null, "error": null, "task_id": null, "context": {}}

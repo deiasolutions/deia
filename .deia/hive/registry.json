@@ -1,17 +1,4 @@
 {
-  "bots": {
-    "BOT-001": {
-      "port": 8025,
-      "pid": 50572,
-      "repo": "BOT",
-      "status": "starting",
-      "registered_at": "2025-10-28T21:09:38.892532",
-      "last_heartbeat": "2025-10-28T21:09:38.892545",
-      "metadata": {
-        "bot_type": "claude-code",
-        "adapter_type": "cli"
-      }
-    }
-  },
-  "updated_at": "2025-10-28T21:09:38.892553"
+  "bots": {},
+  "updated_at": "2025-10-28T21:41:59.515307"
 }
