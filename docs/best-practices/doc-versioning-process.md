@@ -254,6 +254,20 @@ change_log: see docs/sprints/2025-Q4-Sprint-02-changes.md
 [Original content follows...]
 ```
 
+### 4.4 Why We Archive (Don't Delete)
+
+The principle of **"we don't delete stuff"** is fundamental to our documentation practice. All artifacts, even mistakes, should be archived and marked as deprecated rather than deleted.
+
+**Rationale:**
+
+- **Preserves Institutional Memory:** Archiving mistakes and outdated information provides a complete historical record of the hive's evolution. This is essential for understanding why things are the way they are.
+
+- **Creates Learning Opportunities:** Mistakes are valuable learning opportunities. By preserving them, we can analyze them, learn from them, and create patterns to prevent them from happening again.
+
+- **Encourages Psychological Safety:** A culture that does not punish mistakes, but instead learns from them, encourages psychological safety. This makes team members more likely to take risks, innovate, and self-report their own errors.
+
+- **Provides a Revert Path:** In the event that a new process or document is found to be flawed, the archived version provides an easy way to revert to the previous state.
+
 ---
 
 ## 5. Routing Header Updates
