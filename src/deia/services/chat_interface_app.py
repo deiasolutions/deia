@@ -116,7 +116,7 @@ if not HTML_FILE.exists():
     # Fallback to looking in current directory
     HTML_FILE = Path("chat_interface.html")
 
-def spawn_bot_process(bot_id: str, adapter_type: str = "api") -> Optional[int]:
+def spawn_bot_process(bot_id: str, adapter_type: str = "api", port: Optional[int] = None) -> Optional[int]:
     """
     Spawn a bot process using run_single_bot.py.
 
@@ -125,6 +125,7 @@ def spawn_bot_process(bot_id: str, adapter_type: str = "api") -> Optional[int]:
     Args:
         bot_id: Bot ID to spawn
         adapter_type: Adapter type (api, cli, sdk, mock)
+        port: HTTP server port for bot to listen on (optional)
 
     Returns:
         PID of spawned process, or None if spawn failed
@@ -140,6 +141,10 @@ def spawn_bot_process(bot_id: str, adapter_type: str = "api") -> Optional[int]:
 
         # Prepare command
         cmd = [sys.executable, str(script_path), bot_id, "--adapter-type", adapter_type]
+
+        # Add port if provided
+        if port:
+            cmd.extend(["--port", str(port)])
 
         logger.info(f"[{bot_id}] Spawning bot process with adapter_type={adapter_type}")
         logger.info(f"[{bot_id}] Command: {' '.join(cmd)}")
@@ -775,7 +780,7 @@ async def launch_bot(request: BotLaunchRequest):
         adapter_type = adapter_type_map.get(bot_type, "mock")
 
         logger.info(f"Spawning bot process for {bot_id} ({bot_type}) on port {port}...")
-        pid = spawn_bot_process(bot_id, adapter_type)
+        pid = spawn_bot_process(bot_id, adapter_type, port)
 
         if pid is None:
             # Failed to spawn process
