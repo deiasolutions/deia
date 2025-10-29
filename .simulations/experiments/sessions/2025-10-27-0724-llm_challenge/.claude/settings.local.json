@@ -67,7 +67,9 @@
       "Bash(then tail -20 \"/c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/.deia/bot-logs/BOT-CLAUDE-CODE-002-errors.jsonl\")",
       "Bash(else echo \"No errors file\")",
       "Bash(pytest:*)",
-      "Bash(claude --version)"
+      "Bash(claude --version)",
+      "Bash(find:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []

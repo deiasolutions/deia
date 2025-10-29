@@ -197,7 +197,7 @@ async def rate_limit_middleware(request: Request, call_next):
             f"Rate limit exceeded for {user_id} on {endpoint} "
             f"(limit: {max_requests}/{window_seconds}s, retry after: {retry_after}s)"
         )
-        return HTTPException(
+        raise HTTPException(
             status_code=429,
             detail=f"Rate limit exceeded. Try again in {retry_after} seconds.",
             headers={"Retry-After": str(retry_after)},

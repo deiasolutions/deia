@@ -120,6 +120,8 @@ def spawn_bot_process(bot_id: str, adapter_type: str = "api") -> Optional[int]:
     """
     Spawn a bot process using run_single_bot.py.
 
+    Uses proven subprocess spawning pattern from ClaudeCodeProcess for reliability.
+
     Args:
         bot_id: Bot ID to spawn
         adapter_type: Adapter type (api, cli, sdk, mock)
@@ -143,31 +145,50 @@ def spawn_bot_process(bot_id: str, adapter_type: str = "api") -> Optional[int]:
         logger.info(f"[{bot_id}] Command: {' '.join(cmd)}")
         logger.info(f"[{bot_id}] Working directory: {project_root}")
 
-        # Spawn process with DETAILED ERROR CAPTURE for debugging
+        # Create isolated environment (pattern from ClaudeCodeProcess)
+        env = os.environ.copy()
+
+        # If CLI adapter, add npm PATH (for claude CLI access)
+        if adapter_type == "cli":
+            claude_npm_dir = os.path.join(os.path.expanduser("~"), "AppData", "Roaming", "npm")
+            if os.path.exists(claude_npm_dir):
+                if 'PATH' in env:
+                    if claude_npm_dir not in env['PATH']:
+                        env['PATH'] = f"{env['PATH']};{claude_npm_dir}"
+                else:
+                    env['PATH'] = claude_npm_dir
+                logger.info(f"[{bot_id}] Added npm directory to PATH for CLI adapter")
+
+        # Spawn process with proven pattern
         if sys.platform == "win32":
             # Windows: Use CREATE_NEW_PROCESS_GROUP for proper isolation
-            # CAPTURE STDERR to log errors
             process = subprocess.Popen(
                 cmd,
+                cwd=str(project_root),
                 creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                text=True
+                text=True,
+                bufsize=1,
+                env=env
             )
         else:
             # Unix/macOS: Standard Popen
             process = subprocess.Popen(
                 cmd,
+                cwd=str(project_root),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                text=True
+                text=True,
+                bufsize=1,
+                env=env
             )
 
         pid = process.pid
         logger.info(f"[{bot_id}] Bot process spawned: PID {pid}")
 
         # IMPORTANT: Read output in background to capture startup errors
-        # This prevents deadlock from pipe buffers filling up
+        # This prevents deadlock from pipe buffers filling up (pattern from ClaudeCodeProcess)
         import threading
 
         def log_process_output():
