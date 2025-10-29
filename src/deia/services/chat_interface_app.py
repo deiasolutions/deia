@@ -129,7 +129,7 @@ def spawn_bot_process(bot_id: str, adapter_type: str = "api") -> Optional[int]:
     """
     try:
         # Get the project root directory
-        project_root = Path(__file__).parent.parent.parent  # From src/deia/services/ to root
+        project_root = Path(__file__).parent.parent.parent.parent  # From src/deia/services/ to project root
         script_path = project_root / "run_single_bot.py"
 
         if not script_path.exists():
