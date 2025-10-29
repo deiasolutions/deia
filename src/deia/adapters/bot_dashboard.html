@@ -152,7 +152,9 @@
 
     <script>
         function loadStatus() {
-            fetch('http://localhost:8002/status')
+            // Use current origin to determine the API endpoint
+            const apiUrl = `${window.location.origin}/status`;
+            fetch(apiUrl)
                 .then(response => {
                     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                     return response.json();
