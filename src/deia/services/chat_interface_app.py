@@ -242,11 +242,12 @@ async def call_bot_task(bot_id: str, command: str) -> Dict:
         bot_port = bot_info.get("port", 8000)
 
         # Call the task endpoint via HTTP on the bot's assigned port using async httpx
-        url = f"http://localhost:{bot_port}/api/bot/{bot_id}/task"
+        # Bot HTTP server listens on /api/task endpoint
+        url = f"http://localhost:{bot_port}/api/task"
         async with httpx.AsyncClient(timeout=30) as client:
             response = await client.post(
                 url,
-                json={"command": command}
+                json={"command": command, "task_id": f"task-{bot_id}"}
             )
         return response.json()
     except Exception as e:
