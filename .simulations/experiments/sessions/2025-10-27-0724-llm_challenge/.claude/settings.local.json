@@ -55,7 +55,19 @@
       "Read(//c/Users/davee/**)",
       "Bash(timeout 3:*)",
       "Bash(for i in {1..12})",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(for task in 014 015 016 017)",
+      "Bash(do if [ -f \".deia/hive/responses/TASK-002-$task-\"*.md ])",
+      "Bash(then echo \"✅ TASK-002-$task: COMPLETE\")",
+      "Bash(else echo \"⏳ TASK-002-$task: In progress or pending\")",
+      "Bash(git reset:*)",
+      "Bash(if [ -f .deia/bot-logs/BOT-BOT-002-errors.jsonl ])",
+      "Bash(then head -50 .deia/bot-logs/BOT-BOT-002-errors.jsonl)",
+      "Bash(if [ -f \"/c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/.deia/bot-logs/BOT-CLAUDE-CODE-002-errors.jsonl\" ])",
+      "Bash(then tail -20 \"/c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/.deia/bot-logs/BOT-CLAUDE-CODE-002-errors.jsonl\")",
+      "Bash(else echo \"No errors file\")",
+      "Bash(pytest:*)",
+      "Bash(claude --version)"
     ],
     "deny": [],
     "ask": []

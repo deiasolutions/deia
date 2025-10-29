@@ -6,6 +6,58 @@
 
 ---
 
+## 2025-10-28
+
+### Claude Code CLI Bot Launch - Bug Fix & UAT ✅
+**Completed By:** Q33N (BEE-000) - Meta-Governance Authority
+**Task Type:** Bug Fix + End-to-End Testing
+**Priority:** P1 - CRITICAL (Web Commander Feature)
+**Date:** 2025-10-28
+**Estimated:** 2-3 hours | **Actual:** 1.5 hours (path fix verified in previous session, UAT this session)
+
+**Deliverables:**
+- Bug fix: `src/deia/services/chat_interface_app.py:132` (path resolution corrected)
+- UAT Report: `.deia/handoffs/CLAUDE-CODE-CLI-BOT-UAT-REPORT-2025-10-28.md`
+
+**What Was Fixed:**
+Path traversal in `spawn_bot_process()` was off by one level:
+- **Before:** `Path(__file__).parent.parent.parent` (3 levels - pointed to `src/`)
+- **After:** `Path(__file__).parent.parent.parent.parent` (4 levels - points to project root)
+- **Impact:** `run_single_bot.py` script now found at correct location
+
+**Test Status:** ✅ VERIFIED WORKING
+- Claude CLI installed: v2.0.28 ✅
+- Web commander starts: ✅
+- Bot launch endpoint responds: ✅
+- Bot subprocess spawns: ✅ (PID 25456)
+- Bot listening on port 8025: ✅
+- Bot responds to HTTP: ✅
+
+**UAT Results:**
+```
+API Call: POST /api/bot/launch with bot_type="claude-code"
+Response: {"success": true, "pid": 25456, "port": 8025}
+Verification: Port 8025 is LISTENING and responding
+```
+
+**Integration Status:** ✅ COMPLETE - Bot launches and runs successfully
+
+**Secondary Issue Found (Not a blocker):**
+- Middleware error in chat_interface_app error handler (TypeError: HTTPException not callable)
+- Occurs after successful bot launch, doesn't affect fix
+- Separate task to address error handling
+
+**Tracking:**
+- [x] Path fix verified in previous session (line 132)
+- [x] Unit tests passing (9/9 from previous session)
+- [x] End-to-end UAT completed this session
+- [x] Bot launch verified working
+- [x] UAT report created
+- [ ] Fix middleware HTTPException error (separate task)
+- [ ] Update ACCOMPLISHMENTS.md (this entry)
+
+---
+
 ## 2025-10-19
 
 ### AGENT-002 Session Complete - 16 Hour Sprint ✅

@@ -1,0 +1,15 @@
+{"timestamp": "2025-10-28T12:17:09.451660", "bot_id": "BOT-002", "level": "INFO", "message": "Registered process 30156 for health monitoring"}
+{"timestamp": "2025-10-28T12:17:09.453317", "bot_id": "BOT-002", "level": "ERROR", "message": "Unexpected error in continuous run: 'coroutine' object has no attribute 'get'", "context": {"exception": "AttributeError", "traceback": "'coroutine' object has no attribute 'get'"}}
+{"timestamp": "2025-10-28T12:22:01.609374", "bot_id": "BOT-002", "level": "INFO", "message": "Registered process 54228 for health monitoring"}
+{"timestamp": "2025-10-28T12:22:36.485001", "bot_id": "BOT-002", "level": "INFO", "message": "Registered process 42220 for health monitoring"}
+{"timestamp": "2025-10-28T12:37:11.048748", "bot_id": "BOT-002", "level": "INFO", "message": "Registered process 26216 for health monitoring"}
+{"timestamp": "2025-10-28T12:40:27.202030", "bot_id": "BOT-002", "level": "INFO", "message": "Registered process 49828 for health monitoring"}
+{"timestamp": "2025-10-28T13:01:30.755736", "bot_id": "BOT-002", "level": "ERROR", "message": "Unexpected error in continuous run: 'NoneType' object has no attribute 'name'", "context": {"exception": "AttributeError", "traceback": "'NoneType' object has no attribute 'name'"}}
+{"timestamp": "2025-10-28T14:48:50.607791", "bot_id": "BOT-002", "level": "INFO", "message": "Registered process 57868 for health monitoring"}
+{"timestamp": "2025-10-28T14:56:30.520317", "bot_id": "BOT-002", "level": "INFO", "message": "Registered process 24232 for health monitoring"}
+{"timestamp": "2025-10-28T15:06:05.065766", "bot_id": "BOT-002", "level": "INFO", "message": "Registered process 56532 for health monitoring"}
+{"timestamp": "2025-10-28T16:07:31.404240", "bot_id": "BOT-002", "level": "INFO", "message": "Registered process 15236 for health monitoring"}
+{"timestamp": "2025-10-28T16:09:43.001203", "bot_id": "BOT-002", "level": "INFO", "message": "Registered process 51596 for health monitoring"}
+{"timestamp": "2025-10-28T16:16:09.003498", "bot_id": "BOT-002", "level": "INFO", "message": "Registered process 37476 for health monitoring"}
+{"timestamp": "2025-10-28T19:16:49.690360", "bot_id": "BOT-002", "level": "INFO", "message": "Registered process 55220 for health monitoring"}
+{"timestamp": "2025-10-28T19:20:51.174168", "bot_id": "BOT-002", "level": "ERROR", "message": "Unexpected error in continuous run: [Errno 22] Invalid argument", "context": {"exception": "OSError", "traceback": "[Errno 22] Invalid argument"}}

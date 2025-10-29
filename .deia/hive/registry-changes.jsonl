@@ -62,3 +62,32 @@
 {"timestamp": "2025-10-27T18:39:29.785946", "action": "registered", "bot_id": "LLAMA-BOT-001", "details": {"port": 8090, "pid": -1}}
 {"timestamp": "2025-10-27T18:39:29.788201", "action": "registered", "bot_id": "LLAMA-BOT-002", "details": {"port": 8666, "pid": -1}}
 {"timestamp": "2025-10-28T08:19:39.107918", "action": "unregistered", "bot_id": "BOT-001", "details": {"port": 8025}}
+{"timestamp": "2025-10-28T12:17:09.445934", "action": "registered", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 30156}}
+{"timestamp": "2025-10-28T12:17:09.550432", "action": "unregistered", "bot_id": "BOT-002", "details": {"port": 8217}}
+{"timestamp": "2025-10-28T12:22:01.598764", "action": "registered", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 54228}}
+{"timestamp": "2025-10-28T12:22:36.226947", "action": "stale_entry_removed", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 54228, "repo": "BOT", "status": "starting", "registered_at": "2025-10-28T12:22:01.596734", "last_heartbeat": "2025-10-28T12:22:01.596739", "metadata": {}}}
+{"timestamp": "2025-10-28T12:22:36.478620", "action": "registered", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 42220}}
+{"timestamp": "2025-10-28T12:37:10.784192", "action": "stale_entry_removed", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 42220, "repo": "BOT", "status": "starting", "registered_at": "2025-10-28T12:22:36.477617", "last_heartbeat": "2025-10-28T12:22:36.477622", "metadata": {}}}
+{"timestamp": "2025-10-28T12:37:11.038911", "action": "registered", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 26216}}
+{"timestamp": "2025-10-28T12:59:22.059540", "action": "stale_entry_removed", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 26216, "repo": "BOT", "status": "starting", "registered_at": "2025-10-28T12:37:11.035353", "last_heartbeat": "2025-10-28T12:37:11.035358", "metadata": {}}}
+{"timestamp": "2025-10-28T14:48:50.572659", "action": "registered", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 57868}}
+{"timestamp": "2025-10-28T14:56:30.261794", "action": "stale_entry_removed", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 57868, "repo": "BOT", "status": "starting", "registered_at": "2025-10-28T14:48:50.569041", "last_heartbeat": "2025-10-28T14:48:50.569050", "metadata": {}}}
+{"timestamp": "2025-10-28T14:56:30.515494", "action": "registered", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 24232}}
+{"timestamp": "2025-10-28T15:03:23.543171", "action": "unregistered", "bot_id": "BOT-002", "details": {"port": 8217}}
+{"timestamp": "2025-10-28T15:06:05.060819", "action": "registered", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 56532}}
+{"timestamp": "2025-10-28T15:13:12.411940", "action": "stale_entry_removed", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 56532, "repo": "BOT", "status": "starting", "registered_at": "2025-10-28T15:06:05.059785", "last_heartbeat": "2025-10-28T15:06:05.059799", "metadata": {}}}
+{"timestamp": "2025-10-28T15:13:12.666727", "action": "registered", "bot_id": "BOT-009", "details": {"port": 8451, "pid": 34492}}
+{"timestamp": "2025-10-28T15:22:52.809915", "action": "unregistered", "bot_id": "BOT-009", "details": {"port": 8451}}
+{"timestamp": "2025-10-28T15:22:58.907760", "action": "unregistered", "bot_id": "LLAMA-BOT-002", "details": {"port": 8666}}
+{"timestamp": "2025-10-28T15:23:00.966739", "action": "unregistered", "bot_id": "LLAMA-BOT-001", "details": {"port": 8090}}
+{"timestamp": "2025-10-28T16:07:31.397473", "action": "registered", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 15236}}
+{"timestamp": "2025-10-28T16:16:08.730495", "action": "stale_entry_removed", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 15236, "repo": "BOT", "status": "starting", "registered_at": "2025-10-28T16:07:31.396277", "last_heartbeat": "2025-10-28T16:07:31.396282", "metadata": {}}}
+{"timestamp": "2025-10-28T16:16:08.998635", "action": "registered", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 37476}}
+{"timestamp": "2025-10-28T19:16:49.401991", "action": "stale_entry_removed", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 37476, "repo": "BOT", "status": "starting", "registered_at": "2025-10-28T16:16:08.996313", "last_heartbeat": "2025-10-28T16:16:08.996321", "metadata": {}}}
+{"timestamp": "2025-10-28T19:16:49.684466", "action": "registered", "bot_id": "BOT-002", "details": {"port": 8217, "pid": 55220}}
+{"timestamp": "2025-10-28T19:20:55.194731", "action": "unregistered", "bot_id": "BOT-002", "details": {"port": 8217}}
+{"timestamp": "2025-10-28T20:40:58.917926", "action": "registered", "bot_id": "TEST-BOT-001", "details": {"port": 8170, "pid": 13436}}
+{"timestamp": "2025-10-28T20:46:14.376738", "action": "stale_entry_removed", "bot_id": "TEST-BOT-001", "details": {"port": 8170, "pid": 13436, "repo": "TEST", "status": "starting", "registered_at": "2025-10-28T20:40:58.915497", "last_heartbeat": "2025-10-28T20:40:58.915506", "metadata": {}}}
+{"timestamp": "2025-10-28T20:46:14.731296", "action": "registered", "bot_id": "TEST-BOT-001", "details": {"port": 8170, "pid": 13436}}
+{"timestamp": "2025-10-28T20:46:14.928905", "action": "unregistered", "bot_id": "TEST-BOT-001", "details": {"port": 8170}}
+{"timestamp": "2025-10-28T20:54:39.899939", "action": "registered", "bot_id": "BOT-001", "details": {"port": 8025, "pid": 25456}}

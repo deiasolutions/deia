@@ -1,31 +1,17 @@
 {
   "bots": {
-    "LLAMA-BOT-001": {
-      "port": 8090,
-      "pid": -1,
-      "repo": "LLAMA",
-      "status": "ready",
-      "registered_at": "2025-10-27T18:39:29.784938",
-      "last_heartbeat": "2025-10-27T18:39:29.784944",
+    "BOT-001": {
+      "port": 8025,
+      "pid": 25456,
+      "repo": "BOT",
+      "status": "starting",
+      "registered_at": "2025-10-28T20:54:39.898812",
+      "last_heartbeat": "2025-10-28T20:54:39.898823",
       "metadata": {
-        "bot_type": "llama",
-        "adapter": "llama",
-        "description": "Local Llama model"
-      }
-    },
-    "LLAMA-BOT-002": {
-      "port": 8666,
-      "pid": -1,
-      "repo": "LLAMA",
-      "status": "ready",
-      "registered_at": "2025-10-27T18:39:29.787388",
-      "last_heartbeat": "2025-10-27T18:39:29.787395",
-      "metadata": {
-        "bot_type": "llama",
-        "adapter": "llama",
-        "description": "Local Llama model"
+        "bot_type": "claude-code",
+        "adapter_type": "cli"
       }
     }
   },
-  "updated_at": "2025-10-28T08:19:39.102446"
+  "updated_at": "2025-10-28T20:54:39.898828"
 }

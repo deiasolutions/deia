@@ -1,0 +1,23 @@
+# RESPONSE: coordination - Failed
+
+**From:** BOT-002
+**To:** unknown
+**Task:** TASK-002-008-P2-hybrid-mode-coordination
+**Status:** ✗ FAILED
+**Duration:** 0.0 seconds
+
+## Output
+
+No output
+
+## Files Modified
+
+- None
+
+## Error
+
+Process not ready (state: error)
+
+---
+
+**Response generated:** 2025-10-28T16:17:54.352580
