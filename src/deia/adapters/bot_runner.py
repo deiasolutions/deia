@@ -386,12 +386,22 @@ class BotRunner:
         """
         self.running = True
         iteration = 0
+        last_heartbeat = 0
 
         self._log(f"Starting continuous run (poll_interval={poll_interval}s)")
 
         try:
             while self.running:
                 iteration += 1
+
+                # Send heartbeat to service registry every 10 seconds
+                # (prevents stale entry cleanup which has 300s timeout)
+                if iteration % (10 // max(1, poll_interval)) == 0:
+                    try:
+                        self.registry.heartbeat(self.bot_id, status="active")
+                        last_heartbeat = iteration
+                    except Exception as e:
+                        self._log(f"Warning: Failed to send heartbeat: {e}")
 
                 result = self.run_once()
 
