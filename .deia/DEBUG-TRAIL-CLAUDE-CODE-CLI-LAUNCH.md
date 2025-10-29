@@ -227,3 +227,68 @@ M src/deia/services/chat_interface_app.py
 **File:** `src/deia/services/chat_interface_app.py:132`
 **Status:** Fixed, pending end-to-end test
 
+
+---
+
+## CRITICAL: MOCK COMPONENTS IN THIS FIX
+
+**IMPORTANT FOR DAVE:** This fix addresses path resolution ONLY. It does NOT verify that Claude Code CLI actually works end-to-end. Here's what is and isn't tested:
+
+### ✅ TESTED & VERIFIED
+- Path resolution: `run_single_bot.py` is now found at correct location
+- Script execution: Command is constructed correctly with `--adapter-type cli`
+- Process creation: subprocess.Popen() is called with correct arguments
+
+### ⚠️ NOT YET TESTED (May be mocked/incomplete)
+- **Claude CLI availability**: Is `claude` CLI actually installed on system?
+- **Claude CLI subprocess startup**: Does `claude` process actually start?
+- **ClaudeCodeProcess.start()**: Does the subprocess wrapper initialize correctly?
+- **ClaudeCodeCLIAdapter.start_session()**: Does adapter session actually start?
+- **Bot health check**: Does bot respond to status endpoint?
+- **Task execution**: Can bot actually execute a task?
+
+### 🎭 LIKELY MOCKED IN TESTS
+- `subprocess.Popen()` - Unit tests mock this to avoid spawning real processes
+- `ClaudeCodeProcess` - May use mock implementation if real one not complete
+- File system operations - Might use temp directories instead of real paths
+
+### 🚨 WHAT THIS MEANS FOR UAT
+**Before UAT testing Claude Code CLI bots:**
+1. Verify Claude CLI is installed: `which claude && claude --version`
+2. Test Claude CLI manually: `claude code` to start interactive session
+3. Test bot launcher returns valid PID (this fix enables this)
+4. Test bot actually starts (separate verification needed)
+5. Test bot executes a task (separate verification needed)
+
+**This fix = Path resolution fixed**
+**NOT YET = Full Claude Code CLI bot integration verified**
+
+---
+
+## NEXT STEPS AFTER THIS FIX
+
+### Immediate (What Dave should test)
+```bash
+# Test 1: Verify path is found
+python -c "
+from pathlib import Path
+p = Path('src/deia/services/chat_interface_app.py').parent.parent.parent.parent
+print(f'Script found: {(p / \"run_single_bot.py\").exists()}')
+"
+
+# Test 2: Can we spawn the bot process?
+# (Would need running web commander)
+curl -X POST http://localhost:8000/api/bot/launch \
+  -H "Content-Type: application/json" \
+  -d '{"bot_id": "TEST-CC-001", "bot_type": "claude-code"}'
+
+# Test 3: Does bot actually start?
+curl http://localhost:8000/api/bot/TEST-CC-001/status
+```
+
+### Next Verification Phase
+- Verify Claude Code CLI subprocess actually starts
+- Verify ClaudeCodeCLIAdapter initializes without errors
+- Verify bot accepts and executes tasks
+- Run full integration tests with real CLI (not mocked)
+
