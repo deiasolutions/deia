@@ -1,1 +1,2 @@
 {"timestamp": "2025-10-27T20:50:32.662443", "bot_id": "BOT-TEST-CLI", "level": "ERROR", "message": "Bot startup failed: Failed to start Claude Code CLI: Claude Code process failed to start (returned False)", "context": {"exception": "RuntimeError"}}
+{"timestamp": "2025-10-29T08:22:52.194293", "bot_id": "BOT-TEST-CLI", "level": "INFO", "message": "Registered process 11956 for health monitoring"}

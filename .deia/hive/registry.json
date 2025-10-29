@@ -1,4 +1,38 @@
 {
-  "bots": {},
-  "updated_at": "2025-10-28T21:41:59.515307"
+  "bots": {
+    "BOT-222": {
+      "port": 8251,
+      "pid": 50080,
+      "repo": "BOT",
+      "status": "active",
+      "registered_at": "2025-10-29T08:02:05.006801",
+      "last_heartbeat": "2025-10-29T15:18:59.017693",
+      "metadata": {
+        "bot_type": "claude-code",
+        "adapter_type": "cli"
+      }
+    },
+    "BOT-446": {
+      "port": 8029,
+      "pid": 45156,
+      "repo": "BOT",
+      "status": "active",
+      "registered_at": "2025-10-29T08:18:06.876733",
+      "last_heartbeat": "2025-10-29T15:19:00.755943",
+      "metadata": {
+        "bot_type": "claude",
+        "adapter_type": "mock"
+      }
+    },
+    "BOT-TEST-CLI": {
+      "port": 8393,
+      "pid": 11956,
+      "repo": "BOT",
+      "status": "active",
+      "registered_at": "2025-10-29T08:22:52.186843",
+      "last_heartbeat": "2025-10-29T08:22:57.198226",
+      "metadata": {}
+    }
+  },
+  "updated_at": "2025-10-29T15:19:00.756281"
 }

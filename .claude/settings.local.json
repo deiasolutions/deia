@@ -22,7 +22,12 @@
       "Bash(timeout 60 python:*)",
       "Bash(timeout 120 python:*)",
       "Bash(timeout 90 python:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(find:*)",
+      "Bash(timeout 10 python:*)",
+      "Bash(cat:*)",
+      "Bash(claude:*)",
+      "Bash(timeout 5 claude:*)"
     ],
     "deny": [],
     "ask": []

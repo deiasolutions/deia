@@ -96,3 +96,14 @@
 {"timestamp": "2025-10-28T21:40:31.669657", "action": "stale_entry_removed", "bot_id": "BOT-001", "details": {"port": 8025, "pid": 50572, "repo": "BOT", "status": "starting", "registered_at": "2025-10-28T21:09:38.892532", "last_heartbeat": "2025-10-28T21:09:38.892545", "metadata": {"bot_type": "claude-code", "adapter_type": "cli"}}}
 {"timestamp": "2025-10-28T21:40:56.590660", "action": "registered", "bot_id": "BOT-444", "details": {"port": 8012, "pid": 15972}}
 {"timestamp": "2025-10-28T21:41:59.517207", "action": "unregistered", "bot_id": "BOT-444", "details": {"port": 8012}}
+{"timestamp": "2025-10-29T07:50:58.037183", "action": "registered", "bot_id": "TEST-BOT-HEARTBEAT-001", "details": {"port": 8985, "pid": 12345}}
+{"timestamp": "2025-10-29T07:50:58.544164", "action": "unregistered", "bot_id": "TEST-BOT-HEARTBEAT-001", "details": {"port": 8985}}
+{"timestamp": "2025-10-29T07:51:23.803125", "action": "registered", "bot_id": "TEST-BOT-HEARTBEAT-LOOP", "details": {"port": 8265, "pid": 99999}}
+{"timestamp": "2025-10-29T07:51:39.811440", "action": "unregistered", "bot_id": "TEST-BOT-HEARTBEAT-LOOP", "details": {"port": 8265}}
+{"timestamp": "2025-10-29T08:02:05.008551", "action": "registered", "bot_id": "BOT-222", "details": {"port": 8251, "pid": 50080}}
+{"timestamp": "2025-10-29T08:09:10.897100", "action": "registered", "bot_id": "BOT-445", "details": {"port": 8026, "pid": 50152}}
+{"timestamp": "2025-10-29T08:18:00.297977", "action": "unregistered", "bot_id": "BOT-445", "details": {"port": 8026}}
+{"timestamp": "2025-10-29T08:18:06.878521", "action": "registered", "bot_id": "BOT-446", "details": {"port": 8029, "pid": 45156}}
+{"timestamp": "2025-10-29T08:20:32.791189", "action": "registered", "bot_id": "BOT-999", "details": {"port": 8118, "pid": 31408}}
+{"timestamp": "2025-10-29T08:20:46.347397", "action": "unregistered", "bot_id": "BOT-999", "details": {"port": 8118}}
+{"timestamp": "2025-10-29T08:22:52.187874", "action": "registered", "bot_id": "BOT-TEST-CLI", "details": {"port": 8393, "pid": 11956}}

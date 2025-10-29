@@ -1,0 +1,2 @@
+{"timestamp": "2025-10-29T08:20:36.332152", "bot_id": "BOT-999", "level": "INFO", "message": "Registered process 31408 for health monitoring"}
+{"timestamp": "2025-10-29T08:20:46.345325", "bot_id": "BOT-999", "level": "ERROR", "message": "Unexpected error in continuous run: 'NoneType' object has no attribute 'name'", "context": {"exception": "AttributeError", "traceback": "'NoneType' object has no attribute 'name'"}}

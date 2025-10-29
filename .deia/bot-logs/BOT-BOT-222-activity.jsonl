@@ -1,0 +1,1 @@
+{"timestamp": "2025-10-29T08:02:15.957921", "bot_id": "BOT-222", "event_type": "startup", "operation": "Bot startup", "result": "initialized", "duration_seconds": null, "error": null, "task_id": null, "context": {"adapter_type": "cli"}}

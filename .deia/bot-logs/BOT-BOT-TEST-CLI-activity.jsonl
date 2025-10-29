@@ -1,1 +1,2 @@
 {"timestamp": "2025-10-27T20:50:32.664461", "bot_id": "BOT-TEST-CLI", "event_type": "shutdown", "operation": "Bot shutdown", "result": "graceful", "duration_seconds": null, "error": null, "task_id": null, "context": {}}
+{"timestamp": "2025-10-29T08:22:52.190421", "bot_id": "BOT-TEST-CLI", "event_type": "startup", "operation": "Bot startup", "result": "initialized", "duration_seconds": null, "error": null, "task_id": null, "context": {"adapter_type": "cli"}}
