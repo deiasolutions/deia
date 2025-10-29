@@ -106,15 +106,22 @@ def main():
     print(f"[{args.bot_id}] Initializing adapter...")
     try:
         if not runner.start():
-            print(f"[{args.bot_id}] [ERROR] Failed to start adapter")
-            return 1
+            print(f"[{args.bot_id}] [ERROR] Failed to start adapter - bot cannot process tasks")
+            print(f"[{args.bot_id}] [ERROR] Check logs for details on adapter failure")
+            health_monitor.log_error(
+                f"Adapter startup failed - bot will not be able to process tasks",
+                {"bot_id": args.bot_id, "adapter_type": args.adapter_type}
+            )
+            # Don't exit - allow bot to stay alive in registry for debugging
+            print(f"[{args.bot_id}] [WARNING] Bot process continuing despite adapter failure for diagnostics")
     except Exception as e:
-        print(f"[{args.bot_id}] [ERROR] Failed to start bot: {str(e)}")
+        print(f"[{args.bot_id}] [ERROR] Exception during bot startup: {str(e)}")
         health_monitor.log_error(
-            f"Bot startup failed: {str(e)}",
-            {"exception": type(e).__name__}
+            f"Bot startup exception: {str(e)}",
+            {"exception": type(e).__name__, "bot_id": args.bot_id}
         )
-        return 1
+        # Don't exit - allow bot to stay alive in registry for debugging
+        print(f"[{args.bot_id}] [WARNING] Bot process continuing despite exception for diagnostics")
 
     # Register process for health monitoring
     health_monitor.register_process(os.getpid(), datetime.now())

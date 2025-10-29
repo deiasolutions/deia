@@ -148,14 +148,21 @@ class BotRunner:
 
         Returns:
             True if started successfully
-
-        Raises:
-            RuntimeError: If adapter fails to start
+            False if adapter fails to start (does NOT raise exception)
         """
         if self.session_started:
             return True
 
-        success = self.adapter.start_session()
+        try:
+            success = self.adapter.start_session()
+        except Exception as e:
+            # Catch any exception during adapter startup and log it
+            self._log(f"[ERROR] Adapter startup raised exception: {e}")
+            self.activity_logger.log_error(
+                event_type="adapter_startup_failure",
+                details={"error": str(e), "exception_type": type(e).__name__}
+            )
+            return False
 
         if success:
             self.session_started = True
@@ -180,7 +187,12 @@ class BotRunner:
 
             return True
         else:
-            raise RuntimeError("Failed to start adapter session")
+            self._log(f"[ERROR] Adapter failed to start (returned False)")
+            self.activity_logger.log_error(
+                event_type="adapter_startup_failed",
+                details={"adapter_type": self.adapter_type, "bot_id": self.bot_id}
+            )
+            return False
 
     def run_once(self) -> Dict[str, Any]:
         """

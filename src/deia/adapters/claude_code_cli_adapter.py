@@ -150,9 +150,7 @@ class ClaudeCodeCLIAdapter:
 
         Returns:
             True if session started successfully
-
-        Raises:
-            RuntimeError: If subprocess fails to start
+            False if subprocess fails to start (does NOT raise exception)
         """
         if self.session_active:
             return True
@@ -163,12 +161,25 @@ class ClaudeCodeCLIAdapter:
             if success:
                 self.session_active = True
                 self.started_at = datetime.now().isoformat()
+                print(f"[{self.bot_id}] Claude Code CLI session started successfully")
                 return True
             else:
-                raise RuntimeError("Claude Code process failed to start (returned False)")
+                # Get error details from process error buffer
+                error_details = self.process.get_error_buffer()
+                error_msg = "\n".join(error_details) if error_details else "Unknown error"
+                print(f"[{self.bot_id}] [ERROR] Claude Code process.start() returned False")
+                print(f"[{self.bot_id}] [ERROR] Process errors: {error_msg}")
+                return False
 
+        except FileNotFoundError as e:
+            print(f"[{self.bot_id}] [ERROR] Claude Code CLI executable not found: {e}")
+            print(f"[{self.bot_id}] [ERROR] Expected path: {self.claude_cli_path}")
+            return False
         except Exception as e:
-            raise RuntimeError(f"Failed to start Claude Code CLI: {str(e)}")
+            print(f"[{self.bot_id}] [ERROR] Failed to start Claude Code CLI: {type(e).__name__}: {e}")
+            import traceback
+            print(f"[{self.bot_id}] [ERROR] Traceback: {traceback.format_exc()}")
+            return False
 
     def send_task(self, task_content: str, timeout: Optional[int] = None) -> Dict[str, Any]:
         """
