@@ -1,35 +1,53 @@
 {
   "permissions": {
     "allow": [
+      "Write(**/*.md)",
+      "Write(**/*.json)",
+      "Write(**/*.py)",
+      "Write(**/*.yaml)",
+      "Write(**/*.yml)",
+      "Edit(**/*)",
       "Read(//c/Users/davee/**)",
       "Bash(curl:*)",
       "Bash(wscat:*)",
       "Bash(npm install:*)",
-      "Bash(pip install websockets)",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
       "Bash(python -m pytest:*)",
+      "Bash(python -m json.tool:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(git pull:*)",
       "Bash(git tag:*)",
-      "Bash(python -m json.tool:*)",
-      "Bash(timeout 5 curl:*)",
-      "Bash(xargs ls:*)",
-      "Bash(python:*)",
+      "Bash(git checkout:*)",
+      "Bash(timeout:*)",
       "Bash(awk:*)",
-      "Bash(pip install:*)",
       "Bash(tee:*)",
-      "Bash(timeout 30 python:*)",
-      "Bash(timeout 20 python:*)",
-      "Bash(timeout 60 python:*)",
-      "Bash(timeout 120 python:*)",
-      "Bash(timeout 90 python:*)",
       "Bash(dir:*)",
       "Bash(find:*)",
-      "Bash(timeout 10 python:*)",
       "Bash(cat:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
       "Bash(claude:*)",
-      "Bash(timeout 5 claude:*)"
+      "Bash(pkill:*)",
+      "Bash(bash:*)",
+      "Bash(chmod:*)",
+      "Bash(xargs:*)",
+      "WebSearch",
+      "WebFetch"
     ],
-    "deny": [],
-    "ask": []
+    "deny": [
+      "Bash(rm:*)",
+      "Bash(rm -rf:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git rebase:*)",
+      "Bash(git clean:*)"
+    ],
+    "ask": [
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git rm:*)"
+    ]
   }
 }
