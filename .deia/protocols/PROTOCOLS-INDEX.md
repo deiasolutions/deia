@@ -23,6 +23,7 @@ Reference this document when:
 
 | Protocol | Purpose | Version | Updated |
 |----------|---------|---------|---------|
+| **CLAUDE-CODE-SETTINGS-PROTOCOL.md** | Configure Claude Code permissions for autonomous bot operation | v1.0 | 2025-10-31 |
 | **TIMESTAMP-PROTOCOL.md** | Standard timestamp format and logging conventions | v1.0 | 2025-10-18 |
 | **BUG-FIX-LOOKUP-PROTOCOL.md** | How to discover, report, and track bugs | v1.0 | 2025-10-17 |
 | **PROTOCOL-agent-instruction-consistency.md** | How agents handle instruction conflicts and deviations from guides | v1.0 | 2025-10-25 |
@@ -43,7 +44,12 @@ BEE-000-Q33N-BOOT-PROTOCOL
 
 ## When to Consult Each Protocol
 
-### Starting Work
+### Setting Up a New Hive
+1. Read **CLAUDE-CODE-SETTINGS-PROTOCOL.md** - Configure Claude Code permissions
+2. Create `.claude/settings.local.json` with recommended configuration
+3. Commit to git and notify team
+
+### Starting Work in a Hive
 1. Read **BEE-000-Q33N-BOOT-PROTOCOL.md** - Understand Q33N authority and DEIA structure
 2. Read **AGENT-COMMUNICATION-CADENCE-v1.0.md** - Learn how to operate and report
 
@@ -58,6 +64,11 @@ BEE-000-Q33N-BOOT-PROTOCOL
 ### Logging and Formatting
 1. Follow **TIMESTAMP-PROTOCOL.md** for all timestamps
 2. Follow **AGENT-COMMUNICATION-CADENCE-v1.0.md** for status reports
+
+### Claude Code Not Prompting (Or Over-Prompting)
+1. Check **CLAUDE-CODE-SETTINGS-PROTOCOL.md** - Diagnose settings issues
+2. Verify `.claude/settings.local.json` exists and is readable
+3. Review allow/deny/ask lists for your operations
 
 ---
 
@@ -87,6 +98,7 @@ When creating a new protocol:
 
 | Date | Protocol | Change | Authority |
 |------|----------|--------|-----------|
+| 2025-10-31 | CLAUDE-CODE-SETTINGS-PROTOCOL.md | Created - new recommended practice for hive setup | Q33N |
 | 2025-10-25 | PROTOCOL-agent-instruction-consistency.md | Created | BOT-001 suggestion, Q33N approval |
 
 ---
@@ -114,6 +126,6 @@ If instructions conflict with this guide:
 
 ---
 
-**Last Updated:** 2025-10-25
+**Last Updated:** 2025-10-31
 **Maintained By:** Q33N (BEE-000)
 **Suggestion:** Link to `.deia/protocols/PROTOCOLS-INDEX.md` from all bootcamp guides
