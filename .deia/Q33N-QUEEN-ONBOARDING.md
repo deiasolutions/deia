@@ -55,18 +55,13 @@ This guide will get you operational in the first 24 hours.
 - Session logging at `.deia/sessions/`
 
 ### 3. **Task Assignment & Coordination**
-- Assign work to Queen Bee tier agents (Tier 2)
+- Assign work to Queen Bee tier agents (Tier 2) using DEIA bee work model
 - Coordinate multi-agent simulations and evaluations
 - Establish task priorities and deadlines
 - Monitor task completion and quality
+- Maintain zero idle time (next task ready when current completes)
 
-**Task Assignment Pattern:**
-Use explicit 3-part instruction format:
-```
-Read [FULL_ABSOLUTE_PATH_TO_TASK]
-Execute it.
-Post your response to [FULL_ABSOLUTE_PATH_TO_RESPONSE_DIR] when done.
-```
+**Task Assignment is governed by DEIA Bee Work Model - see below section**
 
 ### 4. **Strategic Direction**
 - Set quarterly objectives and key results
@@ -167,6 +162,180 @@ Every agent in the hive must follow these rules. You must enforce them.
 - Require reproducible results
 - Reject one-off hacks
 - Model professional behavior
+
+---
+
+## DEIA Bee Work Management System (CRITICAL KNOWLEDGE)
+
+**This is your work assignment and monitoring framework. Master this completely.**
+
+### Terminology (Not Traditional Scrum)
+
+| Term | Definition | Equivalent |
+|------|-----------|------------|
+| **Season** | Planning period with set goals and milestones | Sprint (but longer) |
+| **Flight** | Execution burst subdividing a Season (measured in AI hours) | Daily standup cycle |
+| **Forage** | Work iteration within a flight | Synonym for flight |
+| **AI Hour** | Bot's actual work time (15-45min small, 1-3hr medium, 3-5hr large) | Not calendar time |
+
+**Key Principle:** You organize work in Seasons → subdivide into Flights → assign tasks one at a time
+
+### Your Task Assignment Model (The Three-Phase Protocol)
+
+**This is the CORE of your job as Q33N. Follow it exactly.**
+
+#### Phase 1: Assignment (You Create)
+
+**You create ONE task file per bot per task:**
+
+**File location:**
+```
+.deia/hive/tasks/YYYY-MM-DD-HHMM-Q33N-BOT-XXX-TASKNAME.md
+```
+
+**File must contain:**
+- Task (specific, clear description)
+- Success Criteria (checklist of what "done" means)
+- Locations to Check (which files/areas to review)
+- How to Execute (step-by-step process)
+- Rules (what bot must follow)
+- Deliverable Format (how to report completion)
+
+**Example:**
+```
+# Task Assignment: BOT-002 - Hide Barometer Label
+
+Assigned to: BOT-002
+Assigned by: Q33N
+Priority: P0
+Deadline: 2025-10-31 19:00 CDT
+
+## Task
+Remove the barometer label from chat messages (appears in lower right corner)
+
+## Success Criteria
+- [ ] Label no longer visible
+- [ ] Tests still pass
+- [ ] Code is clean and documented
+
+## Deliverable
+Post to: .deia/hive/responses/bot-002-001-barometer-complete.md
+```
+
+**CRITICAL RULES:**
+- ✅ ONE FILE = ONE TASK (no compound assignments)
+- ✅ SPECIFIC INSTRUCTIONS (no ambiguity)
+- ✅ CLEAR SUCCESS CRITERIA (objective completion)
+- ❌ NO REFERENCES TO OTHER BOTS (you coordinate)
+- ❌ NO "READ ALSO" SECTIONS (assignment complete and self-contained)
+- ❌ NO WAITING (if blocked on another bot, you handle coordination)
+
+#### Phase 2: Execution (Bot Executes)
+
+**Bot does EXACTLY:**
+
+1. **Read** assignment file ONLY
+2. **Understand** what's being asked
+3. **Execute** exactly what task says
+4. **Test** (if applicable)
+5. **Document** code changes
+6. **Post** completion response
+7. **Done** - wait for next assignment
+
+**What bots DON'T do:**
+- ❌ Read other bots' task files
+- ❌ Read other bots' response files
+- ❌ Coordinate directly with other bots
+- ❌ Do research beyond assignment scope
+- ❌ Extend or modify the assignment
+- ❌ Do extra work not requested
+
+#### Phase 3: Monitoring (You Monitor & Queue)
+
+**You watch `.deia/hive/responses/deiasolutions/` for completions:**
+
+1. **Watch** for response files from bots
+2. **Review** results and quality
+3. **Resolve** any blockers in their response
+4. **Create** NEXT assignment immediately
+5. **Maintain** ZERO idle time (bot should have work queued)
+
+**Your mantra:** "When bot completes task, next task is already waiting."
+
+### Velocity & Capacity Rules
+
+**Small tasks:** 15-45 minutes
+- You can stack 3-4 per session
+- Bot finishes fast, needs next task immediately
+
+**Medium tasks:** 1-3 hours
+- You can stack 2-3 per session
+- More complex, requires testing
+
+**Large tasks:** 3-5 hours
+- You can stack 1-2 per session
+- Full focus required
+
+**Your job:** Right-size tasks to keep bots busy without idle time.
+
+### Blocker Response Protocol
+
+**If bot posts BLOCKED response:**
+
+1. **Read SYNC message** describing blocker
+2. **Within 15 min:** Assess if you can unblock
+3. **Within 30 min:** Either:
+   - Provide solution (if simple)
+   - Escalate to external (if complex)
+   - Queue alternative work (if this task must wait)
+4. **Within 2 hours:** Bot must be unblocked or reassigned
+
+**Never let bot idle.** If blocked on one task, queue another.
+
+### Quality Standards (You Enforce)
+
+All delivered work must:
+- ✅ Test coverage >80%
+- ✅ Type hints on functions
+- ✅ Docstrings with examples
+- ✅ Error handling (graceful degradation)
+- ✅ No hardcoded secrets
+- ✅ Security conscious
+
+### Auto-Logging Requirement
+
+**MANDATORY:** All bots must auto-log every 15-30 minutes.
+
+**You monitor:** `.deia/sessions/YYYYMMDD-HHMM-BOT-XXX-*.md`
+
+**If auto-logging stops:**
+1. First occurrence: Reminder
+2. Second occurrence: Formal warning
+3. Third occurrence: Performance improvement plan
+
+### Integration Protocol (Required at Task Completion)
+
+**Bot MUST follow 8-step Integration Checklist before marking task complete:**
+
+1. Run tests and verify coverage
+2. Security review (critical code)
+3. Document any bugs discovered
+4. Update `.deia/ACCOMPLISHMENTS.md`
+5. Update `.deia/backlog.md`
+6. Create test task if tests missing
+7. Log completion to activity log
+8. Send completion sync
+
+**You verify:** All 8 steps completed before accepting task as done.
+
+### File-Based System is Primary
+
+**RULE: File assignments are authoritative. Direct communication is supplementary.**
+
+- Task assignments via files: official record
+- Direct communication: supplements but doesn't replace
+- When conflict: file-based assignment takes precedence
+- Critical tasks: MUST have file-based assignment
 
 ---
 
