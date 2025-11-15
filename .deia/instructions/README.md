@@ -1,111 +1,251 @@
-# Hive Instructions System
+# Unified Hive Communication System
 
-## How It Works
+## Overview
 
-**Queen (BOT-00001) writes instruction files here.**
-**Drones read their instruction files and execute tasks.**
+**Queen (Q33N/BOT-00001) creates task files in `.deia/hive/tasks/`**
+**Drones read task files, execute, and respond in `.deia/hive/responses/`**
+
+This system uses **unified naming convention and dedicated directories** for clarity and efficiency.
+
+---
+
+## Standard Naming Convention
+
+**Format:** `YYYY-MM-DD-HHMM-FROM-TO-TYPE-subject.md`
+
+- `YYYY-MM-DD-HHMM` = Date/time (ISO + 24-hour format)
+- `FROM` = Creator (Q33N, BOT-00002, etc.)
+- `TO` = Recipient (BOT-00002, Q33N, ALL)
+- `TYPE` = Message type (TASK, RESPONSE, SYNC, ALERT, DECISION)
+- `subject` = kebab-case description
 
 ---
 
 ## For Drones
 
-### 1. Find Your Instructions
+### 1. Find Your Tasks
 
-Your instruction file is named: `BOT-NNNNN-instructions.md`
+**Task location:** `.deia/hive/tasks/YYYY-MM-DD-HHMM-Q33N-BOT-NNNNN-TASK-subject.md`
 
-Example:
-- BOT-00002 reads: `BOT-00002-instructions.md`
-- BOT-00003 reads: `BOT-00003-instructions.md`
-
-### 2. Check for Updates
-
-**On startup, always read:**
+**List all your tasks:**
 ```bash
-cat .deia/instructions/BOT-NNNNN-instructions.md
+ls .deia/hive/tasks/ | grep BOT-NNNNN | grep TASK
 ```
 
-**Check for new task assignments:**
+**Read a specific task:**
 ```bash
-ls -lt .deia/instructions/BOT-NNNNN-*.md | head -5
+cat ".deia/hive/tasks/YYYY-MM-DD-HHMM-Q33N-BOT-NNNNN-TASK-subject.md"
 ```
 
-### 3. Execute Instructions
+### 2. Execute the Task
 
-Follow the instructions exactly as written.
+- Follow numbered steps exactly
+- Complete all acceptance criteria
+- Track time spent
+- Document any blockers
 
-### 4. Report Back
+### 3. Report Completion (REQUIRED)
 
-When done, create a report:
-```
-.deia/reports/BOT-NNNNN-report-YYYYMMDD-HHMMSS.md
-```
-
-Update your status:
+**Create response file in `.deia/hive/responses/`:**
 ```bash
-python ~/.deia/bot_coordinator.py status BOT-NNNNN complete --message "Task done, report filed"
+.deia/hive/responses/YYYY-MM-DD-HHMM-BOT-NNNNN-Q33N-RESPONSE-subject.md
 ```
+
+**Response file must include:**
+- Summary of work completed
+- All files modified (with line numbers)
+- Test results
+- Any issues encountered
+- Time spent
+- Status: COMPLETE or BLOCKED
+
+**Example response filename:**
+```
+2025-11-14-1700-BOT-00002-Q33N-RESPONSE-season-008-complete.md
+```
+
+### 4. Archive the Task (REQUIRED - PROCESS-0002)
+
+**MANDATORY:** Move (not copy) original task file to archive:
+```bash
+mv ".deia/hive/tasks/YYYY-MM-DD-HHMM-Q33N-BOT-NNNNN-TASK-subject.md" \
+   ".deia/hive/tasks/_archive/YYYY-MM-DD-HHMM-Q33N-BOT-NNNNN-TASK-subject.md"
+```
+
+**Why:** Prevents re-execution of completed tasks. Non-negotiable.
 
 ---
 
 ## For Queen
 
-### 1. Create Instructions
+### 1. Assign Tasks (Create Task Files)
 
-Write to: `.deia/instructions/BOT-NNNNN-instructions.md`
+**Task file location:** `.deia/hive/tasks/YYYY-MM-DD-HHMM-Q33N-BOT-NNNNN-TASK-subject.md`
 
-Include:
-- Bot identity and role
-- Current task
+**Task file contents:**
+- Title and purpose
+- Prerequisites
+- Numbered execution steps
 - Acceptance criteria
-- How to report back
+- Files to create/modify
+- How drone should report (response location and format)
+- Due date/time if applicable
 
-### 2. Assign New Tasks
+**Create task example:**
+```bash
+# Create timestamped task file
+cat > ".deia/hive/tasks/2025-11-14-1600-Q33N-BOT-00002-TASK-season-008-tests.md" << 'EOF'
+# Task: Write Season 008 Tests
 
-Create new instruction files:
+## Purpose
+Create unit tests for Season 008 features
+
+## Numbered Steps
+1. Review Season 008 spec
+2. Create test file: src/tests/season-008.test.js
+3. Write 15 test cases covering all features
+4. Run tests and verify all pass
+5. Report completion
+
+## Acceptance Criteria
+- All tests pass
+- Code coverage > 80%
+- No linting errors
+
+## Report When Done
+Create file in `.deia/hive/responses/` with completion status
+EOF
 ```
-BOT-NNNNN-task-name.md
+
+### 2. Monitor Task Progress
+
+**Check for responses:**
+```bash
+ls -lt .deia/hive/responses/ | head -10
 ```
 
-Drones check for new files regularly.
-
-### 3. Review Reports
-
-Drone reports appear in:
+**Read a drone's response:**
+```bash
+cat ".deia/hive/responses/YYYY-MM-DD-HHMM-BOT-NNNNN-Q33N-RESPONSE-subject.md"
 ```
-.deia/reports/BOT-NNNNN-*.md
+
+### 3. Verify Task Archival
+
+**CRITICAL:** Before accepting work, confirm task file is archived:
+```bash
+# Task should NOT exist in active tasks
+ls .deia/hive/tasks/ | grep "2025-11-14-1600"  # Should return nothing
+
+# Task SHOULD exist in archive
+ls .deia/hive/tasks/_archive/ | grep "2025-11-14-1600"  # Should find it
+```
+
+### 4. Assign Next Task or Coordinate
+
+**If COMPLETE:** Create next task file
+**If BLOCKED:** Create coordination message in `.deia/hive/coordination/`
+
+**Coordination file format:**
+```bash
+.deia/hive/coordination/YYYY-MM-DD-HHMM-Q33N-BOT-NNNNN-SYNC-subject.md
+```
+
+**Coordinate examples:**
+```
+2025-11-14-1620-Q33N-BOT-00002-SYNC-test-clarification.md
+2025-11-14-1750-Q33N-BOT-00002-ALERT-production-issue.md
+2025-11-14-1900-BOT-00002-Q33N-DECISION-escalation-needed.md
 ```
 
 ---
 
-## File Structure
+## Directory Structure
 
 ```
 .deia/
-  instructions/
-    README.md                          # This file
-    BOT-00001-instructions.md          # Queen's instructions (self-reference)
-    BOT-00002-instructions.md          # Drone 1 instructions
-    BOT-00003-instructions.md          # Drone 2 instructions
-    BOT-00002-test-assignment.md       # Specific task for Drone 1
-    BOT-00003-phase2-task.md           # Specific task for Drone 2
+  hive/
+    tasks/                    # Active task assignments
+      YYYY-MM-DD-HHMM-Q33N-BOT-NNNNN-TASK-*.md
+      _archive/              # Completed tasks (moved here)
 
-  reports/
-    BOT-00002-report-20251011-153000.md
-    BOT-00003-sync-integration-complete.md
+    responses/                # Drone completion reports
+      YYYY-MM-DD-HHMM-BOT-NNNNN-Q33N-RESPONSE-*.md
+      _archive/              # Old responses (reference)
 
-  handoffs/
-    # Original handoff docs (for reference)
+    coordination/             # Messages, syncs, alerts, decisions
+      YYYY-MM-DD-HHMM-FROM-TO-TYPE-*.md
+
+    heartbeats/               # Drone status (one per active bot)
+      BOT-00002.yaml
+      BOT-00003.yaml
 ```
 
 ---
 
-## Protocol
+## Quick Command Reference
 
-1. **Queen writes** instructions
-2. **Drones read** instructions from repo
-3. **Drones execute** tasks
-4. **Drones write** reports back to repo
-5. **Queen reviews** reports
-6. **Repeat**
+### For Drones
 
-**No copy-paste commands to Dave!** Everything through the repo.
+```bash
+# Find my tasks
+ls .deia/hive/tasks/ | grep BOT-NNNNN | grep TASK
+
+# Read latest task
+cat ".deia/hive/tasks/$(ls -t .deia/hive/tasks/ | grep BOT-NNNNN | grep TASK | head -1)"
+
+# Create response when done
+cat > ".deia/hive/responses/$(date +%Y-%m-%d-%H%M)-BOT-NNNNN-Q33N-RESPONSE-task-complete.md"
+
+# Archive the task (after creating response)
+mv ".deia/hive/tasks/YYYY-MM-DD-HHMM-Q33N-BOT-NNNNN-TASK-*" \
+   ".deia/hive/tasks/_archive/"
+```
+
+### For Queen
+
+```bash
+# Check for new responses
+ls -lt .deia/hive/responses/ | head -10
+
+# Verify task is archived (should NOT be in active tasks)
+ls .deia/hive/tasks/ | grep BOT-NNNNN | grep TASK
+
+# Create next task
+cat > ".deia/hive/tasks/$(date +%Y-%m-%d-%H%M)-Q33N-BOT-NNNNN-TASK-subject.md"
+```
+
+---
+
+## Key Principles
+
+1. **One Location Per Message Type**
+   - Tasks → `.deia/hive/tasks/` ONLY
+   - Responses → `.deia/hive/responses/` ONLY
+   - Coordination → `.deia/hive/coordination/` ONLY
+   - Status → `.deia/hive/heartbeats/` ONLY
+
+2. **Strict Naming Convention**
+   - No variations or exceptions
+   - Format: `YYYY-MM-DD-HHMM-FROM-TO-TYPE-subject.md`
+   - Enables sorting, filtering, direct access
+
+3. **Mandatory Archival (PROCESS-0002)**
+   - Task must be moved to `_archive/` after completion
+   - Non-negotiable
+   - Prevents duplicate execution
+
+4. **Timestamped for Chronology**
+   - Files sort chronologically
+   - Easy to find latest activity
+   - Clear timeline of work
+
+5. **No Copy-Paste to Human**
+   - All communication through repo files
+   - Human reviews deia/ directory
+   - Maintains audit trail
+
+---
+
+## Reference
+
+See also: `.deia/hive-coordination-rules.md` for detailed coordination procedures

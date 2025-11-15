@@ -19,41 +19,88 @@ Drones (BOT-00002, BOT-00003) - Execute tasks
 
 ## Communication Channels
 
-### Queen → Drone
-**Method:** Update drone's instruction file
-**File:** `.deia/instructions/BOT-NNNNN-instructions.md`
+### Unified Communication System (Standard Naming Convention)
+**Format:** `YYYY-MM-DD-HHMM-FROM-TO-TYPE-subject.md`
+
+Components:
+- `YYYY-MM-DD-HHMM` = Date and time (ISO format + 24-hour time)
+- `FROM` = Who created it (Q33N, BOT-00001, BOT-00002, etc.)
+- `TO` = Who it's for (BOT-00002, Q33N, ALL, etc.)
+- `TYPE` = Message type (TASK, RESPONSE, SYNC, ALERT, DECISION)
+- `subject` = kebab-case description
+
+**Location Rules (One Location Per Message Type):**
+- **Tasks** → `.deia/hive/tasks/` ONLY
+- **Responses** → `.deia/hive/responses/` ONLY
+- **Coordination** → `.deia/hive/coordination/` ONLY
+- **Status** → `.deia/hive/heartbeats/` ONLY
+
+### Queen → Drone (Task Assignment)
+**Method:** Create timestamped task file
+**Location:** `.deia/hive/tasks/YYYY-MM-DD-HHMM-Q33N-BOT-NNNNN-TASK-subject.md`
 **Protocol:**
-1. Queen updates file with new task
-2. Changes "Status:" from "STANDBY" to "ACTION REQUIRED"
+1. Queen creates task file with timestamp
+2. File goes in `.deia/hive/tasks/` directory
 3. Includes numbered task sequence
-4. Drone auto-detects change (60s interval)
+4. Drone polls/discovers file
 5. Drone executes task
 
-### Drone → Queen
-**Method:** Create report file
-**File:** `.deia/reports/BOT-NNNNN-report-TIMESTAMP.md`
+**Example:** `2025-11-14-1600-Q33N-BOT-00002-TASK-season-008-tests.md`
+
+### Drone → Queen (Task Completion)
+**Method:** Create timestamped response file
+**Location:** `.deia/hive/responses/YYYY-MM-DD-HHMM-BOT-NNNNN-Q33N-RESPONSE-subject.md`
 **Protocol:**
 1. Drone completes task
-2. Drone writes report with results
-3. Drone updates status via bot_coordinator.py
-4. Queen reads report (auto-check every 60s)
+2. Creates response file with timestamp in `.deia/hive/responses/`
+3. Includes completion status and results
+4. Queen polls/reads response
 5. Queen reviews and assigns next task
+
+**Example:** `2025-11-14-1700-BOT-00002-Q33N-RESPONSE-season-008-complete.md`
+
+### Queen ↔ Drone (Real-time Coordination)
+**Method:** Create coordination messages
+**Location:** `.deia/hive/coordination/YYYY-MM-DD-HHMM-FROM-TO-TYPE-subject.md`
+**Protocol:**
+1. Used for syncs, alerts, decisions between agents
+2. Timestamped for chronological ordering
+3. FROM/TO clearly identifies sender/recipient
+4. TYPE indicates message class (SYNC, ALERT, DECISION, etc.)
+
+**Examples:**
+```
+2025-11-14-1610-Q33N-BOT-00002-SYNC-task-clarification.md
+2025-11-14-1850-Q33N-BOT-00002-ALERT-production-issue.md
+2025-11-14-1920-BOT-00002-Q33N-DECISION-escalation-needed.md
+```
+
+### Status Tracking
+**Method:** Heartbeat files
+**Location:** `.deia/hive/heartbeats/BOT-NNNNN.yaml`
+**Protocol:**
+1. One file per active drone
+2. Updated regularly with status, progress, blockers
+3. YAML format for structured data
+4. Queen reads for health checks
+
+**Example:** `.deia/hive/heartbeats/BOT-00002.yaml`
 
 ### Queen → Human
 **Method:** Summary report in chat
 **Protocol:**
-1. Queen monitors all drone activity
+1. Queen monitors all drone activity via hive directories
 2. At checkpoints, Queen reports to human
 3. Human provides decisions/direction
-4. Queen translates to drone tasks
+4. Queen translates to task files or coordination messages
 
 ### Human → Queen
 **Method:** Direct instruction in chat
 **Protocol:**
 1. Human gives high-level directive
 2. Queen breaks down into tasks
-3. Queen assigns to appropriate drones
-4. Queen manages execution
+3. Queen creates task files in `.deia/hive/tasks/`
+4. Queen manages execution via coordination messages
 
 ---
 
@@ -65,28 +112,87 @@ Drones (BOT-00002, BOT-00003) - Execute tasks
 - Breaks down into drone-sized tasks
 - Determines dependencies
 
-### 2. Queen Assigns
-- Updates drone instruction file
-- Status: "ACTION REQUIRED"
-- Includes task sequence with:
-  - Clear steps (numbered)
-  - Acceptance criteria
-  - Files to create/modify
-  - How to report completion
+### 2. Queen Assigns (Creates Task File)
+**File location:** `.deia/hive/tasks/YYYY-MM-DD-HHMM-Q33N-BOT-NNNNN-TASK-subject.md`
+
+**Contents include:**
+- Clear numbered steps
+- Acceptance criteria
+- Files to create/modify
+- How to report completion (location and format)
+
+**Example task creation:**
+```bash
+# Create task file with standard naming
+.deia/hive/tasks/2025-11-14-1600-Q33N-BOT-00002-TASK-season-008-tests.md
+```
 
 ### 3. Drone Executes
-- Auto-detects task (60s check)
+- Discovers task file in `.deia/hive/tasks/`
 - Follows steps in sequence
-- Says progress after each step
-- Writes completion report
-- Updates status to "waiting"
+- Reports progress during execution
+- Completes work per acceptance criteria
 
-### 4. Queen Reviews
-- Reads drone report
+### 4. Drone Completes & Archives (REQUIRED - PROCESS-0002)
+**MANDATORY - DO NOT SKIP:**
+
+1. **Create completion response file:**
+   - Location: `.deia/hive/responses/YYYY-MM-DD-HHMM-BOT-NNNNN-Q33N-RESPONSE-subject.md`
+   - Status: `COMPLETE` or `BLOCKED`
+   - Document: Summary, files modified, test results, issues, time spent
+
+2. **ARCHIVE the original task file:**
+   - Move (not copy) from `.deia/hive/tasks/` → `.deia/hive/tasks/_archive/`
+   - Prevents re-execution of completed tasks
+   - Keeps active task directory clean
+   - Non-negotiable per PROCESS-0002
+
+3. **Example archival:**
+   ```bash
+   # Original task file is moved to archive
+   mv ".deia/hive/tasks/2025-11-14-1600-Q33N-BOT-00002-TASK-season-008-tests.md" \
+      ".deia/hive/tasks/_archive/2025-11-14-1600-Q33N-BOT-00002-TASK-season-008-tests.md"
+   ```
+
+**Completion Report Format (REQUIRED):**
+```markdown
+# Task Completion Report
+
+**Task:** YYYY-MM-DD-HHMM-Q33N-BOT-NNNNN-TASK-subject
+**Assigned to:** BOT-NNNNN
+**Completed by:** BOT-NNNNN
+**Status:** COMPLETE / BLOCKED
+**Completion Timestamp:** YYYY-MM-DD HH:MM CDT
+
+## Summary
+[Brief summary of what was accomplished]
+
+## Files Modified
+[List of all files modified with line numbers]
+
+## Test Results
+[Test output showing pass/fail]
+
+## Issues Encountered
+[Any blockers or problems solved]
+
+## Time Spent
+[X hours Y minutes]
+
+## Archival Confirmation
+- [x] Original task file moved to `.deia/hive/tasks/_archive/`
+- [x] Original filename: 2025-11-14-1600-Q33N-BOT-00002-TASK-season-008-tests.md
+- [x] Response file created in `.deia/hive/responses/`
+- [x] Completion status locked in this report
+```
+
+### 5. Queen Reviews
+- Reads drone response from `.deia/hive/responses/`
 - Verifies work quality
+- **Confirms task file IS archived** (not still in active `.deia/hive/tasks/`)
 - Either:
-  - Assigns next task, OR
-  - Requests fixes/improvements, OR
+  - Creates next task file (Assigns next task), OR
+  - Creates coordination message requesting fixes (if BLOCKED), OR
   - Reports to human for decision
 
 ---
@@ -217,6 +323,9 @@ Before accepting drone work:
 - [ ] Tests pass (if applicable)
 - [ ] No obvious errors or issues
 - [ ] Report is complete and accurate
+- [ ] **Original task file has been ARCHIVED** (moved to `.deia/hive/tasks/archived/`)
+- [ ] Completion report matches archival filename
+- [ ] No duplicate task execution risk
 
 ### When to Request Fixes
 Queen updates drone instruction:
@@ -224,12 +333,15 @@ Queen updates drone instruction:
 - Task: "Fix issues in previous work"
 - List specific issues found
 - Drone fixes and reports again
+- **Note:** If task file was archived, do NOT re-archive. Update the existing archived file status.
 
 ### When to Approve
 Queen:
+- Verifies task file is archived
 - Updates hive status
 - Assigns next task or sets to STANDBY
 - Reports to human if checkpoint
+- **Confirm:** No task files remain in active `.deia/hive/tasks/` for completed work
 
 ---
 
