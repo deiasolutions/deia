@@ -1,3 +1,55 @@
+processes:
+- id: PROCESS-0001
+  path: processes\PROCESS-0001-always-check-and-submit.md
+  title: 'PROCESS-0001: Always Check (or Create) the Process, Then Submit'
+  category: Foundation Process
+  scope: All bees, all vendors, all projects
+  status: Official
+  date: 2025-10-13
+  tags:
+  - process-discovery
+  - workflow-documentation
+  - knowledge-sharing
+  - mandatory
+  summary: Ensure every workflow has a documented process before execution. Discover → Create (if missing) → Execute → Test → Submit.
+- id: PROCESS-0002
+  path: processes\PROCESS-0002-task-completion-and-archival.md
+  title: 'PROCESS-0002: Task Completion & Archival (Mandatory Workflow)'
+  category: Hive Operations
+  scope: All task completions, all bees, all projects
+  status: Official - Q33N Directive (MANDATORY)
+  date: 2025-11-01
+  tags:
+  - task-completion
+  - archival
+  - duplicate-prevention
+  - mandatory
+  critical: true
+  summary: Ensure completed tasks are locked and prevent duplicate execution. Completion = archival to _archive/. Non-negotiable.
+- id: PROCESS-0003
+  path: processes\PROCESS-0003-process-discovery-and-contribution.md
+  title: 'PROCESS-0003: Process Discovery & Contribution Workflow'
+  category: Knowledge Management
+  scope: All process-related work, all projects
+  status: Official
+  date: 2025-11-14
+  tags:
+  - process-creation
+  - knowledge-contribution
+  - vendor-agnostic
+  - llm-agnostic
+  summary: Define how new processes are discovered, created locally, tested, and contributed to global DEIA. All processes must be LLM-agnostic.
+- id: scope-enforcement
+  path: processes\scope-enforcement.md
+  title: Scope Enforcement (Process Pattern)
+  category: Hive Operations
+  status: Official
+  tags:
+  - scope
+  - security
+  - bot-management
+  summary: Prevent off-scope actions and repository drift by asserting and enforcing working directory and allowed paths for every bot.
+
 patterns:
 - id: README
   path: bok\README.md
