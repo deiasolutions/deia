@@ -6,7 +6,7 @@
       "repo": "BOT",
       "status": "active",
       "registered_at": "2025-10-29T08:02:05.006801",
-      "last_heartbeat": "2025-10-29T15:18:59.017693",
+      "last_heartbeat": "2025-10-31T17:20:00.999125",
       "metadata": {
         "bot_type": "claude-code",
         "adapter_type": "cli"
@@ -18,21 +18,21 @@
       "repo": "BOT",
       "status": "active",
       "registered_at": "2025-10-29T08:18:06.876733",
-      "last_heartbeat": "2025-10-29T15:19:00.755943",
+      "last_heartbeat": "2025-10-31T17:19:56.003578",
       "metadata": {
         "bot_type": "claude",
         "adapter_type": "mock"
       }
     },
-    "BOT-TEST-CLI": {
-      "port": 8393,
-      "pid": 11956,
-      "repo": "BOT",
+    "TEST-CLI-001": {
+      "port": 8837,
+      "pid": 36888,
+      "repo": "TEST",
       "status": "active",
-      "registered_at": "2025-10-29T08:22:52.186843",
-      "last_heartbeat": "2025-10-29T08:22:57.198226",
+      "registered_at": "2025-10-29T16:36:38.418065",
+      "last_heartbeat": "2025-10-31T17:19:55.979663",
       "metadata": {}
     }
   },
-  "updated_at": "2025-10-29T15:19:00.756281"
+  "updated_at": "2025-10-31T17:20:00.999141"
 }

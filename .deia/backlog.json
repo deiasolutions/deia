@@ -191,14 +191,23 @@
                         "id":  "BACKLOG-013",
                         "title":  "Documentation update for sync command",
                         "description":  "Update README and docs with sync usage examples",
-                        "status":  "TODO",
+                        "status":  "DONE",
                         "priority":  "P2",
                         "type":  "documentation",
                         "estimated_steps":  3,
+                        "actual_steps": 3,
                         "estimated_time_seconds":  120,
+                        "actual_time_seconds": 600,
                         "dependencies":  [
                                              "BACKLOG-005"
-                                         ]
+                                         ],
+                        "completed_by": "BEE-1A",
+                        "completed_at": "2025-11-26T23:35:00Z",
+                        "deliverables": [
+                            "README.md - Added sync examples to Basic Usage",
+                            "README.md - Added Sync Usage Guide to Documentation section",
+                            "docs/guides/SYNC-USAGE-GUIDE.md - New comprehensive guide"
+                        ]
                     },
                     {
                         "id":  "BACKLOG-014",
@@ -239,14 +248,22 @@
                         "id":  "BACKLOG-016",
                         "title":  "Document DEIA Services system",
                         "description":  "Add DEIA Services to main repo documentation and README",
-                        "status":  "TODO",
+                        "status":  "DONE",
                         "priority":  "P2",
                         "type":  "documentation",
                         "estimated_steps":  3,
+                        "actual_steps": 3,
                         "estimated_time_seconds":  120,
+                        "actual_time_seconds": 600,
                         "dependencies":  [
 
-                                         ]
+                                         ],
+                        "completed_by": "BEE-1A",
+                        "completed_at": "2025-11-26T23:50:00Z",
+                        "deliverables": [
+                            "docs/services/README.md - New comprehensive services overview",
+                            "README.md - Added Services Overview link and Downloads Monitor"
+                        ]
                     },
                     {
                         "id":  "BACKLOG-017",
@@ -588,16 +605,40 @@
                                                     "Safety tests (no data loss)",
                                                     "Performance acceptable"
                                                 ]
+                    },
+                    {
+                        "id":  "BACKLOG-032",
+                        "title":  "Integrate crypto toolkit into bot communications",
+                        "description":  "The crypto_toolkit.py module exists with AES-256, RSA, ECC, digital signatures, and key management but is completely unused. Integrate for: (1) signing hive messages for authenticity, (2) encrypting sensitive bot-to-bot communications, (3) API request encryption layer (note: providers need plaintext for inference, so this is for transit/storage only). Currently all API calls to OpenAI/Anthropic are plaintext at application layer.",
+                        "status":  "QUEUED",
+                        "priority":  "P2",
+                        "type":  "security",
+                        "requested_by":  "Dave",
+                        "estimated_steps":  8,
+                        "estimated_time_seconds":  28800,
+                        "dependencies":  [],
+                        "gap_type":  "unused_infrastructure",
+                        "identified_by":  "Q33N",
+                        "identified_date":  "2025-11-27",
+                        "impact":  "Crypto toolkit built but never integrated; bot communications unencrypted at application layer",
+                        "existing_code":  "src/deia/crypto_toolkit.py",
+                        "acceptance_criteria":  [
+                                                    "Hive messages signed with digital signatures",
+                                                    "Sensitive inter-bot data encrypted",
+                                                    "Key management workflow documented",
+                                                    "Tests for crypto operations",
+                                                    "No plaintext secrets in logs"
+                                                ]
                     }
                 ],
     "backlog_stats":  {
-                          "total_items":  31,
+                          "total_items":  32,
                           "done":  9,
                           "in_progress":  1,
                           "assigned":  13,
                           "todo":  2,
                           "blocked":  0,
-                          "queued":  6
+                          "queued":  7
                       },
     "priority_definitions":  {
                                  "P0":  "Critical - Blocking other work",

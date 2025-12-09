@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from deia.adapters.claude_code_adapter import ClaudeCodeAdapter
 
-API_KEY = "SCRUBBED_ANTHROPIC_KEY"
+API_KEY = "SCRUBBED_USE_ENV_VAR"
 
 print("Testing ClaudeCodeAdapter...")
 print(f"API key: {API_KEY[:20]}...")

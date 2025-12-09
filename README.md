@@ -328,6 +328,10 @@ deia librarian query "error handling patterns"
 # Search BOK with enhanced search
 deia bok search "testing best practices" --fuzzy
 
+# Sync documents from Downloads to projects
+deia sync              # Watch Downloads folder (interactive)
+deia sync --once       # Process existing files and exit
+
 # Check system status
 deia status
 ```
@@ -336,6 +340,7 @@ deia status
 - [Conversation Logging Guide](docs/guides/CONVERSATION-LOGGING-GUIDE.md) - Start logging your AI sessions
 - [BOK Usage Guide](docs/guides/BOK-USAGE-GUIDE.md) - Search and use community patterns
 - [Pattern Submission Guide](docs/guides/PATTERN-SUBMISSION-GUIDE.md) - Contribute your discoveries
+- [Sync Usage Guide](docs/guides/SYNC-USAGE-GUIDE.md) - Route documents from Downloads to projects
 
 ---
 
@@ -618,11 +623,15 @@ git commit -m "docs(bok): Submit pattern - [Your Title]"
 
 ### 🔧 Services & APIs
 
+**[Services Overview](docs/services/README.md)** - Complete guide to DEIA services
+
+Core Services:
 - [Context Loader](docs/services/CONTEXT-LOADER.md) - Multi-source context assembly
 - [Enhanced BOK Search](docs/services/ENHANCED-BOK-SEARCH.md) - Advanced pattern discovery
 - [Query Router](docs/services/QUERY-ROUTER.md) - Intelligent query routing
 - [Session Logger](docs/services/SESSION-LOGGER.md) - Session tracking and metrics
 - [Master Librarian](docs/services/MASTER-LIBRARIAN.md) - Knowledge curation service
+- [Downloads Monitor](docs/services/DOWNLOADS-MONITOR.md) - File routing service
 - [Health Check System](docs/services/HEALTH-CHECK-SYSTEM.md) - System monitoring
 - [Project Browser](docs/services/PROJECT-BROWSER.md) - Project exploration
 - [Path Validator](docs/security/path-validator-security-model.md) - Security model
@@ -631,6 +640,7 @@ git commit -m "docs(bok): Submit pattern - [Your Title]"
 
 - [BOK Usage Guide](docs/guides/BOK-USAGE-GUIDE.md) - Search and use community patterns
 - [Pattern Submission Guide](docs/guides/PATTERN-SUBMISSION-GUIDE.md) - Contribute your discoveries
+- [Sync Usage Guide](docs/guides/SYNC-USAGE-GUIDE.md) - Route documents from Downloads to projects
 - [Pattern Template](templates/pattern-template.md) - Ready-to-use submission template
 
 ### 📋 Specifications

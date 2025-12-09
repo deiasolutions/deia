@@ -5,9 +5,9 @@
 ---
 
 ## CLAIMED BY
-**Instance ID:** 6edcb41e
-**Claimed at:** 2025-10-13 13:58
-**Last check-in:** 2025-10-13 13:58
+**Instance ID:** 17b8b197
+**Claimed at:** 2025-10-29 16:17
+**Last check-in:** 2025-10-29 16:17
 **Status:** ACTIVE
 
 ---
@@ -82,3 +82,5 @@ You are **BOT-00002**, a Drone-Dev in the hive.
 - 2025-10-13T13:38:23 [BOT-00002] Suggestions written: .deia/reports/link-fix-20251013-1337.md (command script workaround)
 - 2025-10-13T17:20:42 [BOT-00002] Ready - Instance 6edcb41e
 
+- 2025-10-29T16:17:50 [BOT-00002] Ready
+- 2025-10-29T16:18:32 [BOT-00002] Standing by

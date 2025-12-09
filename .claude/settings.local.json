@@ -1,53 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Write(**/*.md)",
-      "Write(**/*.json)",
-      "Write(**/*.py)",
-      "Write(**/*.yaml)",
-      "Write(**/*.yml)",
-      "Edit(**/*)",
-      "Read(//c/Users/davee/**)",
-      "Bash(curl:*)",
-      "Bash(wscat:*)",
-      "Bash(npm install:*)",
-      "Bash(pip install:*)",
-      "Bash(python:*)",
-      "Bash(python -m pytest:*)",
-      "Bash(python -m json.tool:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(git push)",
-      "Bash(git pull:*)",
-      "Bash(git tag:*)",
-      "Bash(git checkout:*)",
-      "Bash(timeout:*)",
-      "Bash(awk:*)",
-      "Bash(tee:*)",
-      "Bash(dir:*)",
-      "Bash(find:*)",
-      "Bash(cat:*)",
-      "Bash(ls:*)",
-      "Bash(grep:*)",
-      "Bash(claude:*)",
-      "Bash(pkill:*)",
-      "Bash(bash:*)",
-      "Bash(chmod:*)",
-      "Bash(xargs:*)",
-      "WebSearch",
-      "WebFetch"
+      "Bash(DATABASE_URL=\"postgresql://postgres:GiQSMxeavjYdCHYtYbXFzjrSzsukqHoS@ballast.proxy.rlwy.net:56570/railway\" node -e:*)",
+      "Bash(cat:*)"
     ],
-    "deny": [
-      "Bash(rm:*)",
-      "Bash(rm -rf:*)",
-      "Bash(git reset --hard:*)",
-      "Bash(git rebase:*)",
-      "Bash(git clean:*)"
-    ],
-    "ask": [
-      "Bash(git push --force:*)",
-      "Bash(git push -f:*)",
-      "Bash(git rm:*)"
-    ]
+    "deny": [],
+    "ask": []
   }
 }

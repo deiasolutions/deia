@@ -49,6 +49,62 @@ processes:
   - security
   - bot-management
   summary: Prevent off-scope actions and repository drift by asserting and enforcing working directory and allowed paths for every bot.
+- id: PROCESS-0004
+  path: processes\PROCESS-0004-activity-logging.md
+  title: 'PROCESS-0004: Activity Logging (Mandatory Per-Bee Responsibility)'
+  category: Hive Operations
+  scope: All bees, all vendors, all projects
+  status: Official - Q33N Directive (MANDATORY)
+  date: 2025-11-26
+  tags:
+  - logging
+  - activity-log
+  - mandatory
+  - bee-responsibility
+  - llm-agnostic
+  critical: true
+  summary: Every bee manually logs their own activity every 20-30 minutes. NOT automated. YOU write the logs. Non-negotiable.
+
+training:
+- id: BEE-BOOTCAMP
+  path: hive\BEE-BOOTCAMP.md
+  title: 'Bee Bootcamp: DEIA Hive Operations Training'
+  category: Onboarding
+  scope: All new bees, all projects
+  status: Official
+  date: 2025-11-26
+  tags:
+  - bootcamp
+  - onboarding
+  - bee-training
+  - mandatory-reading
+  summary: Master training document for all bees. Covers task execution, logging (MANDATORY), communication channels, and hive operations. READ THIS FIRST.
+- id: Q33N-ACADEMY
+  path: hive\Q33N-ACADEMY.md
+  title: 'Q33N Academy: Queen Bee Training'
+  category: Onboarding
+  scope: Agents assuming Q33N authority
+  status: Official
+  date: 2025-11-26
+  tags:
+  - queen
+  - q33n
+  - coordinator
+  - management
+  summary: Training for Q33N (Queen Bee) coordinators. Covers task assignment, bee monitoring, quality enforcement, and hive management.
+- id: Q33N-QUEEN-ONBOARDING
+  path: Q33N-QUEEN-ONBOARDING.md
+  title: 'Q33N Queen Bee: Full Reference Guide'
+  category: Reference
+  scope: Q33N authority detailed reference
+  status: Official
+  date: 2025-10-29
+  tags:
+  - queen
+  - q33n
+  - detailed-reference
+  - governance
+  summary: Comprehensive 693-line reference for Q33N authority. Read Q33N-ACADEMY first, then this for full details.
 
 patterns:
 - id: README

@@ -107,3 +107,5 @@
 {"timestamp": "2025-10-29T08:20:32.791189", "action": "registered", "bot_id": "BOT-999", "details": {"port": 8118, "pid": 31408}}
 {"timestamp": "2025-10-29T08:20:46.347397", "action": "unregistered", "bot_id": "BOT-999", "details": {"port": 8118}}
 {"timestamp": "2025-10-29T08:22:52.187874", "action": "registered", "bot_id": "BOT-TEST-CLI", "details": {"port": 8393, "pid": 11956}}
+{"timestamp": "2025-10-29T16:35:52.585689", "action": "stale_entry_removed", "bot_id": "BOT-TEST-CLI", "details": {"port": 8393, "pid": 11956, "repo": "BOT", "status": "active", "registered_at": "2025-10-29T08:22:52.186843", "last_heartbeat": "2025-10-29T08:22:57.198226", "metadata": {}}}
+{"timestamp": "2025-10-29T16:36:38.421334", "action": "registered", "bot_id": "TEST-CLI-001", "details": {"port": 8837, "pid": 36888}}
