@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/davee/.deia/tunnel/claude-to-claude/**)",
+      "Read(//c/Users/davee/Downloads/**)",
+      "Bash(ls:*)",
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/**)",
+      "Bash(python -m deia.cli:*)",
+      "Bash(python:*)",
+      "Bash(git -C \"C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\" status --short)",
+      "Bash(dir:*)",
+      "Read(//c/Users/davee/.deia/**)",
+      "Bash(pip install:*)",
+      "Bash(deia:*)",
+      "Bash(pip:*)",
+      "Bash(git --version:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

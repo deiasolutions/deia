@@ -1,0 +1,28 @@
+patterns:
+  - id: windows-python-utf8-encoding
+    title: Windows Python UTF-8 Console Encoding Fix
+    category: platforms/windows
+    tags: [python, windows, utf8, encoding, console]
+    path: bok/platforms/windows/python-console-utf8-encoding.md
+    summary: Fix UTF-8 encoding issues in Python Windows console
+
+  - id: netlify-toml-parsing
+    title: Netlify TOML Parsing Errors
+    category: platforms/netlify
+    tags: [netlify, toml, deployment, gotchas]
+    path: bok/platforms/netlify/toml-parsing-errors.md
+    summary: Common TOML configuration errors in Netlify
+
+  - id: flask-jwt-authentication
+    title: Flask JWT Authentication
+    category: frameworks/flask
+    tags: [flask, python, jwt, authentication]
+    path: bok/frameworks/flask/flask-jwt-authentication.md
+    summary: Implement JWT-based authentication in Flask applications
+
+  - id: react-hooks-intro
+    title: Introduction to React Hooks
+    category: frameworks/react 
+    tags: [react, javascript, hooks]
+    path: bok/frameworks/react/react-hooks-intro.md
+    summary: Overview of React Hooks and their usage

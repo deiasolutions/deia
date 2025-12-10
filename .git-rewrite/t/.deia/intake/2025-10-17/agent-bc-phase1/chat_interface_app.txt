@@ -1,0 +1,133 @@
+"""Chat Interface App"""
+
+import json
+from typing import Dict, List
+
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.responses import HTMLResponse
+
+from deia.services.agent_coordinator import AgentCoordinator
+from deia.services.agent_status import AgentStatusTracker
+from deia.services.deia_context import DEIAContextLoader
+
+app = FastAPI()
+
+status_tracker = AgentStatusTracker()
+context_loader = DEIAContextLoader()
+agent_coordinator = AgentCoordinator(status_tracker, context_loader)
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            data = await websocket.receive_text()
+            message = json.loads(data)
+            
+            if message["type"] == "query":
+                query = message["query"]
+                result = process_query(query)
+                await websocket.send_text(json.dumps(result))
+            
+            elif message["type"] == "command":
+                command = message["command"]
+                result = process_command(command)
+                await websocket.send_text(json.dumps(result))
+    
+    except WebSocketDisconnect:
+        pass
+
+def process_query(query: str) -> Dict:
+    """Process user query"""
+    agent = agent_coordinator.route_query(query)
+    if agent == "local":
+        response = generate_local_response(query)
+        return {
+            "type": "response", 
+            "content": response
+        }
+    else:
+        task_file = agent_coordinator.create_delegation_task(query, agent)
+        return {
+            "type": "delegation",
+            "agent": agent,
+            "task_file": task_file
+        }
+
+def generate_local_response(query: str) -> str:
+    """Generate response for locally handleable queries"""
+    # TODO: Implement local query handling logic
+    return "This is a placeholder response for local query handling."
+
+def process_command(command: str) -> Dict:
+    """Process chat commands"""
+    parts = command.split()
+    cmd = parts[0]
+
+    if cmd == "/bok":
+        if len(parts) < 2:
+            return {"type": "error", "message": "Usage: /bok search|show <query>"}
+        
+        action = parts[1]
+        query = " ".join(parts[2:])
+
+        if action == "search":
+            results = context_loader.search_bok(query)
+            return {
+                "type": "bok_results",
+                "results": results
+            }
+        elif action == "show":
+            pattern = context_loader.get_pattern(query)
+            return {
+                "type": "bok_pattern",
+                "pattern_id": query,
+                "content": pattern
+            }
+        else:
+            return {"type": "error", "message": "Unknown action. Usage: /bok search|show <query>"}
+    
+    elif cmd == "/status":
+        agent_status = agent_coordinator.get_agent_status()
+        return {
+            "type": "agent_status",
+            "agents": [
+                {"id": agent, "status": data["status"], "task": data.get("current_task")}
+                for agent, data in agent_status.items()
+            ]
+        }
+
+    elif cmd == "/context":
+        is_deia = context_loader.is_deia_project()
+        bok_index = context_loader.load_bok_index()
+        recent_sessions = context_loader.get_recent_sessions()
+
+        return {
+            "type": "deia_context",
+            "is_deia_project": is_deia,
+            "bok_patterns": len(bok_index.get("patterns", {})),
+            "recent_sessions": len(recent_sessions)
+        }
+
+    elif cmd == "/delegate":
+        if len(parts) < 3:
+            return {"type": "error", "message": "Usage: /delegate <agent> <query>"}
+        
+        agent = parts[1]
+        query = " ".join(parts[2:])
+        task_file = agent_coordinator.create_delegation_task(query, agent)
+
+        return {
+            "type": "delegation",
+            "agent": agent,
+            "task_file": task_file
+        }
+    
+    else:
+        return {"type": "error", "message": "Unknown command"}
+
+@app.get("/")
+async def get():
+    # TODO: Update with new UI
+    with open("chat_interface.html") as f:
+        return HTMLResponse(content=f.read())

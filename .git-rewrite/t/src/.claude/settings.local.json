@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/.deia/bot-logs/**)",
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/.deia/**)",
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/**)",
+      "Bash(pytest tests/unit/test_bok_pattern_validator.py -v)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

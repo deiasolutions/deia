@@ -1,0 +1,39 @@
+{
+  "hives": [
+    {
+      "hive_id": "HIVE-DEIA-CORE",
+      "name": "DEIA Core Development",
+      "description": "Main DEIA project - Python CLI, extensions, BOK, governance",
+      "project_path": "C:/Users/davee/OneDrive/Documents/GitHub/deiasolutions",
+      "status": "active",
+      "registered_at": "2025-10-17T00:00:00.000000",
+      "agents": [
+        "CLAUDE-CODE-001",
+        "CLAUDE-CODE-002",
+        "CLAUDE-CODE-003",
+        "CLAUDE-CODE-004",
+        "CLAUDE-CODE-005",
+        "CLAUDE-CODE-006"
+      ],
+      "coordination_method": "file_based",
+      "tunnel_path": ".deia/tunnel/claude-to-claude",
+      "shared_bok": true,
+      "governance_model": "federalist"
+    },
+    {
+      "hive_id": "HIVE-FBB",
+      "name": "Family Bond Bot",
+      "description": "Custody communication coaching SaaS - FastAPI + React + Railway",
+      "project_path": "C:/Users/davee/OneDrive/Documents/GitHub/familybondbot",
+      "status": "active",
+      "registered_at": "2025-10-19T00:00:00.000000",
+      "agents": [],
+      "coordination_method": "file_based",
+      "tunnel_path": "../deiasolutions/.deia/tunnel/hive-fbb",
+      "shared_bok": true,
+      "governance_model": "deia_commons",
+      "deia_cli_path": "C:/Users/davee/OneDrive/Documents/GitHub/deiasolutions",
+      "notes": "Uses deiasolutions local DEIA CLI installation, separate hive for custody tech patterns"
+    }
+  ]
+}

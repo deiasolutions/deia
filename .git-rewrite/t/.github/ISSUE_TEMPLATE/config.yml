@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: DEIA Discussions
+    url: https://github.com/deiasolutions/deia/discussions
+    about: Ask questions and discuss DEIA with the community
+  - name: Pattern Submission
+    url: https://github.com/deiasolutions/deia/blob/master/CONTRIBUTING.md
+    about: Submit patterns to the Book of Knowledge (BOK)

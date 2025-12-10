@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/**)",
+      "Bash(cat:*)",
+      "Bash(python:*)",
+      "Bash(find:*)",
+      "WebSearch",
+      "Bash(git mv:*)",
+      "Bash(chmod +x .deia/tools/llh_validate.py)",
+      "Bash(.deia/tools/llh_hatch.sh llh house-llh --from-template minimal-llh)",
+      "Bash(chmod +x .deia/tools/llh_hatch.sh)",
+      "Bash(.deia/tools/llh_hatch.sh llh senate-llh --from-template minimal-llh)",
+      "Bash(.deia/tools/llh_hatch.sh tag appropriations-2025-tag --from-template minimal-tag)",
+      "Bash(.deia/tools/llh_hatch.sh:*)",
+      "Bash(echo $OPENAI_API_KEY)",
+      "Bash(powershell.exe -Command \"if ($env:OPENAI_API_KEY) { Write-Output ''OPENAI_API_KEY is set (hidden for security)'' } else { Write-Output ''OPENAI_API_KEY not found in environment'' }\")",
+      "Bash(env)",
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/familybondbot/fbb/backend/**)",
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/familybondbot/**)",
+      "Bash(for file in ../.deia/bot-logs/CLAUDE-CODE-*.jsonl)",
+      "Bash(head:*)",
+      "Bash(done)",
+      "Read(//c/Users/davee/Downloads/**)",
+      "Bash(bash /tmp/monitor-tunnel.sh)",
+      "Bash(bash /tmp/monitor-hive.sh)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

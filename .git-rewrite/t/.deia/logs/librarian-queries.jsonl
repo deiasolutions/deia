@@ -1,0 +1,8 @@
+{"ts": "2025-10-18T00:08:57.242235Z", "query": "deployment", "logic": "AND", "filters": {}, "results": 0, "fuzzy_enabled": false}
+{"ts": "2025-10-17T19:21:45.747795-05:00", "query": "governance", "logic": "AND", "filters": {}, "results": 0, "fuzzy_enabled": false}
+{"ts": "2025-10-17T19:22:25.375423-05:00", "query": "coordination", "logic": "AND", "filters": {}, "results": 0, "fuzzy_enabled": false}
+{"ts": "2025-10-17T19:23:32.612785-05:00", "query": "deployment testing", "logic": "OR", "filters": {"urgency": "critical"}, "results": 0, "fuzzy_enabled": false}
+{"ts": "2025-10-18T12:14:28.420137-05:00", "query": "deployment", "logic": "AND", "filters": {}, "results": 0, "fuzzy_enabled": false}
+{"ts": "2025-10-24T11:40:50.923254-05:00", "query": "scrum master responsibilities", "logic": "AND", "filters": {}, "results": 0, "fuzzy_enabled": false}
+{"ts": "2025-10-24T11:40:54.973714-05:00", "query": "bot coordination", "logic": "AND", "filters": {}, "results": 0, "fuzzy_enabled": false}
+{"ts": "2025-10-24T11:41:32.382397-05:00", "query": "agent coordination protocol", "logic": "AND", "filters": {}, "results": 0, "fuzzy_enabled": false}

@@ -1,0 +1,119 @@
+# Netlify Configuration for Q33N Platform
+# All domains route through q33n.com infrastructure
+
+[build]
+  command = "cd website && hugo --minify"
+  publish = "website/public"
+
+[build.environment]
+  HUGO_VERSION = "0.120.0"
+  HUGO_ENV = "production"
+
+# Domain redirects - Route all domains to Q33N sections
+# Status 200 = proxy (visitor sees original domain, not q33n.com)
+
+# DEIA Solutions (.org and .com) → /deia/ section
+[[redirects]]
+  from = "https://deiasolutions.org/*"
+  to = "https://q33n.com/deia/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://www.deiasolutions.org/*"
+  to = "https://q33n.com/deia/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://deiasolutions.com/*"
+  to = "https://q33n.com/deia/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://www.deiasolutions.com/*"
+  to = "https://q33n.com/deia/:splat"
+  status = 200
+  force = true
+
+# SimDecisions → /simdecisions/ section
+[[redirects]]
+  from = "https://simdecisions.com/*"
+  to = "https://q33n.com/simdecisions/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://www.simdecisions.com/*"
+  to = "https://q33n.com/simdecisions/:splat"
+  status = 200
+  force = true
+
+# Efemera → /efemera/ section
+[[redirects]]
+  from = "https://efemera.live/*"
+  to = "https://q33n.com/efemera/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://www.efemera.live/*"
+  to = "https://q33n.com/efemera/:splat"
+  status = 200
+  force = true
+
+# Q33N variants (.net, .org, .life) - Future use
+[[redirects]]
+  from = "https://q33n.net/*"
+  to = "https://q33n.com/network/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://q33n.org/*"
+  to = "https://q33n.com/community/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://q33n.life/*"
+  to = "https://q33n.com/stories/:splat"
+  status = 200
+  force = true
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# Cache static assets
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Deploy contexts
+[context.production]
+  command = "cd website && hugo --minify"
+
+[context.deploy-preview]
+  command = "cd website && hugo --buildFuture -b $DEPLOY_PRIME_URL"
+
+[context.branch-deploy]
+  command = "cd website && hugo -b $DEPLOY_PRIME_URL"

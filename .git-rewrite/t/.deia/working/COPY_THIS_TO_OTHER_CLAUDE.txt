@@ -1,0 +1,26 @@
+==========================================
+COPY THIS AND SEND TO YOUR OTHER CLAUDE CODE SESSION
+==========================================
+
+Please save our current session to the knowledge pipeline.
+
+**Save to:** C:\Users\davee\OneDrive\Documents\GitHub\deiasolutions\claude\devlogs\intake\
+
+**Filename:** parentchildcontactsolutions_session_2025-10-05_[brief-topic-slug].md
+
+**First, read the template:**
+C:\Users\davee\OneDrive\Documents\GitHub\deiasolutions\claude\HOW_TO_SAVE_LOGS_FROM_OTHER_PROJECTS.md
+
+**Then create a comprehensive session log including:**
+1. What we worked on (context and goals)
+2. Technical decisions made and why
+3. All code changes with rationale
+4. What worked well and what didn't
+5. Human-AI collaboration insights
+6. Challenges encountered and solutions
+7. Open questions and next steps
+8. List of all files modified
+
+Be thorough - this will be reviewed to extract knowledge for building our Book of Knowledge (BOK) and improving future dev sessions.
+
+==========================================

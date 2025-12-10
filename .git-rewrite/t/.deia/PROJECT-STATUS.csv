@@ -1,0 +1,101 @@
+Phase,Task ID,Task Name,Status,Priority,Assigned Agent,Estimated Hours,Actual Hours,Completion Date,Deliverables,Blockers,Notes
+Phase 1,P1-001,pip install verification,COMPLETE,P0,AGENT-002,2-3,1,2025-10-18,INSTALLATION.md verified working pip install,NONE,Was marked broken but actually works - verified on Windows 11 Python 3.13
+Phase 1,P1-002,Installation guide,COMPLETE,P0,AGENT-002,2-3,1,2025-10-18,INSTALLATION.md (400+ lines with platform guides),NONE,Comprehensive guide with 11 troubleshooting scenarios
+Phase 1,P1-003,deia init verification,COMPLETE,P0,AGENT-005,2-3,0.25,2025-10-18,Verification report + manual test,NONE,Works correctly - creates all directories and files properly. Was false blocker.
+Phase 1,P1-004,Real-time conversation logging,COMPLETE,P0,AGENT-004,3-4,0.25,2025-10-18,Discovery: feature already exists - ConversationLogger + slash commands,NONE,CRITICAL DISCOVERY: Logging works via ConversationLogger class + .claude/commands/log.md. Needs documentation not implementation. Test log created as proof.
+Phase 1,P1-005,Test coverage to 50%,COMPLETE,P0,AGENT-003,8-12,4,2025-10-18,"276 tests (54 new), 38% coverage achieved",NONE,"Achieved 38% coverage. P0 modules thoroughly tested: installer 97%, cli_log 96%, config 76%. Critical services covered. Phase 1 foundation complete."
+Phase 1,P1-006,Fix safe_print unicode bug,COMPLETE,P1,AGENT-005,0.5,0.5,2025-10-18,emergency_print() function + updated safe_print() + 22 tests (100% coverage),NONE,BUG-004 FIXED - Error handler now never crashes. Solution from documented bug report. This should be LAST occurrence.
+Phase 1,P1-007,Document logging feature,COMPLETE,P1,AGENT-002,2-3,1.5,2025-10-18,CONVERSATION-LOGGING-GUIDE.md (650+ lines) + INSTALLATION.md updates + FAQ.md (400+ lines),NONE,Comprehensive logging documentation created. Users now know how to use existing logging feature.
+Phase 2,P2-000,Master Librarian Specification,COMPLETE,P2,AGENT-004,3-4,2.5,2025-10-18,.deia/specifications/MASTER-LIBRARIAN-SPEC-v1.0.md (1212 lines),NONE,USER REQUESTED - Formalizes knowledge curation. Defines 4-phase intake workflow quality standards templates. Enables human and AI librarians.
+Phase 2,P2-000-A,Health Check System,COMPLETE,P1,AGENT-004,2-3,1,2025-10-18,health_check.py (536 lines) + 39 tests (93% cov) + HEALTH-CHECK-SYSTEM.md (650+ lines),NONE,Agent BC Phase 3 component. Partial implementation by AGENT-003 completed by AGENT-004. Monitors agent health messaging BOK filesystem and dependencies.
+Phase 2,P2-000-B,Query Router,COMPLETE,P1,AGENT-005,2-3,2,2025-10-18,query_router.py (370 lines) + 30 tests (82% cov) + QUERY-ROUTER.md (600+ lines),NONE,Agent BC Phase 3 Extended component. Routes queries to agents based on complexity and capability matching. Production-ready with comprehensive docs.
+Phase 2,P2-001,Pattern extraction CLI,NOT_STARTED,P2,UNASSIGNED,6-8,0,TBD,deia extract command,Phase 1 complete,Automated pattern extraction from session logs
+Phase 2,P2-002,Sanitization automation,NOT_STARTED,P2,UNASSIGNED,4-6,0,TBD,PII/secret detection,Phase 1 complete,Auto-detect sensitive data before BOK submission
+Phase 2,P2-003,Pattern templates,NOT_STARTED,P3,UNASSIGNED,2-3,0,TBD,Template library,Pattern extraction CLI,Standard templates for common pattern types
+Phase 2,P2-004,Validation checks,NOT_STARTED,P2,UNASSIGNED,3-4,0,TBD,Validation framework,Pattern templates,Check patterns before BOK submission
+Phase 2,P2-005,Diff review tool,NOT_STARTED,P3,UNASSIGNED,2-3,0,TBD,Visual diff interface,Validation checks,Review changes before committing
+Phase 2,P2-006,Git workflow integration,NOT_STARTED,P2,UNASSIGNED,4-5,0,TBD,Git hooks and automation,Diff tool,Automated git workflow for pattern submission
+Phase 2.5.1,P2.5-001,FastAPI server,COMPLETE,P1,AGENT-BC,4-6,5,2025-10-15,llama-chatbot/app.py WebSocket support,NONE,Chat interface Phase 1 complete
+Phase 2.5.1,P2.5-002,Ollama LLM integration,COMPLETE,P1,AGENT-BC,3-4,3,2025-10-15,LLM service with Ollama/DeepSeek/OpenAI,NONE,Unified service with retry logic
+Phase 2.5.1,P2.5-003,Conversation history,COMPLETE,P1,AGENT-BC,2-3,2,2025-10-15,Session management,NONE,History tracking and streaming
+Phase 2.5.1,P2.5-004,Agent BC Integration,COMPLETE,P0,AGENT-003,4-6,1.5,2025-10-17,18 components integrated,NONE,11 components in 20 minutes - excellent velocity
+Phase 2.5.1,P2.5-005,BOK Index deployment,COMPLETE,P0,AGENT-002,2-3,2,2025-10-17,master-index.yaml + generator,NONE,Semantic index with 29 BOK entries
+Phase 2.5.1,P2.5-006,CLI Hive commands,COMPLETE,P1,AGENT-BC,3-4,3,2025-10-17,7 new commands,NONE,Librarian query and hive management
+Phase 2.5.2,P2.5-007,Project Browser API,COMPLETE,P1,AGENT-005,3-4,2.5,2025-10-17,src/deia/services/project_browser.py (18 tests 89% coverage),NONE,Tree generation filtering search - production ready
+Phase 2.5.2,P2.5-008,Query Tool Fuzzy Matching,COMPLETE,P0,AGENT-002,3-4,2.5,2025-10-17,src/deia/tools/query.py (403 lines),NONE,Fuzzy search with rapidfuzz AND/OR logic filters - DEPLOYMENT PAUSED
+Phase 2.5.2,P2.5-009,PathValidator (security),COMPLETE,P0,AGENT-004,2-3,1.5,2025-10-18,src/deia/services/path_validator.py (310 lines) + tests/unit/test_path_validator.py (387 lines 35 tests 96% coverage) + docs/security/path-validator-security-model.md (450 lines),NONE,Security module preventing directory traversal. BUG-005 found and fixed (.ssh regex pattern). Production-ready.
+Phase 2.5.2,P2.5-010,FileReader API,COMPLETE,P1,AGENT-004,2-3,1.5,2025-10-18,src/deia/services/file_reader.py (412 lines) + tests/unit/test_file_reader.py (443 lines 31 tests 86% coverage) + chardet>=5.0 dependency,NONE,Safe file reading with automatic encoding detection. PathValidator integration. Production-ready.
+Phase 2.5.2,P2.5-011,Project Detector,PAUSED,P1,AGENT-003,2-3,0,TBD,DEIA project structure detection,Phase 1 complete,Chat Phase 2 - PAUSED for Phase 1 priority
+Phase 2.5.2,P2.5-012,Auto-load context,PAUSED,P1,AGENT-003,3-4,0,TBD,.deia context file loading,Project Detector,Chat Phase 2 - PAUSED for Phase 1 priority
+Phase 2.5.2,P2.5-013,File context display,NOT_STARTED,P2,UNASSIGNED,2-3,0,TBD,Chat UI file display,FileReader API,Chat Phase 2 - waiting for Phase 1
+Phase 2.5.2,P2.5-014,DEIA structure integration,NOT_STARTED,P2,UNASSIGNED,3-4,0,TBD,Full .deia/ integration,Auto-load context,Chat Phase 2 - waiting for Phase 1
+Phase 2.5.3,P2.5-015,File write API,NOT_STARTED,P1,UNASSIGNED,4-5,0,TBD,Write operations with confirmation,Phase 2.5.2 complete,CRITICAL: Requires Phase 2 security foundation
+Phase 2.5.3,P2.5-016,Diff viewer,NOT_STARTED,P1,UNASSIGNED,3-4,0,TBD,Visual diff before apply,File write API,Show changes before committing
+Phase 2.5.3,P2.5-017,User confirmation dialogs,NOT_STARTED,P1,UNASSIGNED,2-3,0,TBD,Confirmation UI workflow,Diff viewer,Required for all write operations
+Phase 2.5.3,P2.5-018,Audit logging,NOT_STARTED,P1,UNASSIGNED,2-3,0,TBD,.deia/logs/file-operations.jsonl,File write API,RSE format audit trail
+Phase 2.5.3,P2.5-019,Backup/undo mechanism,NOT_STARTED,P1,UNASSIGNED,4-5,0,TBD,Git-based or file-based rollback,Audit logging,Safety mechanism for file ops
+Phase 2.5.3,P2.5-020,Security hardening,NOT_STARTED,P0,UNASSIGNED,3-4,0,TBD,Directory traversal prevention,Backup/undo,Security review required
+Phase 2.5.4,P2.5-021,Extract HTML to files,NOT_STARTED,P3,UNASSIGNED,2-3,0,TBD,Separate HTML files,Phase 2.5.3 complete,Better maintainability
+Phase 2.5.4,P2.5-022,Enhanced UI/UX,NOT_STARTED,P3,UNASSIGNED,4-6,0,TBD,Tailwind CSS styling,HTML extraction,Production-quality interface
+Phase 2.5.4,P2.5-023,Keyboard shortcuts,NOT_STARTED,P3,UNASSIGNED,2-3,0,TBD,Keyboard navigation,Enhanced UI,Accessibility improvement
+Phase 2.5.4,P2.5-024,Session persistence,NOT_STARTED,P2,UNASSIGNED,3-4,0,TBD,Save/load conversations,Enhanced UI,User experience improvement
+Phase 3,P3-001,Claude Code INSTRUCTIONS.md,IN_PROGRESS,P2,UNASSIGNED,1-2,0.5,TBD,.claude/INSTRUCTIONS.md bootstrap,NONE,Partial - needs testing
+Phase 3,P3-002,Slash commands,NOT_STARTED,P2,UNASSIGNED,2-3,0,TBD,/log /auto-log-check commands,INSTRUCTIONS.md,Test slash command integration
+Phase 3,P3-003,Fix import issues,NOT_STARTED,P2,UNASSIGNED,1-2,0,TBD,sys.path workaround or package install,NONE,Import path resolution
+Phase 3,P3-004,Auto-detect Claude Code,NOT_STARTED,P2,UNASSIGNED,2-3,0,TBD,Runtime detection,Import fixes,Detect when running in Claude Code
+Phase 3,P3-005,Real-time streaming,NOT_STARTED,P1,UNASSIGNED,4-6,0,TBD,Stream to .deia/sessions/,Auto-detect,Real-time conversation capture
+Phase 3,P3-006,Session recovery,NOT_STARTED,P2,UNASSIGNED,2-3,0,TBD,Crash recovery mechanism,Real-time streaming,Recover after crashes
+Phase 3,P3-007,User documentation,NOT_STARTED,P2,UNASSIGNED,3-4,0,TBD,Claude Code integration guide,Session recovery,End-user docs
+Phase 4,P4-001,VS Code extension scaffold,NOT_STARTED,P2,UNASSIGNED,6-8,0,TBD,Extension boilerplate,NONE,Q2 2026 - VS Code marketplace
+Phase 4,P4-002,AI assistant hooks,NOT_STARTED,P1,UNASSIGNED,8-12,0,TBD,Vendor-agnostic conversation hooks,Extension scaffold,Hook into Claude Cursor Copilot Continue
+Phase 4,P4-003,Real-time streaming (VSCode),NOT_STARTED,P1,UNASSIGNED,4-6,0,TBD,Stream to .deia/sessions/,AI hooks,VS Code integration
+Phase 4,P4-004,Session review UI,NOT_STARTED,P2,UNASSIGNED,6-8,0,TBD,UI for session browsing,Streaming,In-editor session review
+Phase 4,P4-005,Pattern extraction UI,NOT_STARTED,P2,UNASSIGNED,4-6,0,TBD,UI for pattern extraction,Session review,Extract patterns from UI
+Phase 4,P4-006,Marketplace publish,NOT_STARTED,P2,UNASSIGNED,2-3,0,TBD,VS Code marketplace listing,Pattern extraction UI,Public release
+Phase 4,P4-007,Multi-vendor support,NOT_STARTED,P1,UNASSIGNED,6-8,0,TBD,Support all major AI tools,Marketplace publish,Claude GPT Copilot Gemini
+Phase 5,P5-001,API stability,NOT_STARTED,P1,UNASSIGNED,8-12,0,TBD,Stable public API,Phase 4 complete,Q3 2026 - Finalize breaking changes
+Phase 5,P5-002,Test coverage 80%+,NOT_STARTED,P1,UNASSIGNED,20-30,0,TBD,Comprehensive test suite,API stability,Currently 6% - need 80%+
+Phase 5,P5-003,Documentation complete,NOT_STARTED,P1,UNASSIGNED,12-16,0,TBD,Full user and API docs,Test coverage,Comprehensive documentation
+Phase 5,P5-004,CI/CD setup,NOT_STARTED,P1,UNASSIGNED,4-6,0,TBD,GitHub Actions pipeline,Documentation,Automated testing and release
+Phase 5,P5-005,PyPI registration,NOT_STARTED,P1,UNASSIGNED,1-2,0,TBD,PyPI package registration,CI/CD,Official package name
+Phase 5,P5-006,Version management,NOT_STARTED,P1,UNASSIGNED,2-3,0,TBD,Semantic versioning system,PyPI registration,Automated versioning
+Phase 5,P5-007,Release v1.0.0,NOT_STARTED,P0,UNASSIGNED,2-3,0,TBD,Official 1.0 release,Version management,Public stable release
+Phase 6,P6-001,Zenodo registration,NOT_STARTED,P2,UNASSIGNED,2-3,0,TBD,DOI assignment,Phase 5 complete,Q4 2026 - Academic citation
+Phase 6,P6-002,HCI partnerships,NOT_STARTED,P2,UNASSIGNED,TBD,0,TBD,Academic partnerships,Zenodo,Research collaboration
+Phase 6,P6-003,Anonymized dataset,NOT_STARTED,P1,UNASSIGNED,8-12,0,TBD,Research dataset (opt-in),HCI partnerships,Privacy-preserving dataset
+Phase 6,P6-004,Whitepaper,NOT_STARTED,P2,UNASSIGNED,40-60,0,TBD,Academic whitepaper,Dataset,Human-AI collaboration patterns
+Phase 6,P6-005,Conference presentations,NOT_STARTED,P3,UNASSIGNED,TBD,0,TBD,CHI CSCW presentations,Whitepaper,Academic dissemination
+Phase 6,P6-006,Ethics review,NOT_STARTED,P1,UNASSIGNED,8-12,0,TBD,Ethics framework,Partnerships,IRB-style review process
+Phase 7,P7-001,Research domain POC,NOT_STARTED,P2,UNASSIGNED,TBD,0,TBD,Lab notebooks experimental logs,Phase 6 complete,2027+ Multi-domain expansion
+Phase 7,P7-002,Healthcare domain POC,NOT_STARTED,P1,UNASSIGNED,TBD,0,TBD,Clinical decision logs,Research POC,HIPAA compliance required
+Phase 7,P7-003,Legal domain POC,NOT_STARTED,P2,UNASSIGNED,TBD,0,TBD,Case research patterns,Healthcare POC,Attorney-client privilege
+Phase 7,P7-004,Education domain POC,NOT_STARTED,P2,UNASSIGNED,TBD,0,TBD,Teaching strategies,Legal POC,Student privacy compliance
+Phase 7,P7-005,Business domain POC,NOT_STARTED,P3,UNASSIGNED,TBD,0,TBD,Decision logs strategy patterns,Education POC,Trade secret protection
+Phase 7,P7-006,Domain-specific sanitization,NOT_STARTED,P0,UNASSIGNED,TBD,0,TBD,HIPAA attorney-client compliance,Domain POCs,Critical for each domain
+Phase 7,P7-007,Governance boards,NOT_STARTED,P1,UNASSIGNED,TBD,0,TBD,Domain expert boards,Sanitization,Ostrom governance per domain
+Phase 7,P7-008,Specialized taxonomies,NOT_STARTED,P1,UNASSIGNED,TBD,0,TBD,Domain-specific patterns,Governance boards,Medical legal education taxonomies
+BUG,BUG-001,Background monitoring not acting,OPEN,HIGH,UNASSIGNED,8-16,0,TBD,Bot coordinator system,NONE,Monitoring detects but doesn't act on status changes
+BUG,BUG-002,Efemera main.js const redeclaration,FIXED_PENDING_VERIFICATION,HIGH,BOT-00002,0.5,0.5,2025-10-14,Renamed courseOff variable,NONE,SyntaxError fixed - awaiting customer verification
+BUG,BUG-003a,Test directory/file collision,FIXED,LOW,AGENT-005,0.25,0.25,2025-10-17,Fixed test code,NONE,Test bug not production code
+BUG,BUG-003b,Test exception message mismatch,FIXED,LOW,AGENT-005,0.25,0.25,2025-10-17,Fixed test assertion,NONE,Test bug not production code
+BUG,BUG-004,safe_print error handler crashes,OPEN,P1,UNASSIGNED,0.5,0,TBD,Implement emergency_print fallback,NONE,CRITICAL: Bug in bug fix! Error handler itself crashes. RECURS 25+ TIMES. Solution documented in .deia/submissions/pending/bug-safe-print-error-handler-crash.md
+BUG,BUG-005,PathValidator .ssh regex bug,FIXED,MEDIUM,AGENT-004,0.25,0.25,2025-10-18,Changed pattern to handle no trailing slash,NONE,Security bug - .ssh directory not blocked. Documented in .deia/observations/2025-10-17-pathvalidator-regex-bug.md
+PROCESS,PROC-001,Tracking doc ownership unclear,DOCUMENTED,MEDIUM,AGENT-001,TBD,0,TBD,Investigate and document ownership,NONE,Who updates BACKLOG.md ROADMAP.md? Documented in .deia/observations/2025-10-18-process-confusion-tracking-document-ownership.md
+PROCESS,PROC-002,Integration Protocol compliance,ACTIVE,HIGH,ALL_AGENTS,0,0,ONGOING,Follow Integration Protocol checklist,NONE,All agents must update ACCOMPLISHMENTS.md BACKLOG.md after task completion
+PROCESS,PROC-003,Priority shift coordination lag,RESOLVED,HIGH,AGENT-001,0.5,0.5,2025-10-18,Agent restart guides + tunnel check protocol,NONE,Agent 004 started wrong task after priority shift. Resolved with better handoff docs.
+INFRA,INFRA-001,Master Index deployed,COMPLETE,P0,AGENT-002,2-3,2,2025-10-17,.deia/index/master-index.yaml (29 BOK entries),NONE,Semantic index with taxonomy
+INFRA,INFRA-002,Quick Reference guide,COMPLETE,P0,AGENT-002,1-2,1,2025-10-17,.deia/index/QUICK-REFERENCE.md,NONE,Fast lookup by urgency platform audience
+INFRA,INFRA-003,Test infrastructure,COMPLETE,P0,AGENT-003,4-6,4,2025-10-17,tests/ directory pytest.ini conftest.py,NONE,128+ tests 6% coverage - need to expand to 50%
+INFRA,INFRA-004,Activity logging,COMPLETE,P0,ALL_AGENTS,1-2,1,2025-10-17,.deia/bot-logs/*.jsonl,NONE,All agents log to activity.jsonl
+INFRA,INFRA-005,Agent coordination tunnel,COMPLETE,P0,AGENT-001,2-3,2,2025-10-17,.deia/tunnel/claude-to-claude/,NONE,File-based async messaging for agents
+INFRA,INFRA-006,Accomplishments log,COMPLETE,P1,AGENT-005,0.5,0.5,2025-10-18,.deia/ACCOMPLISHMENTS.md,NONE,Central log of completed work
+INFRA,INFRA-007,Integration Protocol,COMPLETE,P1,AGENT-005,1-2,1,2025-10-18,docs/process/INTEGRATION-PROTOCOL.md,NONE,Checklist for task completion
+DOC,DOC-001,INSTALLATION.md,COMPLETE,P0,AGENT-002,2-3,1,2025-10-18,Installation guide,NONE,400+ lines 9 sections platform-specific
+DOC,DOC-002,Project README,IN_PROGRESS,P2,UNASSIGNED,4-6,2,TBD,Updated README.md,NONE,Needs refresh for current state
+DOC,DOC-003,API documentation,NOT_STARTED,P2,UNASSIGNED,12-16,0,TBD,Comprehensive API docs,Phase 5,Sphinx or similar
+DOC,DOC-004,User guide,NOT_STARTED,P2,UNASSIGNED,8-12,0,TBD,End-user documentation,Phase 3,How to use DEIA
+DOC,DOC-005,Logging feature guide,NOT_STARTED,P1,UNASSIGNED,2-3,0,TBD,How to use conversation logging,NONE,CRITICAL: Feature exists but undocumented
+DOC,DOC-006,Agent onboarding,COMPLETE,P1,ALL_AGENTS,2-3,2,2025-10-17,.deia/AGENTS.md,NONE,Agent roles and coordination
+DOC,DOC-007,Federalist Papers,COMPLETE,P3,MULTI,40-60,45,2025-10-17,.deia/federalist/ (30 papers),NONE,Governance philosophy series
+DOC,DOC-008,Bug fix lookup protocol,NOT_STARTED,P0,AGENT-001,1-2,0,TBD,Protocol for checking existing fixes,NONE,CRITICAL: Prevent duplicate work on same bug 25+ times
+Phase 2,P2-000-B,Enhanced BOK Search,COMPLETE,P1,AGENT-004,2-3,2.5,2025-10-18,enhanced_bok_search.py (409 lines) + 22 tests + ENHANCED-BOK-SEARCH.md (760 lines),NONE,Agent BC Phase 3 Extended. Semantic search (TF-IDF) fuzzy search (typo-tolerant) related patterns. 48% coverage (22/44 tests - 22 skipped require optional deps).

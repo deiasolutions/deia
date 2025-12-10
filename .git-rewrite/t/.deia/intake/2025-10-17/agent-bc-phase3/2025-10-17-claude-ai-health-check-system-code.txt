@@ -1,0 +1,104 @@
+import logging
+from typing import Dict, List
+
+from agent_status_tracker import AgentStatusTracker
+from messaging_system import MessagingSystem
+from bok_management_system import BOKManagementSystem
+from deia_filesystem import DEIAFilesystem
+from dependency_manager import DependencyManager
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class HealthCheckSystem:
+    def __init__(self):
+        self.agent_status_tracker = AgentStatusTracker()
+        self.messaging_system = MessagingSystem()
+        self.bok_management_system = BOKManagementSystem()
+        self.deia_filesystem = DEIAFilesystem()
+        self.dependency_manager = DependencyManager()
+
+    def run_all_checks(self) -> Dict[str, Dict]:
+        results = {}
+        results['agents'] = self.check_agent_status()
+        results['messaging'] = self.check_messaging_system()
+        results['bok'] = self.check_bok_index()
+        results['filesystem'] = self.check_filesystem()
+        results['dependencies'] = self.check_dependencies()
+        return results
+
+    def check_agent_status(self) -> Dict:
+        status = 'PASS'
+        message = 'All agents are responsive and have up-to-date heartbeats.'
+        
+        try:
+            offline_agents = self.agent_status_tracker.get_offline_agents()
+            if offline_agents:
+                status = 'FAIL'
+                message = f"The following agents are offline: {', '.join(offline_agents)}"
+        except Exception as e:
+            status = 'FAIL'
+            message = f"Error checking agent status: {str(e)}"
+
+        return {'status': status, 'message': message}
+
+    def check_messaging_system(self) -> Dict:
+        status = 'PASS'
+        message = 'Messaging system is functioning correctly.'
+
+        try:
+            test_message = 'Test message'
+            self.messaging_system.send_message('test_sender', 'test_receiver', test_message)
+            received_message = self.messaging_system.receive_message('test_receiver')
+            if received_message != test_message:
+                status = 'FAIL'
+                message = 'Messaging system test failed: Sent and received messages do not match.'
+        except Exception as e:
+            status = 'FAIL'
+            message = f"Error checking messaging system: {str(e)}"
+
+        return {'status': status, 'message': message}
+
+    def check_bok_index(self) -> Dict:
+        status = 'PASS'
+        message = 'BOK index is valid and up-to-date.'
+
+        try:
+            if not self.bok_management_system.validate_index():
+                status = 'FAIL'
+                message = 'BOK index validation failed: Inconsistencies or missing entries detected.'
+        except Exception as e:
+            status = 'FAIL'
+            message = f"Error checking BOK index: {str(e)}"
+
+        return {'status': status, 'message': message}
+
+    def check_filesystem(self) -> Dict:
+        status = 'PASS'
+        message = 'DEIA project filesystem is intact and accessible.'
+        
+        try:
+            missing_dirs, missing_files = self.deia_filesystem.check_structure()
+            if missing_dirs or missing_files:
+                status = 'FAIL'
+                message = f"Filesystem issues detected: Missing directories: {', '.join(missing_dirs)}. Missing files: {', '.join(missing_files)}"
+        except Exception as e:
+            status = 'FAIL'
+            message = f"Error checking filesystem: {str(e)}"
+
+        return {'status': status, 'message': message}
+
+    def check_dependencies(self) -> Dict:
+        status = 'PASS'
+        message = 'All dependencies are installed and up-to-date.'
+        
+        try:
+            missing_deps, outdated_deps = self.dependency_manager.check_dependencies()
+            if missing_deps or outdated_deps:
+                status = 'FAIL'
+                message = f"Dependency issues detected: Missing dependencies: {', '.join(missing_deps)}. Outdated dependencies: {', '.join(outdated_deps)}"
+        except Exception as e:
+            status = 'FAIL'
+            message = f"Error checking dependencies: {str(e)}"
+
+        return {'status': status, 'message': message}

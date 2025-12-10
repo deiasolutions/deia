@@ -1,0 +1,125 @@
+"""
+Special Instructions:
+- Make sure to set up a temporary directory for the heartbeat files and the BOK index
+- Use `unittest.mock` to patch the `datetime.datetime` and `time.sleep` functions for testing timeouts
+- Run these tests using pytest: `pytest tests/integration/test_integration_coordination.py`
+"""
+
+import json
+import os
+import tempfile
+import time
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+import pytest
+
+from deia.services.agent_coordinator import AgentCoordinator
+from deia.services.agent_status import AgentStatusTracker
+from deia.services.deia_context import DEIAContextLoader
+from deia.services.messaging import create_task_file
+
+@pytest.fixture(scope="module")
+def coordinator():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        heartbeat_dir = Path(tmpdir) / "heartbeats"
+        heartbeat_dir.mkdir()
+        status_tracker = AgentStatusTracker(str(heartbeat_dir))
+
+        bok_dir = Path(tmpdir) / "bok"
+        bok_dir.mkdir()
+        with open(bok_dir / "test-pattern.md", "w") as f:
+            f.write("# Test Pattern\nThis is a test pattern.")
+        
+        index_file = Path(tmpdir) / "index" / "master-index.yaml"
+        index_file.parent.mkdir(parents=True)
+        with open(index_file, "w") as f:
+            f.write("patterns:\n  - id: test-pattern\n    title: Test Pattern\n")
+        
+        context_loader = DEIAContextLoader(str(bok_dir))
+        
+        yield AgentCoordinator(status_tracker, context_loader)
+
+def test_agent_registration_and_status(coordinator):
+    coordinator.status_tracker.register_agent("agent1", "worker")
+    coordinator.status_tracker.update_heartbeat("agent1", "busy", "task1")
+
+    status = coordinator.get_agent_status()
+    assert "agent1" in status
+    assert status["agent1"]["status"] == "busy"
+    assert status["agent1"]["current_task"] == "task1"
+
+def test_query_delegation(coordinator, monkeypatch):
+    monkeypatch.setenv("HOME", "/tmp")
+    coordinator.status_tracker.register_agent("agent1", "worker")
+    coordinator.status_tracker.update_heartbeat("agent1", "idle")
+
+    query = "What is the meaning of life?"
+    result = coordinator.route_query(query)
+
+    assert result != "local"
+    assert "agent1" in result
+
+    task_file = coordinator.create_delegation_task(query, "agent1")
+    assert Path(task_file).exists()
+    with open(task_file, "r") as f:
+        content = f.read()
+        assert "What is the meaning of life?" in content
+        assert "agent1" in content
+
+def test_bok_search_and_display(coordinator):
+    results = coordinator.context_loader.search_bok("test")
+    assert len(results) == 1
+    assert results[0]["id"] == "test-pattern"
+
+    pattern = coordinator.context_loader.get_pattern("test-pattern")
+    assert "This is a test pattern." in pattern
+
+@patch("deia.services.agent_status.datetime")
+def test_agent_offline_detection(mock_datetime, coordinator):
+    mock_datetime.datetime.now.return_value = unittest.mock.Mock(
+        isoformat=lambda: "2023-05-20T10:00:00Z"
+    )
+
+    coordinator.status_tracker.register_agent("agent1", "worker")
+    coordinator.status_tracker.update_heartbeat("agent1", "idle")
+
+    mock_datetime.datetime.now.return_value = unittest.mock.Mock(
+        isoformat=lambda: "2023-05-20T10:06:00Z"  # 6 minutes later
+    )
+
+    offline_agents = coordinator.status_tracker.check_heartbeats()
+    assert "agent1" in offline_agents
+    assert offline_agents["agent1"] == "idle"
+
+    status = coordinator.get_agent_status()
+    assert status["agent1"]["status"] == "offline"
+
+@patch("deia.services.agent_status.datetime")
+@patch("time.sleep", return_value=None)
+def test_time_based_state_transitions(mock_sleep, mock_datetime, coordinator):
+    mock_datetime.datetime.now.return_value = unittest.mock.Mock(
+        isoformat=lambda: "2023-05-20T10:00:00Z"
+    )
+
+    coordinator.status_tracker.register_agent("agent1", "worker")
+    coordinator.status_tracker.update_heartbeat("agent1", "waiting")
+
+    mock_datetime.datetime.now.return_value = unittest.mock.Mock(
+        isoformat=lambda: "2023-05-20T10:16:00Z"  # 16 minutes later
+    )
+
+    coordinator.status_tracker.check_heartbeats()
+    status = coordinator.get_agent_status()
+    assert status["agent1"]["status"] == "idle"
+
+    coordinator.status_tracker.update_heartbeat("agent1", "busy")
+
+    mock_datetime.datetime.now.return_value = unittest.mock.Mock(
+        isoformat=lambda: "2023-05-20T10:32:00Z"  # 32 minutes later
+    )
+
+    coordinator.status_tracker.check_heartbeats()
+    status = coordinator.get_agent_status()
+    assert status["agent1"]["status"] == "offline"

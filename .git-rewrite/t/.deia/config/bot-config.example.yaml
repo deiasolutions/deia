@@ -1,0 +1,60 @@
+# DEIA Bot Configuration - Example/Template
+# Copy this to bot-config.yaml and customize for your environment
+
+version: "1.0"
+environment: "production"  # production, staging, development
+debug: false
+
+# Alert thresholds for health monitoring
+thresholds:
+  # CPU thresholds (0-1)
+  cpu_warning_percent: 0.80       # Alert when CPU > 80%
+  cpu_critical_percent: 0.95      # Critical alert when CPU > 95%
+
+  # Memory thresholds (0-1)
+  memory_warning_percent: 0.75    # Alert when memory > 75%
+  memory_critical_percent: 0.90   # Critical alert when memory > 90%
+
+  # Queue and task thresholds
+  queue_backlog_threshold: 10     # Alert when queue has 10+ tasks
+  bot_failure_threshold: 0.30     # Alert when success rate < 30%
+  message_failure_threshold: 5    # Alert when 5+ messages fail
+
+# Bot scaling and resource limits
+bot_limits:
+  min_bots: 1            # Minimum bots to keep running
+  max_bots: 10           # Maximum bots to scale up to
+  max_concurrent_tasks_per_bot: 3  # Max tasks per bot
+  port_range_start: 8001 # Starting port for bot services
+  port_range_end: 8999   # Ending port for bot services
+
+# System timeout settings
+timeouts:
+  task_timeout_seconds: 3600              # 1 hour per task
+  message_ttl_seconds: 3600               # 1 hour message lifetime
+  bot_health_check_interval_seconds: 30   # Check bot health every 30s
+  scaling_evaluation_interval_seconds: 60 # Check scaling every 60s
+  config_reload_check_interval_seconds: 300  # Check config every 5min
+
+# Feature enable/disable flags
+feature_flags:
+  messaging_enabled: true                # Bot-to-bot messaging
+  adaptive_scheduling_enabled: true      # ML-based task routing
+  health_monitoring_enabled: true        # Real-time health dashboard
+  auto_scaling_enabled: true             # Auto-scale bots up/down
+  audit_logging_enabled: true            # Immutable audit trail
+  graceful_degradation_enabled: true     # Degrade gracefully on failure
+
+# Adaptive learning configuration
+learning:
+  learning_rate: 0.1                   # Exponential moving average weight
+  min_samples_for_recommendation: 3    # Min tasks before recommending
+  min_confidence_threshold: 0.7        # Min confidence for recommendation
+  reset_learning_on_major_version_change: true
+
+# Custom application-specific settings
+custom:
+  # Add your custom settings here
+  # Example:
+  # slack_webhook: "https://hooks.slack.com/..."
+  # admin_email: "admin@example.com"

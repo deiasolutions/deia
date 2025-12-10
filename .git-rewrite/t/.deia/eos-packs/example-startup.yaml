@@ -1,0 +1,107 @@
+---
+# Example eOS Pack: Startup Organization
+# Demonstrates a simple startup organizational structure
+
+eos_version: "0.1"
+pack_id: example-startup
+author: claude
+created: 2025-10-16
+
+entities:
+  llhs:
+    - id: founders-llh
+      title: "Founders"
+      structure: executive
+      parent: null
+      members: ["founder-1", "founder-2"]
+      caps: [strategic_planning, resource_allocation, hiring]
+      governance:
+        structure: flat
+        decision_mode: consensus
+        transparency: members-only
+      policy:
+        rotg: true
+        dnd: true
+      constraints: []
+      capacities:
+        budget: high
+        attention: high
+        staff_cycles: low
+
+    - id: engineering-llh
+      title: "Engineering"
+      structure: functional
+      parent: founders-llh
+      members: ["eng-lead", "eng-1", "eng-2", "eng-3"]
+      caps: [develop_software, manage_infra, code_review]
+      governance:
+        structure: hierarchical
+        decision_mode: executive
+        transparency: members-only
+      policy:
+        rotg: true
+        dnd: true
+      constraints: ["no_direct_customer_contact"]
+      capacities:
+        budget: medium
+        attention: high
+        staff_cycles: high
+
+    - id: product-llh
+      title: "Product"
+      structure: functional
+      parent: founders-llh
+      members: ["product-lead", "product-1"]
+      caps: [define_roadmap, prioritize_features, customer_research]
+      governance:
+        structure: flat
+        decision_mode: consensus
+        transparency: public
+      policy:
+        rotg: true
+        dnd: true
+      constraints: []
+      capacities:
+        budget: medium
+        attention: high
+        staff_cycles: medium
+
+  tags:
+    - id: mvp-launch-tag
+      title: "MVP Launch"
+      parent: engineering-llh
+      deadline: "2025-12-31"
+      members: ["eng-lead", "eng-1", "product-lead"]
+      caps: [coordinate_launch, track_milestones, manage_blockers]
+      objectives: "Launch minimum viable product by end of Q4 2025"
+
+    - id: customer-beta-tag
+      title: "Customer Beta Program"
+      parent: product-llh
+      deadline: "2025-11-30"
+      members: ["product-lead", "product-1", "eng-lead"]
+      caps: [recruit_beta_users, gather_feedback, track_issues]
+      objectives: "Recruit and manage 50 beta customers for MVP feedback"
+
+  drones: []
+
+routing:
+  llhs: ".deia/.projects/example-startup_001/llhs/"
+  tags: ".deia/.projects/example-startup_001/tag-teams/"
+  drones: ".deia/.projects/example-startup_001/drones/"
+
+build:
+  validate: true
+  log_rse: true
+  require_approval: true
+
+description: |
+  Example startup organization with:
+  - Founders (executive LLH)
+  - Engineering team (functional LLH)
+  - Product team (functional LLH)
+  - Two cross-functional TAGs (MVP launch, customer beta)
+
+  This demonstrates hierarchical LLHs (founders → eng/product)
+  and TAG teams that span multiple LLHs.
+---

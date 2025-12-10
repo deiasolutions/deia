@@ -1,0 +1,86 @@
+# DEIA Production Configuration
+# Recommended settings for production deployment
+# Copy to bot-config.yaml and adjust for your environment
+
+version: "1.0"
+environment: "production"
+debug: false
+log_level: "INFO"
+
+# Alert thresholds for health monitoring
+thresholds:
+  # CPU thresholds (0-1)
+  cpu_warning_percent: 0.80
+  cpu_critical_percent: 0.95
+
+  # Memory thresholds (0-1)
+  memory_warning_percent: 0.75
+  memory_critical_percent: 0.90
+
+  # Queue and task thresholds
+  queue_backlog_threshold: 10
+  bot_failure_threshold: 0.30
+  message_failure_threshold: 5
+
+# Bot scaling and resource limits
+bot_limits:
+  min_bots: 2                  # Start with 2 bots in production
+  max_bots: 10                 # Allow scaling up to 10
+  max_concurrent_tasks_per_bot: 3
+  port_range_start: 8001
+  port_range_end: 8999
+
+# System timeout settings
+timeouts:
+  task_timeout_seconds: 3600
+  message_ttl_seconds: 3600
+  bot_health_check_interval_seconds: 30
+  scaling_evaluation_interval_seconds: 60
+  config_reload_check_interval_seconds: 300
+
+# Feature enable/disable flags
+feature_flags:
+  messaging_enabled: true
+  adaptive_scheduling_enabled: true
+  health_monitoring_enabled: true
+  auto_scaling_enabled: true
+  audit_logging_enabled: true
+  graceful_degradation_enabled: true
+  request_validation_enabled: true
+  performance_profiling_enabled: true
+
+# Adaptive learning configuration
+learning:
+  learning_rate: 0.1
+  min_samples_for_recommendation: 3
+  min_confidence_threshold: 0.7
+  reset_learning_on_major_version_change: true
+
+# Data persistence
+persistence:
+  backup_enabled: true
+  backup_interval_minutes: 10
+  backup_retention_days: 7
+  state_directory: ".deia/state"
+  log_directory: ".deia/bot-logs"
+  config_directory: ".deia/config"
+
+# Disaster recovery
+disaster_recovery:
+  enabled: true
+  recovery_checks_interval_seconds: 60
+  max_recovery_attempts: 3
+  recovery_backoff_seconds: 5
+
+# Audit logging
+audit:
+  enabled: true
+  log_file: ".deia/bot-logs/audit.jsonl"
+  retention_days: 90
+  include_sensitive_data: false
+
+# Custom application settings
+custom:
+  app_name: "DEIA Orchestration System"
+  version: "1.0.0"
+  environment: "production"

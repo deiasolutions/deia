@@ -1,0 +1,27 @@
+{
+  "BOT-00001": {
+    "bot_id": "BOT-00001",
+    "role": "Queen",
+    "instance_id": "queen-game-b-20251012",
+    "status": "active",
+    "registered_at": "2025-10-12T14:30:00.000000",
+    "current_task": "Strategic Documents Review & Final Synthesis",
+    "assignment_file": ".deia/instructions/TASK-ASSIGNMENT-BOT-00001-strategic-synthesis.md"
+  },
+  "BOT-00010": {
+    "bot_id": "BOT-00010",
+    "role": "Drone-Development",
+    "status": "assigned",
+    "registered_at": "2025-10-12T15:25:00.000000",
+    "current_task": "Code & Architecture Review",
+    "assignment_file": ".deia/instructions/TASK-ASSIGNMENT-BOT-00010-code-architecture.md"
+  },
+  "BOT-00011": {
+    "bot_id": "BOT-00011",
+    "role": "Drone-Integration",
+    "status": "assigned",
+    "registered_at": "2025-10-12T15:25:00.000000",
+    "current_task": "Extensions & User Documentation Review",
+    "assignment_file": ".deia/instructions/TASK-ASSIGNMENT-BOT-00011-extensions-docs.md"
+  }
+}

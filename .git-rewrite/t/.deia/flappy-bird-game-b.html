@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phoenix's Legendary Journey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+        }
+
+        #gameContainer {
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+            padding: 20px;
+        }
+
+        canvas {
+            border: 4px solid #333;
+            border-radius: 8px;
+            background: #87CEEB;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 100%;
+            height: auto;
+        }
+
+        #info {
+            margin-top: 15px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }
+
+        #controls {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .screen-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .screen-overlay h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #FFD700;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+        }
+
+        .screen-overlay p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .screen-overlay button {
+            margin-top: 20px;
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            background: #4CAF50;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-family: 'Courier New', Courier, monospace;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .screen-overlay button:hover {
+            background: #45A049;
+            transform: scale(1.05);
+        }
+
+        .screen-overlay button:active {
+            transform: scale(0.95);
+        }
+
+        #canvasContainer {
+            position: relative;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="canvasContainer">
+            <canvas id="gameCanvas" width="450" height="700"></canvas>
+
+            <!-- Title Screen -->
+            <div id="titleScreen" class="screen-overlay">
+                <h1>PHOENIX'S<br>LEGENDARY JOURNEY</h1>
+                <p style="font-size: 16px; font-style: italic; color: #FFA500;">
+                    "I am destined for greatness!"
+                </p>
+                <button onclick="startGame()">BEGIN THE LEGEND</button>
+                <p id="highScoreDisplay" style="margin-top: 20px; font-size: 20px; color: #FFD700;">
+                    Best Legacy: 0
+                </p>
+            </div>
+
+            <!-- Game Over Screen -->
+            <div id="gameOverScreen" class="screen-overlay">
+                <h1 style="color: #FF6B35;">PHOENIX HAS FALLEN</h1>
+                <p id="finalScore" style="font-size: 24px; color: white;">Final Score: 0</p>
+                <p id="finalTitle" style="font-size: 18px; color: #FFD700;">Title</p>
+                <p id="phoenixQuote" style="font-style: italic; margin: 20px 0; color: #FFA500;">
+                    "..."
+                </p>
+                <button onclick="restartGame()">TRY AGAIN</button>
+            </div>
+        </div>
+
+        <div id="info">
+            <div id="controls">
+                <strong>CONTROLS:</strong> SPACE / CLICK / TAP to flap<br>
+                Avoid pipes • Collect Legacy Points • Become Legend
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // CONSTANTS & CONFIGURATION
+        // ============================================================
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Physics constants
+        const GRAVITY = 0.6;
+        const FLAP_POWER = -11;
+        const TERMINAL_VELOCITY = 15;
+        const BIRD_SIZE = 34;
+        const BIRD_RADIUS = BIRD_SIZE / 2;
+
+        // Pipe constants
+        const PIPE_WIDTH = 70;
+        const PIPE_GAP_BASE = 160;
+        const PIPE_SPEED_BASE = 3;
+        const PIPE_SPAWN_INTERVAL = 90; // frames
+        const PIPE_MIN_HEIGHT = 80;
+
+        // Ground
+        const GROUND_HEIGHT = 60;
+
+        // Game states
+        const GameState = {
+            TITLE: 'title',
+            PLAYING: 'playing',
+            GAME_OVER: 'gameover'
+        };
+
+        // Legendary titles (Hall of Legends)
+        const LEGENDARY_TITLES = [
+            { score: 0, title: 'Novice Sky Dancer' },
+            { score: 5, title: 'Apprentice of the Wind' },
+            { score: 10, title: 'Journeybird' },
+            { score: 15, title: 'Gap Navigator' },
+            { score: 20, title: 'Master of Gaps' },
+            { score: 30, title: 'Sky Warrior' },
+            { score: 40, title: 'Phoenix the Bold' },
+            { score: 50, title: 'Phoenix the Untouchable' },
+            { score: 75, title: 'Legendary Flyer' },
+            { score: 100, title: 'LITERALLY IMPOSSIBLE LEGEND' }
+        ];
+
+        // Pipe personalities
+        const PIPE_PERSONALITIES = {
+            smug: { messages: ['Too slow!', 'Pathetic.', 'Is that all?'], frequency: 0.2 },
+            encouraging: { messages: ['You got this!', 'Keep going!', 'Almost there!'], frequency: 0.3 },
+            sarcastic: { messages: ['Wow, amazing.', 'So impressive.', 'A legend.'], frequency: 0.2 },
+            philosophical: { messages: ['Why exist?', 'What is a pipe?', 'Are you real?'], frequency: 0.15 },
+            silent: { messages: [], frequency: 0.15 }
+        };
+
+        // Phoenix quotes (for game over)
+        const PHOENIX_QUOTES = [
+            "The pipes moved! I swear the pipes moved!",
+            "My keyboard must be broken.",
+            "I was sabotaged by lesser birds!",
+            "This is clearly a conspiracy.",
+            "I didn't lose. I simply ran out of space bar presses.",
+            "The universe is jealous of my greatness.",
+            "I was testing the limits of the game engine.",
+            "That pipe appeared out of nowhere!",
+            "I'm too legendary for these mortal pipes.",
+            "This is just a minor setback on my path to glory."
+        ];
+
+        // ============================================================
+        // GAME STATE
+        // ============================================================
+        let gameState = {
+            current: GameState.TITLE,
+            score: 0,
+            highScore: parseInt(localStorage.getItem('phoenixHighScore')) || 0,
+            confidenceLevel: 0, // 0-100
+            currentTitle: LEGENDARY_TITLES[0].title,
+            pipes: [],
+            particles: [],
+            frameCount: 0
+        };
+
+        // Phoenix object
+        let phoenix = {
+            x: 120,
+            y: canvas.height / 2,
+            velocityY: 0,
+            rotation: 0
+        };
+
+        // ============================================================
+        // UTILITY FUNCTIONS
+        // ============================================================
+
+        function getConfidenceColor() {
+            const level = gameState.confidenceLevel;
+            if (level < 33) return { top: '#87CEEB', bottom: '#B0E0E6' }; // Blue
+            if (level < 66) return { top: '#9B59B6', bottom: '#C39BD3' }; // Purple
+            if (level < 90) return { top: '#FF6B35', bottom: '#FFA07A' }; // Orange
+            return { top: '#FFD700', bottom: '#FFA500' }; // Gold
+        }
+
+        function getCurrentTitle() {
+            for (let i = LEGENDARY_TITLES.length - 1; i >= 0; i--) {
+                if (gameState.score >= LEGENDARY_TITLES[i].score) {
+                    return LEGENDARY_TITLES[i].title;
+                }
+            }
+            return LEGENDARY_TITLES[0].title;
+        }
+
+        function selectRandomPersonality() {
+            const roll = Math.random();
+            let cumulative = 0;
+            for (const [type, data] of Object.entries(PIPE_PERSONALITIES)) {
+                cumulative += data.frequency;
+                if (roll < cumulative) {
+                    const messages = data.messages;
+                    return {
+                        type: type,
+                        message: messages.length > 0 ? messages[Math.floor(Math.random() * messages.length)] : null
+                    };
+                }
+            }
+            return { type: 'silent', message: null };
+        }
+
+        function getDynamicDifficulty() {
+            const confidenceFactor = gameState.confidenceLevel / 100;
+            return {
+                pipeGapSize: Math.max(PIPE_GAP_BASE - (confidenceFactor * 30), 120),
+                pipeSpeed: PIPE_SPEED_BASE + (confidenceFactor * 1.5)
+            };
+        }
+
+        // ============================================================
+        // GAME LOGIC
+        // ============================================================
+
+        function spawnPipe() {
+            const difficulty = getDynamicDifficulty();
+            const minY = PIPE_MIN_HEIGHT + difficulty.pipeGapSize / 2;
+            const maxY = canvas.height - GROUND_HEIGHT - PIPE_MIN_HEIGHT - difficulty.pipeGapSize / 2;
+            const gapY = Math.random() * (maxY - minY) + minY;
+            const personality = selectRandomPersonality();
+
+            gameState.pipes.push({
+                x: canvas.width,
+                gapY: gapY,
+                gapSize: difficulty.pipeGapSize,
+                scored: false,
+                personality: personality.type,
+                message: personality.message
+            });
+        }
+
+        function updatePhoenix() {
+            // Apply gravity
+            phoenix.velocityY += GRAVITY;
+            phoenix.velocityY = Math.min(phoenix.velocityY, TERMINAL_VELOCITY);
+
+            // Update position
+            phoenix.y += phoenix.velocityY;
+
+            // Calculate rotation based on velocity
+            phoenix.rotation = Math.min(Math.max(phoenix.velocityY * 3, -45), 90);
+        }
+
+        function updatePipes() {
+            const difficulty = getDynamicDifficulty();
+
+            // Spawn new pipes
+            if (gameState.frameCount % PIPE_SPAWN_INTERVAL === 0) {
+                spawnPipe();
+            }
+
+            // Update existing pipes
+            for (let i = gameState.pipes.length - 1; i >= 0; i--) {
+                const pipe = gameState.pipes[i];
+                pipe.x -= difficulty.pipeSpeed;
+
+                // Score when passing pipe
+                if (!pipe.scored && pipe.x + PIPE_WIDTH < phoenix.x) {
+                    pipe.scored = true;
+                    gameState.score++;
+                    gameState.confidenceLevel = Math.min(gameState.score * 3, 100);
+                    gameState.currentTitle = getCurrentTitle();
+                    spawnScoreParticles(pipe.x, pipe.gapY);
+                }
+
+                // Remove off-screen pipes
+                if (pipe.x + PIPE_WIDTH < -50) {
+                    gameState.pipes.splice(i, 1);
+                }
+            }
+        }
+
+        function checkCollision() {
+            // Ground collision
+            if (phoenix.y + BIRD_RADIUS >= canvas.height - GROUND_HEIGHT) {
+                return true;
+            }
+
+            // Ceiling collision
+            if (phoenix.y - BIRD_RADIUS <= 0) {
+                return true;
+            }
+
+            // Pipe collision
+            for (const pipe of gameState.pipes) {
+                if (pipe.x < phoenix.x + BIRD_RADIUS &&
+                    pipe.x + PIPE_WIDTH > phoenix.x - BIRD_RADIUS) {
+
+                    // Check if NOT in gap
+                    if (phoenix.y - BIRD_RADIUS < pipe.gapY - pipe.gapSize / 2 ||
+                        phoenix.y + BIRD_RADIUS > pipe.gapY + pipe.gapSize / 2) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        function handleFlap() {
+            if (gameState.current === GameState.TITLE) {
+                // Handled by startGame()
+                return;
+            }
+
+            if (gameState.current === GameState.PLAYING) {
+                phoenix.velocityY = FLAP_POWER;
+                spawnFlapParticles();
+            }
+        }
+
+        function gameOver() {
+            gameState.current = GameState.GAME_OVER;
+
+            // Update high score
+            if (gameState.score > gameState.highScore) {
+                gameState.highScore = gameState.score;
+                localStorage.setItem('phoenixHighScore', gameState.highScore);
+            }
+
+            // Display game over screen
+            document.getElementById('finalScore').textContent = `Final Score: ${gameState.score}`;
+            document.getElementById('finalTitle').textContent = gameState.currentTitle;
+            const randomQuote = PHOENIX_QUOTES[Math.floor(Math.random() * PHOENIX_QUOTES.length)];
+            document.getElementById('phoenixQuote').textContent = `"${randomQuote}"`;
+            document.getElementById('gameOverScreen').style.display = 'flex';
+
+            // Spawn death particles
+            spawnDeathParticles();
+        }
+
+        function startGame() {
+            document.getElementById('titleScreen').style.display = 'none';
+            gameState.current = GameState.PLAYING;
+            resetGame();
+        }
+
+        function restartGame() {
+            document.getElementById('gameOverScreen').style.display = 'none';
+            gameState.current = GameState.PLAYING;
+            resetGame();
+        }
+
+        function resetGame() {
+            phoenix.y = canvas.height / 2;
+            phoenix.velocityY = 0;
+            phoenix.rotation = 0;
+            gameState.score = 0;
+            gameState.confidenceLevel = 0;
+            gameState.currentTitle = LEGENDARY_TITLES[0].title;
+            gameState.pipes = [];
+            gameState.particles = [];
+            gameState.frameCount = 0;
+        }
+
+        // ============================================================
+        // PARTICLE SYSTEM
+        // ============================================================
+
+        function spawnFlapParticles() {
+            for (let i = 0; i < 6; i++) {
+                gameState.particles.push({
+                    x: phoenix.x - 15,
+                    y: phoenix.y + (Math.random() - 0.5) * 10,
+                    vx: Math.random() * -2 - 1,
+                    vy: (Math.random() - 0.5) * 4,
+                    life: 20,
+                    maxLife: 20,
+                    size: Math.random() * 2 + 3,
+                    color: '#FFD700'
+                });
+            }
+        }
+
+        function spawnScoreParticles(x, y) {
+            gameState.particles.push({
+                x: x,
+                y: y,
+                vx: 0,
+                vy: -2,
+                life: 30,
+                maxLife: 30,
+                size: 16,
+                color: '#FFD700',
+                text: '+1'
+            });
+        }
+
+        function spawnDeathParticles() {
+            const colors = ['#FF6B35', '#FF0000', '#FFD700', '#FFA500'];
+            for (let i = 0; i < 20; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 4 + 2;
+                gameState.particles.push({
+                    x: phoenix.x,
+                    y: phoenix.y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    life: 25,
+                    maxLife: 25,
+                    size: Math.random() * 4 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)]
+                });
+            }
+        }
+
+        function updateParticles() {
+            for (let i = gameState.particles.length - 1; i >= 0; i--) {
+                const p = gameState.particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.2; // Slight gravity
+                p.life--;
+
+                if (p.life <= 0) {
+                    gameState.particles.splice(i, 1);
+                }
+            }
+        }
+
+        // ============================================================
+        // RENDERING
+        // ============================================================
+
+        function drawBackground() {
+            const colors = getConfidenceColor();
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, colors.top);
+            gradient.addColorStop(1, colors.bottom);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawGround() {
+            // Ground
+            ctx.fillStyle = '#8B6F47';
+            ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT);
+
+            // Ground top stripe
+            ctx.fillStyle = '#A0824A';
+            ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, 10);
+        }
+
+        function drawPipe(pipe) {
+            // Top pipe
+            ctx.fillStyle = '#2ECC40';
+            ctx.fillRect(pipe.x, 0, PIPE_WIDTH, pipe.gapY - pipe.gapSize / 2);
+
+            // Top pipe cap
+            ctx.fillRect(pipe.x - 5, pipe.gapY - pipe.gapSize / 2 - 30, PIPE_WIDTH + 10, 30);
+
+            // Bottom pipe
+            ctx.fillRect(pipe.x, pipe.gapY + pipe.gapSize / 2, PIPE_WIDTH, canvas.height);
+
+            // Bottom pipe cap
+            ctx.fillRect(pipe.x - 5, pipe.gapY + pipe.gapSize / 2, PIPE_WIDTH + 10, 30);
+
+            // Highlights
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.fillRect(pipe.x + 5, 0, 10, pipe.gapY - pipe.gapSize / 2);
+            ctx.fillRect(pipe.x + 5, pipe.gapY + pipe.gapSize / 2, 10, canvas.height);
+
+            // Pipe message (if close to Phoenix)
+            if (pipe.message && Math.abs(pipe.x - phoenix.x) < 100) {
+                ctx.save();
+                ctx.font = '12px monospace';
+                ctx.textAlign = 'center';
+                const textWidth = ctx.measureText(pipe.message).width;
+                const bubbleX = pipe.x + PIPE_WIDTH / 2;
+                const bubbleY = pipe.gapY - 25;
+
+                // Speech bubble background
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                ctx.fillRect(bubbleX - textWidth / 2 - 5, bubbleY - 10, textWidth + 10, 20);
+
+                // Text
+                ctx.fillStyle = 'white';
+                ctx.fillText(pipe.message, bubbleX, bubbleY + 4);
+                ctx.restore();
+            }
+        }
+
+        function drawPhoenix() {
+            ctx.save();
+            ctx.translate(phoenix.x, phoenix.y);
+            ctx.rotate(phoenix.rotation * Math.PI / 180);
+
+            // Confidence aura (if high confidence)
+            if (gameState.confidenceLevel > 66) {
+                const auraOpacity = ((gameState.confidenceLevel - 66) / 34) * 0.6;
+                ctx.strokeStyle = `rgba(255, 215, 0, ${auraOpacity})`;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(0, 0, BIRD_RADIUS + 5 + Math.sin(gameState.frameCount * 0.1) * 2, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            // Body
+            ctx.fillStyle = '#FF6B35';
+            ctx.beginPath();
+            ctx.arc(0, 0, BIRD_RADIUS, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Body shading
+            const gradient = ctx.createRadialGradient(-5, -5, 5, 0, 0, BIRD_RADIUS);
+            gradient.addColorStop(0, 'rgba(255, 200, 100, 0.8)');
+            gradient.addColorStop(1, 'rgba(255, 107, 53, 0)');
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            // Crest (mohawk)
+            ctx.fillStyle = '#FF0000';
+            ctx.beginPath();
+            ctx.moveTo(-3, -BIRD_RADIUS);
+            ctx.lineTo(0, -BIRD_RADIUS - 8);
+            ctx.lineTo(3, -BIRD_RADIUS);
+            ctx.closePath();
+            ctx.fill();
+
+            // Eye
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(8, -3, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(8, -3, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Beak
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            ctx.moveTo(BIRD_RADIUS, 0);
+            ctx.lineTo(BIRD_RADIUS + 10, -3);
+            ctx.lineTo(BIRD_RADIUS + 10, 3);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        function drawParticles() {
+            for (const p of gameState.particles) {
+                const alpha = p.life / p.maxLife;
+
+                if (p.text) {
+                    // Text particle (score)
+                    ctx.save();
+                    ctx.font = `${p.size}px monospace`;
+                    ctx.textAlign = 'center';
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = alpha;
+                    ctx.fillText(p.text, p.x, p.y);
+                    ctx.restore();
+                } else {
+                    // Circle particle
+                    ctx.save();
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = alpha * 0.8;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+        }
+
+        function drawUI() {
+            ctx.save();
+
+            // Score
+            ctx.font = 'bold 56px monospace';
+            ctx.textAlign = 'center';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 4;
+            ctx.strokeText(gameState.score, canvas.width / 2, 80);
+            ctx.fillStyle = 'white';
+            ctx.fillText(gameState.score, canvas.width / 2, 80);
+
+            // Current title
+            ctx.font = '16px monospace';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            ctx.strokeText(gameState.currentTitle, canvas.width / 2, 110);
+            ctx.fillStyle = '#FFD700';
+            ctx.fillText(gameState.currentTitle, canvas.width / 2, 110);
+
+            // Confidence meter
+            const meterWidth = 200;
+            const meterHeight = 20;
+            const meterX = canvas.width / 2 - meterWidth / 2;
+            const meterY = 130;
+
+            // Label
+            ctx.font = '12px monospace';
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 2;
+            ctx.strokeText('CONFIDENCE', canvas.width / 2, meterY - 5);
+            ctx.fillText('CONFIDENCE', canvas.width / 2, meterY - 5);
+
+            // Meter background
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.fillRect(meterX, meterY, meterWidth, meterHeight);
+
+            // Meter fill
+            const fillWidth = (gameState.confidenceLevel / 100) * meterWidth;
+            const colors = getConfidenceColor();
+            ctx.fillStyle = colors.top;
+            ctx.fillRect(meterX, meterY, fillWidth, meterHeight);
+
+            // Meter border
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(meterX, meterY, meterWidth, meterHeight);
+
+            ctx.restore();
+        }
+
+        // ============================================================
+        // GAME LOOP
+        // ============================================================
+
+        function update() {
+            if (gameState.current !== GameState.PLAYING) {
+                return;
+            }
+
+            gameState.frameCount++;
+
+            updatePhoenix();
+            updatePipes();
+            updateParticles();
+
+            // Check collision
+            if (checkCollision()) {
+                gameOver();
+            }
+        }
+
+        function render() {
+            drawBackground();
+            drawGround();
+
+            // Draw pipes
+            for (const pipe of gameState.pipes) {
+                drawPipe(pipe);
+            }
+
+            drawPhoenix();
+            drawParticles();
+
+            if (gameState.current === GameState.PLAYING) {
+                drawUI();
+            }
+        }
+
+        function gameLoop() {
+            update();
+            render();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // ============================================================
+        // INPUT HANDLING
+        // ============================================================
+
+        // Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.key === ' ') {
+                e.preventDefault();
+                if (gameState.current === GameState.TITLE) {
+                    startGame();
+                } else if (gameState.current === GameState.PLAYING) {
+                    handleFlap();
+                }
+            }
+        });
+
+        // Mouse
+        canvas.addEventListener('click', () => {
+            if (gameState.current === GameState.TITLE) {
+                startGame();
+            } else if (gameState.current === GameState.PLAYING) {
+                handleFlap();
+            }
+        });
+
+        // Touch
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (gameState.current === GameState.TITLE) {
+                startGame();
+            } else if (gameState.current === GameState.PLAYING) {
+                handleFlap();
+            }
+        });
+
+        // ============================================================
+        // INITIALIZATION
+        // ============================================================
+
+        function init() {
+            // Show title screen
+            document.getElementById('titleScreen').style.display = 'flex';
+            document.getElementById('highScoreDisplay').textContent = `Best Legacy: ${gameState.highScore}`;
+
+            // Start game loop
+            gameLoop();
+        }
+
+        // Start when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

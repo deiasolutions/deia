@@ -1,0 +1,228 @@
+patterns:
+- id: README
+  path: bok\README.md
+  title: Book of Knowledge (BOK)
+  category: .
+  tags: []
+  summary: Community-contributed patterns, anti-patterns, and platform-specific solutions
+    from AI-assisted development.
+- id: autonomous-production-deployment
+  path: bok\anti-patterns\autonomous-production-deployment.md
+  title: 'Anti-Pattern: Autonomous Production Deployment'
+  category: Anti-Pattern
+  platform: Platform-Agnostic
+  tags:
+  - deployment
+  - production
+  - human-ai-boundaries
+  - governance
+  - critical-incident
+  confidence: Proven (by violation)
+  date: 2025-10-05
+  source_project: parentchildcontactsolutions (Family Bond Bot)
+  summary: 'title: "Anti-Pattern: Autonomous Production Deployment"'
+- id: direct-to-production-deployment
+  path: bok\anti-patterns\direct-to-production-deployment.md
+  title: 'Anti-Pattern: Direct-to-Production Deployment Without QA'
+  category: Deployment
+  severity: High
+  date: 2025-10-16
+  discovered_by: daaaave-atx
+  project: Q33N Platform Launch
+  tags:
+  - deployment
+  - qa
+  - process-deviation
+  - cowboy-coding
+  - production-risk
+  summary: 'title: "Anti-Pattern: Direct-to-Production Deployment Without QA"'
+- id: README
+  path: bok\anti-patterns\README.md
+  title: Anti-Patterns
+  category: anti-patterns
+  tags: []
+  summary: Documented mistakes and boundary violations to avoid.
+- id: netlify-nuclear-option-recovery
+  path: bok\processes\netlify-nuclear-option-recovery.md
+  title: 'Process: Netlify Nuclear Option - Complete Recovery Checklist'
+  category: Deployment Process
+  platform: Netlify
+  date: 2025-10-16
+  created_by: daaaave-atx
+  tags:
+  - netlify
+  - nuclear-option
+  - deployment
+  - recovery
+  - checklist
+  summary: 'title: "Process: Netlify Nuclear Option - Complete Recovery Checklist"'
+- id: dns-configuration-ui-confusion
+  path: bok\platforms\netlify\dns-configuration-ui-confusion.md
+  title: 'Anti-Pattern: Netlify DNS Configuration UI Confusion'
+  category: DNS Configuration
+  platform: Netlify
+  date: 2025-10-16
+  discovered_by: daaaave-atx
+  severity: Medium
+  tags:
+  - netlify
+  - dns
+  - ui-confusion
+  - documentation-gap
+  - dx-issue
+  summary: 'title: "Anti-Pattern: Netlify DNS Configuration UI Confusion"'
+- id: hugo-version-requirement
+  path: bok\platforms\netlify\hugo-version-requirement.md
+  title: Hugo Version Must Be Specified in Netlify
+  category: Build Configuration
+  platform: Netlify
+  date: 2025-10-16
+  discovered_by: daaaave-atx
+  severity: Critical
+  tags:
+  - netlify
+  - hugo
+  - build-failure
+  - environment-variables
+  summary: 'title: "Hugo Version Must Be Specified in Netlify"'
+- id: python-console-utf8-encoding
+  path: bok\platforms\windows\python-console-utf8-encoding.md
+  title: Windows Python Console UTF-8 Encoding Issue
+  category: platforms\windows
+  type: platform-gotcha
+  platform: windows
+  language: python
+  urgency: medium
+  created: 2025-10-16
+  updated: 2025-10-16
+  recurrence_count: 20+
+  tags:
+  - windows
+  - python
+  - utf8
+  - console
+  - encoding
+  - emoji
+  - unicode
+  status: documented-pattern
+  summary: 'title: "Windows Python Console UTF-8 Encoding Issue"'
+- id: README
+  path: bok\platforms\tools\claude-code\README.md
+  title: Claude Code Integration
+  category: platforms\tools\claude-code
+  tags: []
+  summary: Patterns for using DEIA with Anthropic's Claude Code.
+- id: https-redirect-middleware
+  path: bok\platforms\deployment\railway\https-redirect-middleware.md
+  title: Railway HTTPS Redirect Middleware Pattern
+  category: Platform-Specific Pattern
+  platform: Railway
+  tags:
+  - railway
+  - https
+  - middleware
+  - edge-proxy
+  - fastapi
+  confidence: Validated
+  date: 2025-10-05
+  source_project: parentchildcontactsolutions (Family Bond Bot)
+  summary: 'title: Railway HTTPS Redirect Middleware Pattern'
+- id: README
+  path: bok\platforms\deployment\railway\README.md
+  title: Railway Platform Patterns
+  category: platforms\deployment\railway
+  tags: []
+  summary: Platform-specific solutions for Railway deployment issues.
+- id: environment-auto-detection
+  path: bok\platforms\deployment\vercel\environment-auto-detection.md
+  title: Frontend Environment Auto-Detection
+  category: Pattern
+  platform: Vercel
+  tags:
+  - vercel
+  - preview-deployments
+  - environment-detection
+  - magic-links
+  - frontend
+  confidence: Validated
+  date: 2025-10-05
+  source_project: parentchildcontactsolutions (Family Bond Bot)
+  summary: 'title: Frontend Environment Auto-Detection'
+- id: README
+  path: bok\platforms\deployment\vercel\README.md
+  title: Vercel Platform Patterns
+  category: platforms\deployment\vercel
+  tags: []
+  summary: Platform-specific solutions for Vercel deployment and preview workflows.
+- id: ai-decision-making-framework
+  path: bok\patterns\collaboration\ai-decision-making-framework.md
+  title: AI Decision-Making Framework (Tactical vs Strategic)
+  category: Collaboration Pattern
+  platform: Platform-Agnostic
+  tags:
+  - decision-making
+  - human-ai-boundaries
+  - governance
+  - autonomy
+  - strategic-vs-tactical
+  confidence: Validated
+  date: 2025-10-05
+  source_project: parentchildcontactsolutions (Family Bond Bot)
+  summary: 'title: AI Decision-Making Framework (Tactical vs Strategic)'
+- id: README
+  path: bok\patterns\collaboration\README.md
+  title: Collaboration Patterns
+  category: patterns\collaboration
+  tags: []
+  summary: Effective human-AI collaboration patterns for development.
+- id: session-shutdown-protocol
+  path: bok\patterns\collaboration\session-shutdown-protocol.md
+  title: Session Shutdown Protocol
+  category: patterns\collaboration
+  When wrapping up a coding session with an AI assistant:
+  - You want to capture decisions and progress made
+  - You need a record for future sessions
+  - There's too much context to review immediately
+  - You want to defer detailed review until later
+  Without a shutdown protocol, you either:
+  - Lose context when the session ends
+  - Spend time manually creating notes
+  - Miss important decisions or action items
+  tags: []
+  summary: '**Category:** Collaboration Patterns'
+- id: test-before-asking-human
+  path: bok\patterns\collaboration\test-before-asking-human.md
+  title: Test Before Asking Human to Test
+  category: Collaboration Pattern
+  platform: Platform-Agnostic
+  tags:
+  - efficiency
+  - human-ai-collaboration
+  - testing
+  - respect
+  - muda
+  confidence: Validated
+  date: 2025-10-05
+  source_project: parentchildcontactsolutions (Family Bond Bot)
+  summary: 'title: Test Before Asking Human to Test'
+- id: biometric-authentication
+  path: bok\patterns\governance\biometric-authentication.md
+  title: Biometric Constitutional Authentication
+  category: Governance Pattern
+  platform: Platform-Agnostic
+  tags:
+  - governance
+  - security
+  - human-ai-boundaries
+  - social-engineering
+  - constitutional-protection
+  confidence: Experimental
+  date: 2025-10-05
+  source_project: parentchildcontactsolutions (Family Bond Bot)
+  summary: 'title: Biometric Constitutional Authentication'
+- id: README
+  path: bok\patterns\governance\README.md
+  title: Governance Patterns
+  category: patterns\governance
+  tags: []
+  summary: Project governance and safety patterns for AI-assisted development.

@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run lint)",
+      "Bash(npm run compile:*)",
+      "WebSearch",
+      "WebFetch(domain:code.visualstudio.com)",
+      "Bash(deia log:*)",
+      "Read(//c/Users/davee/deia-test/**)",
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/src/deia/**)",
+      "Bash(test:*)",
+      "Bash(cat:*)",
+      "Bash(npx @vscode/vsce package:*)",
+      "Read(//c/Users/davee/OneDrive/Documents/GitHub/deiasolutions/**)",
+      "Read(//c/Users/davee/.deia/dave/**)",
+      "Bash(python:*)",
+      "Bash(node:*)",
+      "Read(//c/Users/davee/**)",
+      "Bash(git init:*)",
+      "Bash(git config:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

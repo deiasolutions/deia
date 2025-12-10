@@ -1,0 +1,101 @@
+import json
+
+from deia.services.agent_coordinator import AgentCoordinator
+from deia.services.deia_context import DEIAContextLoader
+
+def process_command(command: str, agent_coordinator: AgentCoordinator, context_loader: DEIAContextLoader) -> dict:
+    """Process chat commands"""
+    parts = command.split()
+    cmd = parts[0]
+
+    if cmd == "/bok":
+        if len(parts) < 3:
+            return {"type": "error", "message": "Usage: /bok search|show <query>"}
+        
+        action = parts[1]
+        query = " ".join(parts[2:])
+
+        if action == "search":
+            results = context_loader.search_bok(query)
+            return {
+                "type": "bok_results",
+                "results": results
+            }
+        elif action == "show":
+            pattern_id = query
+            pattern = context_loader.get_pattern(pattern_id)
+            if not pattern:
+                return {"type": "error", "message": f"Pattern not found: {pattern_id}"}
+            return {
+                "type": "bok_pattern",
+                "pattern_id": pattern_id,
+                "content": pattern
+            }
+        else:
+            return {"type": "error", "message": "Unknown action. Usage: /bok search|show <query>"}
+    
+    elif cmd == "/status":
+        agent_status = agent_coordinator.get_agent_status()
+        return {
+            "type": "agent_status",
+            "agents": [
+                {"id": agent, "status": data["status"], "task": data.get("current_task")}
+                for agent, data in agent_status.items()
+            ]
+        }
+
+    elif cmd == "/context":
+        is_deia = context_loader.is_deia_project()
+        bok_index = context_loader.load_bok_index()
+        recent_sessions = context_loader.get_recent_sessions()
+
+        return {
+            "type": "deia_context",
+            "is_deia_project": is_deia,
+            "bok_patterns": len(bok_index.get("patterns", {})),
+            "recent_sessions": len(recent_sessions)
+        }
+
+    elif cmd == "/delegate":
+        if len(parts) < 3:
+            return {"type": "error", "message": "Usage: /delegate <agent> <message>"}
+        
+        agent = parts[1]
+        message = " ".join(parts[2:])
+        task_file = agent_coordinator.create_delegation_task(message, agent)
+
+        return {
+            "type": "delegation",
+            "agent": agent,
+            "task_file": task_file
+        }
+
+    elif cmd == "/help":
+        help_text = """Available commands:
+/bok search <query> - Search BOK patterns
+/bok show <pattern-id> - Display full pattern
+/status - Show agent coordination status
+/context - Show DEIA project context
+/delegate <agent> <message> - Manual delegation
+/help - List all commands
+/agents - Show all agents with details
+"""
+        return {"type": "help", "content": help_text}
+
+    elif cmd == "/agents":
+        agents = agent_coordinator.get_agent_status()
+        agent_details = []
+        for agent_id, data in agents.items():
+            details = {
+                "id": agent_id,
+                "status": data["status"],
+                "role": data["role"],
+                "last_heartbeat": data["last_heartbeat"],
+                "current_task": data.get("current_task")
+            }
+            agent_details.append(details)
+        
+        return {"type": "agent_details", "agents": agent_details}
+    
+    else:
+        return {"type": "error", "message": "Unknown command. Type /help for available commands."}

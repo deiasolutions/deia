@@ -1,0 +1,32 @@
+# DEIA session logs (private, don't commit)
+.deia/sessions/
+.deia/private/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.log
+
+# Extension packaging
+*.crx
+*.pem
+*.zip
+
+# Node modules (if using build tools later)
+node_modules/
+package-lock.json
+
+# Build output (if needed later)
+dist/
+build/

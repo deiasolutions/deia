@@ -1,0 +1,12 @@
+# Build outputs
+out/
+*.vsix
+
+# Dependencies
+node_modules/
+
+# Lock files (optional - some projects commit this)
+package-lock.json
+
+# VS Code
+.vscode/

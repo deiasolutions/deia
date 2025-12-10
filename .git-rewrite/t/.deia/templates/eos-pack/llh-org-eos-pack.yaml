@@ -1,0 +1,79 @@
+# eOS Pack Template for LLH Organizations
+# ========================================
+# This is a pure YAML data file with NO executable code.
+# Use this template to define organizational structures for the LLH Factory.
+
+# Required fields
+eos_version: "0.1"
+pack_id: {{PACK_ID}}  # Unique identifier (lowercase-with-hyphens)
+author: {{AUTHOR}}     # Your name or handle
+created: {{DATE}}      # ISO date (YYYY-MM-DD)
+
+# Entity definitions (WHAT to build)
+entities:
+  # LLHs (Limited Liability Hives) - Organizational units
+  llhs:
+    - id: {{LLH_ID}}
+      title: "{{LLH_TITLE}}"
+      structure: flat  # Options: flat, executive, legislative, judicial, functional
+      parent: null     # Parent LLH ID or null for top-level
+      members: []      # List of member IDs or count
+      caps: []         # Capabilities: [plan, execute, decide, coordinate, etc.]
+      governance:
+        structure: flat          # Options: flat, hierarchical, matrix
+        decision_mode: consensus # Options: consensus, majority, executive
+        transparency: members-only # Options: public, members-only, private
+      policy:
+        rotg: true  # Rules of the Game compliance
+        dnd: true   # Do Not Delete policy
+      constraints: []  # List of constraints
+      capacities:
+        budget: medium       # Options: low, medium, high
+        attention: medium    # Options: low, medium, high
+        staff_cycles: medium # Options: low, medium, high
+
+  # TAGs (Together And Good teams) - Cross-functional teams
+  tags:
+    - id: {{TAG_ID}}
+      title: "{{TAG_TITLE}}"
+      parent: {{PARENT_LLH}}  # Required: parent LLH ID
+      deadline: null           # ISO date or null
+      members: []              # List of member IDs
+      caps: []                 # Capabilities: [coordinate, track, report, etc.]
+      objectives: ""           # Brief description of objectives
+
+  # Drones (optional) - Automated workers
+  drones:
+    - id: {{DRONE_ID}}
+      title: "{{DRONE_TITLE}}"
+      type: processor  # Options: processor, monitor, aggregator, notifier
+      parent: {{PARENT_TAG_OR_LLH}}  # Parent TAG or LLH ID
+      triggers: []     # Trigger conditions: [on_schedule, on_event, on_threshold]
+      actions: []      # Actions to perform: [aggregate_metrics, send_alert, generate_report]
+
+# Routing configuration (WHERE to create entities)
+routing:
+  llhs: ".deia/.projects/{{PACK_ID}}_001/llhs/"
+  tags: ".deia/.projects/{{PACK_ID}}_001/tag-teams/"
+  drones: ".deia/.projects/{{PACK_ID}}_001/drones/"
+
+# Build options (HOW to build)
+build:
+  validate: true          # Run validation after build
+  log_rse: true           # Log to RSE telemetry
+  require_approval: true  # Require human approval before build
+
+# Optional: Description (pure text, no code)
+description: |
+  Brief description of this organizational structure.
+  What problem does it solve?
+  What scenarios does it simulate?
+
+# ========================================
+# VIRUS PREVENTION
+# ========================================
+# ❌ DO NOT include executable code
+# ❌ DO NOT include shell commands
+# ❌ DO NOT include function definitions
+# ✅ ONLY include data definitions
+# ✅ Egg + eOS Pack + DEIA Global Commons = Safe Build

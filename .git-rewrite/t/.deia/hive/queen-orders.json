@@ -1,0 +1,27 @@
+{
+  "rev": "2025-10-13T10:55:00Z",
+  "global": {
+    "message": "Follow Auto-Check: apply orders on rev change.",
+    "policy": {"heartbeat_minutes": 5}
+  },
+  "bots": {
+    "BOT-00002": {
+      "task_id": "link-check-v1",
+      "status": "assigned",
+      "expectation": "Implement local markdown link-check worker and report.",
+      "instructions_path": ".deia/instructions/BOT-00002-instructions.md"
+    },
+    "BOT-00003": {
+      "task_id": "repo-health-audit-v1",
+      "status": "assigned",
+      "expectation": "Run doc audit, save outputs, summarize findings.",
+      "instructions_path": ".deia/instructions/BOT-00003-instructions.md"
+    },
+    "BOT-00004": {
+      "task_id": "standby",
+      "status": "standby",
+      "expectation": "Await initial assignment; maintain Ready heartbeats.",
+      "instructions_path": ".deia/instructions/BOT-00004-instructions.md"
+    }
+  }
+}

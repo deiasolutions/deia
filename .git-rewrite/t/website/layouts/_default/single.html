@@ -1,0 +1,10 @@
+{{ define "main" }}
+<article class="container-narrow" style="padding-top: 3rem; padding-bottom: 3rem;">
+    <h1>{{ .Title }}</h1>
+    {{ if .Description }}
+    <p class="text-muted">{{ .Description }}</p>
+    {{ end }}
+    <hr style="margin: 2rem 0;">
+    {{ .Content }}
+</article>
+{{ end }}

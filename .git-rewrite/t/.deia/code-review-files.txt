@@ -1,0 +1,11 @@
+./src/deia/bot_queue.py
+./src/deia/cli.py
+./src/deia/config.py
+./src/deia/hive.py
+./src/deia/slash_command.py
+./src/deia/sync.py
+./src/deia/sync_provenance.py
+./src/deia/sync_state.py
+./tests/test_bot_queue.py
+./tests/test_sync.py
+./tests/unit/test_hive.py

@@ -1,0 +1,115 @@
+import datetime
+import tempfile
+import time
+from pathlib import Path
+
+import pytest
+import yaml
+
+from deia.services.agent_status import AgentStatusTracker
+
+@pytest.fixture
+def tracker():
+    with tempfile.TemporaryDirectory() as temp_dir:
+        yield AgentStatusTracker(heartbeat_dir=temp_dir)
+
+def test_register_agent(tracker):
+    tracker.register_agent("agent1", "worker")
+    assert "agent1" in tracker.agents
+    assert tracker.agents["agent1"]["status"] == "idle"
+    assert tracker.agents["agent1"]["role"] == "worker"
+
+    with pytest.raises(ValueError):
+        tracker.register_agent("agent2", "invalid_role")
+
+def test_update_heartbeat(tracker):
+    tracker.register_agent("agent1", "worker")
+    tracker.update_heartbeat("agent1", "busy", "task123")
+    assert tracker.agents["agent1"]["status"] == "busy"
+    assert tracker.agents["agent1"]["current_task"] == "task123"
+
+    with pytest.raises(ValueError):
+        tracker.update_heartbeat("agent2", "busy")
+
+    with pytest.raises(ValueError):
+        tracker.update_heartbeat("agent1", "invalid_status")
+
+def test_check_heartbeats(tracker):
+    tracker.register_agent("agent1", "worker")
+    tracker.register_agent("agent2", "worker")
+
+    tracker.update_heartbeat("agent1", "busy")
+    time.sleep(0.1)
+    tracker.update_heartbeat("agent2", "waiting")
+
+    tracker.agents["agent1"]["last_heartbeat"] = (
+        datetime.datetime.now() - datetime.timedelta(minutes=10)
+    ).isoformat()
+
+    offline = tracker.check_heartbeats()
+    assert offline == {"agent1": "busy"}
+    assert tracker.agents["agent1"]["status"] == "offline"
+
+def test_get_agent_status(tracker):
+    tracker.register_agent("agent1", "worker")
+    tracker.update_heartbeat("agent1", "busy", "task123")
+
+    status = tracker.get_agent_status("agent1")
+    assert status["status"] == "busy"
+    assert status["current_task"] == "task123"
+
+    status = tracker.get_agent_status("agent2")
+    assert status["status"] == "unknown"
+    assert status["error"] == "not_registered"
+
+def test_get_available_agents(tracker):
+    tracker.register_agent("agent1", "worker")
+    tracker.register_agent("agent2", "worker")
+    tracker.register_agent("agent3", "worker")
+
+    tracker.update_heartbeat("agent1", "busy")
+    tracker.update_heartbeat("agent2", "idle")
+    tracker.update_heartbeat("agent3", "offline")
+
+    available = tracker.get_available_agents()
+    assert available == ["agent2"]
+
+def test_concurrent_updates(tracker):
+    tracker.register_agent("agent1", "worker")
+
+    def updater(status, task):
+        tracker.update_heartbeat("agent1", status, task)
+
+    threads = []
+    for i in range(5):
+        threads.append(threading.Thread(target=updater, args=(f"status{i}", f"task{i}")))
+
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+
+    assert tracker.agents["agent1"]["status"] in [f"status{i}" for i in range(5)]
+    assert tracker.agents["agent1"]["current_task"] in [f"task{i}" for i in range(5)]
+
+def test_stale_state_transitions(tracker):
+    tracker.register_agent("agent1", "worker")
+    tracker.register_agent("agent2", "worker")
+
+    tracker.update_heartbeat("agent1", "waiting")
+    tracker.update_heartbeat("agent2", "busy")
+
+    tracker.agents["agent1"]["last_heartbeat"] = (
+        datetime.datetime.now() - datetime.timedelta(minutes=20)
+    ).isoformat()
+    tracker.agents["agent2"]["last_heartbeat"] = (
+        datetime.datetime.now() - datetime.timedelta(minutes=35)
+    ).isoformat()
+
+    stale = tracker._check_stale_states()
+    assert stale == {
+        "agent1": "waiting→idle (timeout)",
+        "agent2": "busy→offline (stale)"
+    }
+    assert tracker.agents["agent1"]["status"] == "idle"
+    assert tracker.agents["agent2"]["status"] == "offline"

@@ -1,0 +1,96 @@
+[
+  {
+    "run_id": "2025-10-19T17:07:04.888304+00:00",
+    "project_root": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions",
+    "dt": "2025-10-19",
+    "written": {
+      "sessions": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\sessions\\dt=2025-10-19\\sessions-170704.ndjson",
+      "session_decisions": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\session_decisions\\dt=2025-10-19\\session_decisions-170704.ndjson",
+      "session_action_items": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\session_action_items\\dt=2025-10-19\\session_action_items-170704.ndjson",
+      "session_files_modified": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\session_files_modified\\dt=2025-10-19\\session_files_modified-170704.ndjson",
+      "events": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\events\\dt=2025-10-19\\events-170704.ndjson",
+      "heartbeats": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\heartbeats\\dt=2025-10-19\\heartbeats-170704.ndjson"
+    },
+    "schema_version": 1,
+    "targets": [
+      "staging_ndjson"
+    ]
+  },
+  {
+    "run_id": "2025-10-19T17:11:15.205777+00:00",
+    "project_root": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions",
+    "dt": "2025-10-19",
+    "written": {
+      "sessions": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\sessions\\dt=2025-10-19\\sessions-171115.ndjson",
+      "session_decisions": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\session_decisions\\dt=2025-10-19\\session_decisions-171115.ndjson",
+      "session_action_items": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\session_action_items\\dt=2025-10-19\\session_action_items-171115.ndjson",
+      "session_files_modified": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\session_files_modified\\dt=2025-10-19\\session_files_modified-171115.ndjson",
+      "events": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\events\\dt=2025-10-19\\events-171115.ndjson",
+      "heartbeats": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\heartbeats\\dt=2025-10-19\\heartbeats-171115.ndjson"
+    },
+    "schema_version": 1,
+    "targets": [
+      "staging_ndjson"
+    ]
+  },
+  {
+    "run_id": "2025-10-19T17:43:02.462531+00:00",
+    "project_root": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions",
+    "dt": "2025-10-19",
+    "written": {
+      "sessions": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\sessions\\dt=2025-10-19\\sessions-174302.ndjson",
+      "session_decisions": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\session_decisions\\dt=2025-10-19\\session_decisions-174302.ndjson",
+      "session_action_items": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\session_action_items\\dt=2025-10-19\\session_action_items-174302.ndjson",
+      "session_files_modified": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\session_files_modified\\dt=2025-10-19\\session_files_modified-174302.ndjson",
+      "events": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\events\\dt=2025-10-19\\events-174302.ndjson",
+      "heartbeats": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\heartbeats\\dt=2025-10-19\\heartbeats-174302.ndjson",
+      "hive_tasks": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\hive_tasks\\dt=2025-10-19\\hive_tasks-174302.ndjson",
+      "hive_responses": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\hive_responses\\dt=2025-10-19\\hive_responses-174302.ndjson",
+      "agents": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\agents\\dt=2025-10-19\\agents-174302.ndjson"
+    },
+    "schema_version": 1,
+    "targets": [
+      "staging_ndjson"
+    ]
+  },
+  {
+    "run_id": "2025-10-19T17:44:43.473641+00:00",
+    "project_root": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions",
+    "dt": "2025-10-19",
+    "written": {
+      "sessions": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\sessions\\dt=2025-10-19\\sessions-174443.ndjson",
+      "session_decisions": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\session_decisions\\dt=2025-10-19\\session_decisions-174443.ndjson",
+      "session_action_items": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\session_action_items\\dt=2025-10-19\\session_action_items-174443.ndjson",
+      "session_files_modified": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\session_files_modified\\dt=2025-10-19\\session_files_modified-174443.ndjson",
+      "events": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\events\\dt=2025-10-19\\events-174443.ndjson",
+      "heartbeats": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\heartbeats\\dt=2025-10-19\\heartbeats-174443.ndjson",
+      "hive_tasks": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\hive_tasks\\dt=2025-10-19\\hive_tasks-174443.ndjson",
+      "hive_responses": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\hive_responses\\dt=2025-10-19\\hive_responses-174443.ndjson",
+      "agents": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\agents\\dt=2025-10-19\\agents-174443.ndjson"
+    },
+    "schema_version": 1,
+    "targets": [
+      "staging_ndjson"
+    ]
+  },
+  {
+    "run_id": "2025-10-23T18:56:11.395026+00:00",
+    "project_root": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions",
+    "dt": "2025-10-23",
+    "written": {
+      "sessions": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\sessions\\dt=2025-10-23\\sessions-185611.ndjson",
+      "session_decisions": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\session_decisions\\dt=2025-10-23\\session_decisions-185611.ndjson",
+      "session_action_items": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\session_action_items\\dt=2025-10-23\\session_action_items-185611.ndjson",
+      "session_files_modified": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\session_files_modified\\dt=2025-10-23\\session_files_modified-185611.ndjson",
+      "events": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\events\\dt=2025-10-23\\events-185611.ndjson",
+      "heartbeats": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\heartbeats\\dt=2025-10-23\\heartbeats-185611.ndjson",
+      "hive_tasks": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\hive_tasks\\dt=2025-10-23\\hive_tasks-185611.ndjson",
+      "hive_responses": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\hive_responses\\dt=2025-10-23\\hive_responses-185611.ndjson",
+      "agents": "C:\\Users\\davee\\OneDrive\\Documents\\GitHub\\deiasolutions\\.deia\\analytics\\staging\\agents\\dt=2025-10-23\\agents-185611.ndjson"
+    },
+    "schema_version": 1,
+    "targets": [
+      "staging_ndjson"
+    ]
+  }
+]

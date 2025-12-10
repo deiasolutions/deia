@@ -1,0 +1,58 @@
+"""
+Task 12: BOK Pattern Validator
+Agent: CLAUDE_AI (Agent BC)
+
+Requirements:
+- Validate BOK patterns for completeness
+- Check required sections (problem, solution, tags)
+- Quality scoring
+- Broken link detection
+- CLI: `deia bok validate`
+
+Value: Ensures BOK quality standards
+
+Implementation Details:
+- Iterate through all files in the bok/ directory
+- For each file, parse the content and check for the following:
+  - Presence of required sections: problem, solution, tags
+  - Minimum length for problem and solution sections
+  - Proper formatting of tags (comma-separated list)
+  - Broken links in the content (using a link checker library)
+- Calculate a quality score based on the presence and completeness of required sections, formatting, and broken links
+- Generate a validation report for each pattern, including the quality score and any issues found
+- Provide a summary report of the overall BOK quality, including average quality score and patterns with the lowest scores
+- Implement a CLI command `deia bok validate` to trigger the validation process
+
+Usage:
+- Validate all BOK patterns:
+  $ deia bok validate
+
+- Validate a specific pattern:
+  $ deia bok validate path/to/pattern.md
+
+- Validate patterns and output a detailed report:
+  $ deia bok validate --report
+
+Integration:
+- The BOK pattern validator should be integrated with the existing BOK management system
+- The validation process should be triggered automatically whenever a new pattern is added or an existing pattern is updated
+- The validation reports should be stored and accessible for review by the team
+
+Dependencies:
+- BOK management system
+- Link checker library (e.g., requests)
+- Markdown parser library (e.g., markdown)
+
+Testing:
+- Unit tests for the validation logic
+- Integration tests with the BOK management system
+- End-to-end tests with sample BOK patterns (valid and invalid)
+
+Deliverables:
+- bok_pattern_validator.py: The main implementation of the BOK pattern validator
+- bok_pattern_validator_cli.py: CLI interface for the BOK pattern validator
+- bok_pattern_validator_report.py: Validation report generation logic
+- bok_pattern_validator_integration.md: Documentation on integrating the validator with the BOK management system
+- test_bok_pattern_validator.py: Unit and integration tests for the BOK pattern validator
+
+"""
