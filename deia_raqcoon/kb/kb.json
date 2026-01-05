@@ -1,0 +1,14 @@
+[
+  {
+    "id": "RULE-TEST-INT",
+    "type": "RULE",
+    "title": "Test Rule",
+    "summary": "Never deploy on Fridays",
+    "tags": [
+      "test"
+    ],
+    "delivery_mode": "task_file",
+    "load_mode": "always",
+    "attachments": null
+  }
+]

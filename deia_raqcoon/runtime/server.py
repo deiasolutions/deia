@@ -13,9 +13,11 @@ from deia_raqcoon.adapters.registry import get_cli_adapter, get_cli_command
 from deia_raqcoon.kb.store import list_entities, preview_injection, upsert_entity
 from deia_raqcoon.runtime.launcher import preflight_repo_root
 from deia_raqcoon.core.task_files import complete_task, latest_response, write_task
+from deia_raqcoon.core.router import decide_route
 from deia_raqcoon.runtime.store import MessageStore
 from deia_raqcoon.runtime.flights import FlightStore
 from deia_raqcoon.runtime.pty_bridge import PTYBridge
+from deia_raqcoon.runtime.minder import start_minder_thread, stop_minder_thread
 
 
 app = FastAPI(title="DEIA RAQCOON")
@@ -27,6 +29,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.on_event("startup")
+async def startup_event():
+    """Start background services on server startup."""
+    start_minder_thread()
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Clean up background services on server shutdown."""
+    stop_minder_thread()
+
+
 _message_store = MessageStore()
 _flight_store = FlightStore()
 _pty_bridge = PTYBridge()
@@ -35,6 +50,43 @@ _gates: Dict = {
     "pre_sprint_review": False,
     "allow_flight_commits": False,
 }
+
+
+class ConnectionManager:
+    """Manages WebSocket connections with channel support for broadcasting."""
+
+    def __init__(self):
+        self.active_connections: Dict[str, List[WebSocket]] = {}
+
+    async def connect(self, websocket: WebSocket, channel_id: str):
+        """Accept a WebSocket connection and add to channel."""
+        await websocket.accept()
+        if channel_id not in self.active_connections:
+            self.active_connections[channel_id] = []
+        self.active_connections[channel_id].append(websocket)
+
+    def disconnect(self, websocket: WebSocket, channel_id: str):
+        """Remove a WebSocket connection from a channel."""
+        if channel_id in self.active_connections:
+            if websocket in self.active_connections[channel_id]:
+                self.active_connections[channel_id].remove(websocket)
+
+    async def broadcast(self, channel_id: str, message: dict):
+        """Broadcast a message to all clients in a channel."""
+        if channel_id in self.active_connections:
+            dead_connections = []
+            for connection in self.active_connections[channel_id]:
+                try:
+                    await connection.send_json(message)
+                except Exception:
+                    dead_connections.append(connection)
+            # Clean up dead connections
+            for dead in dead_connections:
+                if dead in self.active_connections[channel_id]:
+                    self.active_connections[channel_id].remove(dead)
+
+
+_ws_manager = ConnectionManager()
 
 
 class LaunchRequest(BaseModel):
@@ -218,7 +270,8 @@ def stop_pty(request: PTYStopRequest) -> Dict:
 
 
 @app.post("/api/messages")
-def post_message(request: MessageRequest) -> Dict:
+async def post_message(request: MessageRequest) -> Dict:
+    """Post a message and broadcast to WebSocket clients in the channel."""
     item = _message_store.add_message(
         channel_id=request.channel_id,
         author=request.author,
@@ -227,6 +280,8 @@ def post_message(request: MessageRequest) -> Dict:
         provider=request.provider,
         token_count=request.token_count,
     )
+    # Broadcast to WebSocket clients in the same channel
+    await _ws_manager.broadcast(request.channel_id, {"type": "message", "data": item})
     return {"success": True, "message": item}
 
 
@@ -279,6 +334,10 @@ def kb_preview(request: KBPreviewRequest) -> Dict:
 @app.post("/api/tasks")
 def create_task(request: TaskRequest) -> Dict:
     repo_root = Path(request.repo_root).resolve() if request.repo_root else Path.cwd().resolve()
+
+    # Route based on intent
+    routing = decide_route({"intent": request.intent})
+
     payload = {
         "task_id": request.task_id or "TASK-NEW",
         "intent": request.intent,
@@ -286,9 +345,27 @@ def create_task(request: TaskRequest) -> Dict:
         "summary": request.summary,
         "kb_entities": request.kb_entities,
         "delivery": {"mode": request.delivery_mode},
+        "routing": {
+            "lane": routing.lane,
+            "provider": routing.provider,
+            "delivery": routing.delivery,
+        },
     }
+
+    # KB Injection - retrieve actual content for entity IDs
+    if request.kb_entities:
+        kb_content = preview_injection(request.kb_entities)
+        if kb_content:  # Only add if content was found
+            if request.delivery_mode == "cache_prompt":
+                payload["cache_prompt_content"] = kb_content
+            elif request.delivery_mode == "task_file":
+                payload["kb_injection"] = kb_content
+            elif request.delivery_mode == "both":
+                payload["cache_prompt_content"] = kb_content
+                payload["kb_injection"] = kb_content
+
     path = write_task(repo_root, request.bot_id, payload)
-    return {"success": True, "path": str(path)}
+    return {"success": True, "path": str(path), "routing": payload["routing"]}
 
 
 @app.post("/api/tasks/complete")
@@ -357,6 +434,8 @@ def git_commit(request: GitCommitRequest) -> Dict:
         return {"output": "", "error": "Git commit blocked: Q33N git not approved."}
     if not _gates.get("pre_sprint_review", False):
         return {"output": "", "error": "Git commit blocked: pre-sprint review not complete."}
+    if not _gates.get("allow_flight_commits", False):
+        return {"output": "", "error": "Git commit blocked: flight commits not enabled."}
     try:
         result = subprocess.run(
             ["git", "commit", "-am", request.message],
@@ -421,12 +500,25 @@ def list_recaps(flight_id: Optional[str] = None) -> Dict:
     return {"recaps": _flight_store.list_recaps(flight_id=flight_id)}
 
 
-@app.websocket("/api/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
+@app.websocket("/api/ws/{channel_id}")
+async def websocket_endpoint(websocket: WebSocket, channel_id: str):
+    """WebSocket endpoint with channel support for real-time messaging."""
+    await _ws_manager.connect(websocket, channel_id)
     try:
         while True:
-            data = await websocket.receive_text()
-            await websocket.send_text(data)
+            data = await websocket.receive_json()
+            # Handle incoming messages
+            if data.get("type") == "message":
+                msg = _message_store.add_message(
+                    channel_id=channel_id,
+                    author=data.get("author", "unknown"),
+                    content=data.get("content", ""),
+                    lane=data.get("lane"),
+                    provider=data.get("provider"),
+                    token_count=data.get("token_count"),
+                )
+                await _ws_manager.broadcast(channel_id, {"type": "message", "data": msg})
+            elif data.get("type") == "ping":
+                await websocket.send_json({"type": "pong"})
     except WebSocketDisconnect:
-        return
+        _ws_manager.disconnect(websocket, channel_id)
