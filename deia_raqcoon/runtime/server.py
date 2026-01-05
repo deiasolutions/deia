@@ -18,6 +18,8 @@ from deia_raqcoon.runtime.store import MessageStore
 from deia_raqcoon.runtime.flights import FlightStore
 from deia_raqcoon.runtime.pty_bridge import PTYBridge
 from deia_raqcoon.runtime.minder import start_minder_thread, stop_minder_thread
+from deia_raqcoon.runtime.spec_parser import parse_spec_markdown, validate_spec
+from deia_raqcoon.runtime.task_graph import build_task_graph, create_task_files
 
 
 app = FastAPI(title="DEIA RAQCOON")
@@ -178,6 +180,15 @@ class FlightEndRequest(BaseModel):
 class FlightRecapRequest(BaseModel):
     flight_id: str
     recap_text: str
+
+
+class SpecPlanRequest(BaseModel):
+    spec: Optional[Dict] = None          # JSON spec directly
+    spec_markdown: Optional[str] = None  # Or markdown to parse
+    create_tasks: bool = False           # Actually create task files
+    flight_id: Optional[str] = None      # Associate with flight
+    bot_id: Optional[str] = None         # Default assignee for tasks
+    repo_root: Optional[str] = None
 
 
 @app.get("/api/health")
@@ -498,6 +509,62 @@ def list_flights() -> Dict:
 @app.get("/api/flights/recaps")
 def list_recaps(flight_id: Optional[str] = None) -> Dict:
     return {"recaps": _flight_store.list_recaps(flight_id=flight_id)}
+
+
+@app.post("/api/spec/plan")
+def plan_spec(request: SpecPlanRequest) -> Dict:
+    """
+    Convert a spec into a task graph, optionally creating task files.
+
+    Accepts either:
+    - spec: JSON spec object
+    - spec_markdown: Markdown text to parse
+
+    Returns:
+    - task_graph: Dependency-ordered list of tasks
+    - execution_order: Topologically sorted task IDs
+    - tasks_created: List of created task file paths (if create_tasks=True)
+    """
+    repo_root = Path(request.repo_root).resolve() if request.repo_root else Path.cwd().resolve()
+
+    # 1. Get spec (parse markdown if needed)
+    if request.spec:
+        spec = request.spec
+    elif request.spec_markdown:
+        spec = parse_spec_markdown(request.spec_markdown)
+    else:
+        return {"success": False, "error": "Must provide spec or spec_markdown"}
+
+    # 2. Validate against schema
+    valid, error = validate_spec(spec)
+    if not valid:
+        return {"success": False, "error": f"Invalid spec: {error}"}
+
+    # 3. Build task graph
+    try:
+        graph = build_task_graph(spec)
+    except ValueError as e:
+        return {"success": False, "error": str(e)}
+
+    # 4. Optionally create task files
+    tasks_created = []
+    if request.create_tasks:
+        tasks_created = create_task_files(
+            graph,
+            repo_root,
+            flight_id=request.flight_id,
+            default_assignee=request.bot_id
+        )
+        tasks_created = [str(p) for p in tasks_created]
+
+    return {
+        "success": True,
+        "spec_id": spec.get("spec_id"),
+        "task_graph": graph.to_dict(),
+        "execution_order": graph.execution_order,
+        "ready_tasks": [t.task_id for t in graph.get_ready_tasks()],
+        "tasks_created": tasks_created,
+    }
 
 
 @app.websocket("/api/ws/{channel_id}")

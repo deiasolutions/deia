@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DEIA Spec Schema",
+  "description": "Schema for spec documents that can be converted to task graphs",
+  "type": "object",
+  "required": ["spec_id", "title", "goals", "acceptance_criteria"],
+  "properties": {
+    "spec_id": {
+      "type": "string",
+      "pattern": "^SPEC-[A-Z0-9-]+$",
+      "description": "Unique identifier for the spec"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 5,
+      "description": "Human-readable title"
+    },
+    "goals": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1,
+      "description": "What the spec aims to achieve"
+    },
+    "constraints": {
+      "type": "array",
+      "items": {"type": "string"},
+      "default": [],
+      "description": "Limitations and requirements"
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 1,
+      "description": "Checklist for completion"
+    },
+    "scope_exclusions": {
+      "type": "array",
+      "items": {"type": "string"},
+      "default": [],
+      "description": "What is explicitly out of scope"
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "project": {"type": "string"},
+        "path": {"type": "string"},
+        "kb_entities": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      },
+      "description": "Project context for task execution"
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/task"
+      },
+      "description": "Tasks derived from this spec"
+    }
+  },
+  "definitions": {
+    "task": {
+      "type": "object",
+      "required": ["task_id", "title", "intent"],
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "pattern": "^TASK-[A-Z0-9-]+$",
+          "description": "Unique task identifier"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 3,
+          "description": "Short task title"
+        },
+        "intent": {
+          "type": "string",
+          "enum": ["code", "design", "planning", "test", "docs", "review"],
+          "description": "Task type for routing decisions"
+        },
+        "summary": {
+          "type": "string",
+          "description": "Detailed task description"
+        },
+        "depends_on": {
+          "type": "array",
+          "items": {"type": "string"},
+          "default": [],
+          "description": "Task IDs this task depends on"
+        },
+        "assignee": {
+          "type": "string",
+          "description": "Bot ID to assign (optional)"
+        },
+        "files": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Files to create or modify"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["P0", "P1", "P2", "P3"],
+          "default": "P1",
+          "description": "Task priority level"
+        }
+      }
+    }
+  }
+}
