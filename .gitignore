@@ -11,6 +11,9 @@
 .deia/.local/
 .deia/.cache/
 
+# DEIA Runtime Databases (SQLite)
+.deia/*.db
+
 # Top-level Sandbox (experiments, games, prototypes)
 .sandbox/
 /sandbox/
